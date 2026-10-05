@@ -5,7 +5,7 @@ window.PluginViews.today = async function(host) {
   const now=new Date(),date=new Date(now.getTime()-now.getTimezoneOffset()*60000).toISOString().slice(0,10);
   const read=async(name,args={})=>P.can(name)?call(name,args):null;
   const [stats,plans,exams,notes,projects,tasks]=await Promise.all([
-    read("study_stats",{date,offset_minutes:-now.getTimezoneOffset()}),read("study_plan_list",{date,limit:10}),
+    read("study_stats",{date,offset_minutes:(-now.getTimezoneOffset())||0}),read("study_plan_list",{date,limit:10}),
     read("exam_list",{status:"upcoming",limit:100}),read("note_list",{archived:false,limit:4}),read("workspace_list",{limit:4}),read("task_list",{limit:100})
   ]);
   const hero=node("section","ep-hero");host.append(hero);

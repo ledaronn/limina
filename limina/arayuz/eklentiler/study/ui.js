@@ -33,7 +33,7 @@ window.PluginViews.study = async function(host) {
   if(tab==="plans")await P.listing(host,"study_plan",T("Çalışma planı"),{},(line,row)=>muted(line,courseName(row.course_id)+" · "+topicName(row.topic_id)+" · "+row.minutes+T(" dk · ")+human(row.status||"planned")),{date:today,status:"planned"});
   if(tab==="history"){
     actions(host).append(button(T("Geçmiş çalışma ekle"),()=>P.form("study_session_log",T("Çalışma kaydı"),{type:"study",completed:true})));
-    const stats=await call("study_stats",{date:today,offset_minutes:-date.getTimezoneOffset()});muted(host,T("Bugün {a} dk · Bu hafta {b} dk",{a:Math.round(stats.daily_seconds/60),b:Math.round(stats.weekly_seconds/60)}));
+    const stats=await call("study_stats",{date:today,offset_minutes:(-date.getTimezoneOffset())||0});muted(host,T("Bugün {a} dk · Bu hafta {b} dk",{a:Math.round(stats.daily_seconds/60),b:Math.round(stats.weekly_seconds/60)}));
     const c=card(host,T("Çalışma geçmişi")),pager=actions(host);let offset=0;
     async function load(){P.clear(c);P.clear(pager);const rows=await call("study_session_list",{limit:30,offset});if(!rows.items.length)muted(c,T("Henüz çalışma kaydı yok."));for(const r of rows.items){const line=node("div","ep-row");line.append(node("strong","",courseName(r.course_id)+" · "+Math.round(r.seconds/60)+T(" dk")));muted(line,datetime(r.start)+" → "+datetime(r.end));c.append(line);}if(offset)pager.append(button(T("Önceki"),()=>{offset-=30;return load();}));if(offset+30<rows.total)pager.append(button(T("Sonraki"),()=>{offset+=30;return load();}));}await load();
   }

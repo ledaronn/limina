@@ -52,7 +52,8 @@ def main():
             except Exception as exc:
                 return {"ok": False, "hata": str(exc)}
         browser = pw.chromium.launch(channel="chrome", headless=True)
-        page = browser.new_page(viewport={"width": 1280, "height": 960})
+        # UTC: saat dilimi farki -0 olur (JS), Python tarafina float -0.0 gidiyordu (CI'da yakalandi)
+        page = browser.new_page(viewport={"width": 1280, "height": 960}, timezone_id="UTC")
         errors = []
         def screenshot(suffix):
             if len(sys.argv) > 1:
