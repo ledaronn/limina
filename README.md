@@ -8,7 +8,7 @@ browser and works with documents to get it done. It only touches folders you all
 before anything risky, and every file change can be undone. Your chats, settings and backups stay
 on your machine; the only thing that leaves it is the text sent to the AI model you choose.
 
-![Limina home screen](docs/img/home.png)
+![Limina asks before writing a file: the task, each step it took, and an approval card](docs/img/home.png)
 
 > Türkçe: [docs/README.tr.md](docs/README.tr.md) · Design docs (Turkish): [docs/](docs/)
 

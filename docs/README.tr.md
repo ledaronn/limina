@@ -8,7 +8,7 @@ ve belgeleri kullanarak işi yapar. Yalnızca izin verdiğin klasörlere dokunur
 sana sorar ve yaptığı her dosya değişikliği geri alınabilir. Sohbetlerin, ayarların ve yedeklerin
 bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeline gönderilen metindir.
 
-![Limina ana ekranı](img/home.png)
+![Limina dosya yazmadan önce sorar: görev, attığı adımlar ve onay kartı](img/home.png)
 
 ## Neler yapabilirsin
 
