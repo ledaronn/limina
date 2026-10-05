@@ -86,7 +86,7 @@ odeme = "yasak"
 
 def ortam_kur() -> Path:
     """Gecici bir proje kokü: policy.toml + gate.py kopyasi."""
-    kok = Path(tempfile.mkdtemp(prefix="limina_ayar_"))
+    kok = Path(tempfile.mkdtemp(prefix="limina_ayar_")).resolve()   # 8.3 kisa ad cozulsun (urunde PROJE_KOKU da cozulmus)
     (kok / "kum").mkdir()
     (kok / "policy.toml").write_text(
         BASLANGIC.format(kok=(kok / "kum").as_posix()), encoding="utf-8")

@@ -76,6 +76,13 @@ def main() -> int:
                 satirlar = ["(KALDI satiri yok; ciktinin sonu:)"] + (r.stdout + r.stderr).splitlines()[-15:]
             for s in satirlar[-25:]:
                 print("    " + s)
+            # Istisnayla bittiyse hangi satirda patladigi da gorunsun (CI'da
+            # yalniz bu ozet var; "element(s) not found" tek basina yetmiyor).
+            if "Traceback" in r.stderr:
+                iz = r.stderr[r.stderr.rindex("Traceback"):].splitlines()
+                print("    --- son istisna ---")
+                for s in [x for x in iz if x.strip().startswith(("File ", "Call log", "- ")) or "Error" in x][-12:]:
+                    print("    " + s.strip()[:220])
     print("\n" + ("TUM PAKETLER GECTI" if not kalan else f"KALAN: {', '.join(kalan)}"))
     return len(kalan)
 

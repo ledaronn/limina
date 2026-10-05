@@ -1,6 +1,7 @@
 # gate.py — izin kapısı. Yürütücüye giden TEK yol burasıdır.
 from __future__ import annotations
 
+import os
 import re
 import tomllib
 from collections.abc import Iterable, Mapping
@@ -247,8 +248,18 @@ def korunan_yol_ihlali(yazma_kokleri: Iterable[Path], kod_koku: Path) -> str | N
 
     config/ ayri sayilir cunku persona.md sistem talimatina giriyor: orayi
     yazabilen ajan kapiya hic dokunmadan kendi talimatini degistirir.
-    kum/ proje icinde ama korunan DEGIL, bilerek acilmis calisma alani.
+
+    Iki taraf da realpath ile cozulur: Windows 8.3 kisa adi (RUNNER~1)
+    ile uzun adi ayni klasoru gosterir ama Path esitligi tutmaz; cozulmemis
+    bir girdi korumayi sessizce delerdi (temiz CI makinesinde yakalandi).
     """
+    def coz(y: Path) -> Path:
+        try:
+            return Path(os.path.realpath(y))
+        except (OSError, ValueError):
+            return Path(y)
+    kod_koku = coz(Path(kod_koku))
+    yazma_kokleri = [coz(Path(y)) for y in yazma_kokleri]
     korunan = {"kaynak kodu": kod_koku, "config klasoru": kod_koku / "config"}
     for etiket, hedef in korunan.items():
         for yazilabilir in yazma_kokleri:
