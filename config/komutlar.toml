@@ -1,0 +1,51 @@
+# komutlar.toml — arayuzdeki slash komutlari (ARAYUZ.md 5).
+#
+# Her komut ya bir PROMPT SABLONU'dur (sablon = ...) ya da bir ARAYUZ EYLEMI
+# (eylem = ...). Burada KOD YOK: sablon sadece girdi kutusuna yazilan metindir,
+# gorevi yine model yorumlar ve her arac yine izin kapisindan gecer.
+# Yeni komut eklemek icin bu dosyaya bir blok yazmak yeterli, kod degismez.
+
+[[komut]]
+ad = "donustur"
+aciklama = "Dosyayi hedef formata cevirir"
+sablon = "Su dosyayi PDF'e cevir: "
+
+[[komut]]
+ad = "ozetle"
+aciklama = "Dosyayi veya sayfayi okuyup ozetler"
+sablon = "Su dosyayi oku ve kisaca ozetle: "
+
+[[komut]]
+ad = "tasi"
+aciklama = "Dosyayi hedef klasore tasir"
+sablon = "Su dosyayi su klasore tasi: "
+
+[[komut]]
+ad = "duzenle"
+aciklama = "Klasoru icerige gore siniflandirir ve adlandirir"
+sablon = "Su klasoru incele, dosyalari icerigine gore anlamli adlarla yeniden adlandir: "
+
+[[komut]]
+ad = "oku"
+aciklama = "Belgeyi okur ve icerigini gosterir"
+sablon = "Su belgeyi oku ve icerigini goster: "
+
+[[komut]]
+ad = "ara"
+aciklama = "Klasorde dosya adi ve metin icinde arar"
+sablon = "Su klasorde su ifadeyi ara: "
+
+[[komut]]
+ad = "gecmis"
+aciklama = "Geri alinabilir islemleri acar"
+eylem = "panel"
+
+[[komut]]
+ad = "siteler"
+aciklama = "Tarayicinin acabilecegi siteleri listeler"
+eylem = "siteler"
+
+[[komut]]
+ad = "yeni"
+aciklama = "Yeni sohbet baslatir, toplu onaylari sifirlar"
+eylem = "yeni_sohbet"

@@ -1,0 +1,55 @@
+name: tests
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+
+jobs:
+  windows:
+    # Ilk surum Windows'a ozel (WebView2, Chrome/CDP, Explorer, 8.3 kisa ad
+    # testleri). Runner'da Chrome hazir; Playwright yalnizca surucu icin.
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Bagimliliklar
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e .[tam]
+          python -m playwright install chromium
+
+      - name: Ilk acilis (policy.toml sablondan)
+        run: python -c "from limina import kurulum; print(kurulum.politikayi_hazirla())"
+
+      - name: Modelsiz test paketleri
+        # Model cagrilmaz, anahtar gerekmez. Kisisel dosya yok: policy.toml
+        # sablondan, testler yer tutucularla.
+        run: python tests/hepsi.py
+
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Sozdizimi ve derleme
+        run: python -m compileall -q limina tests Donusturucu
+      - name: Kisisel veri sizintisi (depoda olmamali)
+        shell: bash
+        run: |
+          if git ls-files | grep -E '^(policy\.toml|config/persona\.md|config/arayuz\.toml|kum/)'; then
+            echo "Kisisel dosya depoda!"; exit 1; fi
+          # Gercek bir kullanici klasoru yolu (C:\Users\<ad>): ornek adlar haric.
+          if git ls-files -z | xargs -0 grep -n -o -I -E '[A-Za-z]:(\\\\|\\|/)Users(\\\\|\\|/)[A-Za-z0-9_.-]{2,}' 2>/dev/null \
+               | grep -v -E 'Users(\\\\|\\|/)(ornek|kullanici|\.\.\.)'; then
+            echo "Kisisel yol kaldi!"; exit 1; fi
+          echo ok

@@ -1,0 +1,275 @@
+# policy.example.toml — Limina izin politikasinin SABLONU.
+#
+# Ilk acilista (python -m limina) bu dosyadan policy.toml uretilir:
+#   {PROJE} -> bu deponun koku,  {EV} -> kullanicinin ev klasoru,
+#   {CALISMA} -> calisma klasoru (varsayilan {EV}/Limina; ilk kurulum
+#   ekraninda secilir, sonra Ayarlar > Dosyalar'dan degistirilebilir/kaldirilabilir).
+# policy.toml KISISELDIR ve depoya girmez (.gitignore): klasorlerin, sitelerin,
+# MCP sunucularin orada durur. Bu sablon herkes icin ortak varsayilandir.
+#
+# Kod degismeden izinler policy.toml'dan ayarlanir (Ayarlar > Dosyalar /
+# Tarayici / Araclar). Burada tanimli OLMAYAN arac calismaz (varsayilan reddet).
+
+[model]
+# Saglayici: "gemini" (Google), "openai" (OpenAI ve OpenAI-uyumlu sunucular:
+# OpenRouter, Groq, Ollama, LM Studio... taban_url ile), "anthropic" (Claude).
+# API ANAHTARI BURAYA YAZILMAZ: Ayarlar > Model'den girilir (keyring ya da
+# ~/.vekil/credentials.json) ya da ortam degiskeni: GOOGLE_API_KEY /
+# OPENAI_API_KEY / ANTHROPIC_API_KEY.
+saglayici = "gemini"
+# taban_url = "http://localhost:11434/v1"    # openai icin; bos = api.openai.com
+varsayilan = "gemini-3.5-flash-lite"
+guclu = "gemini-3.6-flash"
+# Dayatilan gunluk istek tavanlari. Ucretli pencerede kacak dongu duvari;
+# ucretsiz katmana gecince Google'in kendi sinirlari yazilir (500 / 20).
+gunluk_tavan_varsayilan = 450
+gunluk_tavan_guclu = 18
+# Hafiza: config/persona.md sistem talimatina eklensin mi.
+persona_acik = true
+# Coklu API ve model zinciri (Ayarlar > Model). Tanimlanirsa yukaridaki
+# saglayici/varsayilan/guclu yerine bu baglantilar SIRAYLA kullanilir: bir
+# modelin limiti dolunca gorev siradaki modelle surer. Anahtar yine burada
+# DEGIL: her baglantinin kendi anahtar yuvasi var (Ayarlar > Model).
+# zincir = ["ana", "deepseek"]              # baglanti sirasi
+# derin = "ana/gemini-3.6-flash"            # Derin/Azami modda once bu (kimlik/model)
+#
+# [baglantilar.deepseek]
+# ad = "DeepSeek"
+# saglayici = "openai"
+# taban_url = "https://api.deepseek.com/v1"
+# modeller = ["deepseek-chat", "deepseek-reasoner"]
+# anahtar_yuvasi = "api-deepseek"
+
+[filesystem]
+# Ajanın okuyabileceği klasörler ve altları.
+okuma_koklari = [
+    "{CALISMA}",
+    "{EV}/Downloads",
+    "{EV}/Desktop",
+    "{EV}/.vekil/indirilen",
+]
+
+# Ajanın yazabileceği klasörler. Okumadan dar tutulur.
+yazma_koklari = [
+    "{CALISMA}",
+    "{EV}/.vekil/indirilen",
+]
+
+# İzinli klasörlerin İÇİNDE bile dokunulmayacak dosyalar.
+yasak_kaliplar = [
+    ".env", "*.env", "*.pem", "*.key", "*.pfx", "*.ppk",
+    "id_rsa", "id_*", "*credential*", "*password*", "*secret*",
+    ".ssh", ".aws", ".gnupg", "*.kdbx",
+]
+
+# MCP sunucuları: ad -> baslatma komutu.
+[mcp.converter]
+komut = ["python", "Donusturucu/server.py"]
+
+# Baska MCP sunuculari: Araclar panelinden ya da elle eklenir:
+#   [mcp.<ad>]
+#   komut = ["python", "yol/sunucu.py"]        # ya da npx/uvx/tam yol
+# Sunucunun araclari [araclar]'da siniflandirilana kadar modele GOSTERILMEZ.
+
+# Arac adi = risk seviyesi. READ/WRITE_HAFIF/WRITE/EXEC/NETWORK/DESTRUCTIVE
+# Yerlesik araclarin yol argumanlari kayit defterinden (limina/araclar) bilinir.
+# MCP aracinin yol argumani varsa TABLO bicimiyle bildir, kapi o argumani
+# koklere karsi denetlesin (bildirilmeyen yol argumani DENETLENMEZ):
+#   "sunucu.arac" = { risk = "WRITE", yollar = { path = "oku", hedef = "yaz" } }
+[araclar]
+list_dir           = "READ"
+read_file          = "READ"
+write_file         = "WRITE"
+edit_file          = "WRITE"         # old_text -> new_text, tek eslesme; yedek + geri al
+mkdir              = "WRITE_HAFIF"   # yazma koku altinda klasor; bossa geri alinir
+open_file          = "EXEC"          # acma klasorundeki ogeyi acar (bkz. [acma]); her seferinde onay
+degisiklik_gecmisi = "READ"
+move               = "WRITE_HAFIF"   # geri alinabilir, icerik yok olmaz
+rename             = "WRITE_HAFIF"   # sadece ad degisir
+trash              = "DESTRUCTIVE"
+read_document      = "READ"
+search             = "READ"
+"converter.convert"      = "WRITE"
+"converter.list_formats" = "READ"
+# Dusunce Agi: baloncuklar (fikir/kural/dosya) ve mantiksal baglantilar.
+# ag_oku agi ATESLER ve dugumleri agin mantiginin belirledigi sirayla getirir;
+# dosya dugumu normal okuma karariyla okunur (ALLOW degilse ATESLEMEZ).
+# Aglar ~/.vekil/aglar altinda: ajan write_file ile bir agi degistiremez.
+ag_kilavuz         = "READ"          # ag dilini ogretir (kapilar, agirlik, gecikme)
+ag_kur             = "WRITE_HAFIF"   # ajan KENDI agini kurar; kullanicinin agina dokunamaz
+ag_listele         = "READ"
+ag_oku             = "READ"
+ag_dugum_ekle      = "WRITE_HAFIF"   # ~/.vekil/aglar altina yazar, kullanici dosyalarina degil
+ag_baglanti_ekle   = "WRITE_HAFIF"
+
+browser_open       = "NETWORK"
+browser_read       = "READ"
+browser_snapshot = "READ"
+browser_click    = "WRITE_HAFIF"     # "gonder/satin al/ode/sil" kaliplari kod seviyesinde ASK
+browser_fill     = "WRITE_HAFIF"     # parola/kart reddi kod seviyesinde duruyor
+browser_download = "DESTRUCTIVE"
+
+# ---------------------------------------------------------------------------
+# Acma klasoru: open_file'in acabildigi TEK yer. Icine koydugun dosya
+# (ilisikli programla acilir), kisayol (.lnk, hedefiyle acilir) ya da program
+# modelin "ac" diyebildigi seylerdir — izin listesi bir dizi degil, diskteki
+# bu klasor. Klasoru YALNIZCA SEN duzenlersin: ajanin yazabildigi bir yerle
+# kesisirse kapi klasoru yok sayar (kisayol yazip acabilirdi). Kisayolun
+# hedefi de ajanin yazabildigi bir yerde olamaz. Bos = ozellik kapali.
+# Ayarlar > Dosyalar > Acma klasoru'nden secilir.
+# ---------------------------------------------------------------------------
+[acma]
+klasor = ""
+
+# ---------------------------------------------------------------------------
+# Ekip ajanlari (coklu ajan bileseni). Her tanim bir isci: kendi saglayicisi,
+# modeli (bos = [model] varsayilan) ve istege bagli anahtar yuvasi (Ayarlar >
+# Model > Ekip'ten girilen adli anahtar; anahtarin kendisi BURAYA YAZILMAZ).
+# Ornek:
+#   [ajanlar.yazar]
+#   saglayici = "gemini"
+#   model = "gemini-3.5-flash-lite"
+#   rol = "Metinleri yazar."
+#   [ajanlar.elestirmen]
+#   saglayici = "anthropic"
+#   anahtar_yuvasi = "ikinci"
+# ---------------------------------------------------------------------------
+
+[browser]
+# Ajanin acabilecegi adresler. Alan adi bazinda, alt alanlar dahil.
+# Liste disi her adres reddedilir (varsayilan reddet).
+izinli_alanlar = [
+    "example.com",              # kapi testi bunu bekliyor (evals/tasks.yaml), dokunma
+    "wikipedia.org",            # alt alan otomatik gecer: tr., en.
+    "google.com",               # www.google.com dahil
+]
+
+# Yerel dosya acma (file:///). Bu koklerin altindaki dosyalar acilabilir.
+izinli_yerel_kokler = [
+    "{CALISMA}",
+]
+
+# Indirilebilecek uzantilar. Beyaz liste — disindaki hicbir sey inmez.
+indirilebilir_uzantilar = [
+    ".pdf", ".docx", ".pptx", ".xlsx", ".txt", ".md", ".csv",
+    ".png", ".jpg", ".jpeg", ".zip",
+]
+
+[browser.eylemler]
+indirme = "izin"
+gonderim = "sor"
+
+# Efor modlari. Her mod bir sinir demeti: model rolu + adim tavani + cagri
+# tavani + gorev basina istek butcesi. Mod izin GEVSETMEZ (onay kartlari,
+# DENY'ler ayni kalir) — sadece ajanin bir gorevde ne kadar hesap
+# harcayabilecegini belirler.
+#
+# istek: GOREV BASINA azami model istegi (Faz 7 Asama 2). Adim tavanindan
+# FARKLI bir sey sayiyor: adim model TURLARINI sayar, istek gonderilen
+# ISTEKLERI — bir tur 429/503'te 3 kez yeniden denenebiliyor ve her deneme
+# gunluk kotadan ayri dusuyor. Tek bir yanlis anlasilmis gorev gunun butun
+# hakkini tuketmesin diye. 0 = butce yok. Gunluk tavan her zaman EN DIS
+# sinir; butce onun yerine gecmez, onun onunde durur.
+[modlar]
+varsayilan_mod = "dengeli"
+
+[modlar.hizli]
+model = "varsayilan"
+adim = 4
+cagri = 10
+istek = 8
+
+[modlar.dengeli]
+model = "varsayilan"
+adim = 8
+cagri = 20
+istek = 14
+
+[modlar.derin]
+model = "guclu"
+adim = 12
+cagri = 30
+istek = 20
+
+[modlar.azami]
+model = "guclu"
+adim = 20
+cagri = 50
+istek = 32
+
+# Gorev profilleri (Faz 7 Asama 3). Profil onceden imzalanmis bir onaydir,
+# izin GEVSETMEZ diyen mod ilkesinden farkli — yalnizca ASK'i, yalnizca
+# kendi kapsaminda (araclar + yazma_koklari alt kumesi), ALLOW'a cevirir.
+# DENY hicbir kosulda acilmaz (bkz. gate.Politika.karar).
+#
+# eval_testi: SADECE evals/tasks.yaml'in kendi regresyon gorevi icin var —
+# calisma klasorune write_file ile onceden onayli, baska hicbir arac/kok
+# kapsamiyor. Gercek bir gozetimsiz gorev icin YENI bir profil tanimla,
+# bunu genisletme.
+# azami_devam: kendiliginden devam turu ust siniri (Faz 7 Asama 3).
+# TANIMSIZ = 0 = KAPALI. Varsayilan kapali: hicbir mevcut profil bir gun
+# sessizce kendi kendine devam etmeye baslamaz, acikca yazilmasi gerekir.
+[profiller.eval_testi]
+araclar = ["write_file"]
+yazma_koklari = ["{CALISMA}"]
+mod = "hizli"
+# azami_devam BILEREK YOK: eval gorevi tek turda bitmeli, kendiliginden
+# devam onun olcmedigi bir sey ve kotayi ongorulemez sekilde harcardi.
+
+
+# gozetimsiz: KULLANICI EVDE YOKKEN calisacak gorevler icin ornek profil.
+# Faz 7 Asama 3'un hedefi tam buydu: "gorev verdim, bilgisayari acik biraktim,
+# gittim" — gorev bir tavana carpinca durmak yerine kendiliginden devam etsin.
+#
+# KAPSAM BILEREK DAR ve bu daralik profilin BUTUN guvenligi:
+#   - Yalnizca write_file onceden onayli. trash/move/browser_* DEGIL — silme,
+#     tasima ve ag islemleri kimse bakmiyorken onceden imzalanmamali.
+#   - Yalnizca calisma klasorunde. Masaustu ve indirilenler kokleri DISARIDA.
+#   - DENY'ler hicbir kosulda acilmaz (odeme, kod koku, kara liste) — profil
+#     bunu YAPAMAZ, gate.Politika.karar ilk satirinda doner.
+#   - azami_devam = 3: kendiliginden devam SONSUZ degil. Ucuncu turdan sonra
+#     durur ve durum dosyasi diskte kalir, kullanici dondugunde surdurur.
+#   - mod = "dengeli": istek butcesi 14. Uc devam turu * 14 = en kotu 42
+#     istek, ve gunluk tavan (varsayilan rolunde 450) her zaman dis sinir.
+#
+# Kullanim: python -m limina.vekil_v0 "gorev metni" --profil gozetimsiz
+#
+# YENI BIR PROFIL EKLERKEN: bunu genisletmek yerine yenisini tanimla. Bir
+# profilin kapsami zamanla buyurse "onceden imzalanmis onay" imzalanmamis
+# seyleri de kapsamaya baslar — profil sisteminin tek gercek riski bu.
+[profiller.gozetimsiz]
+# Faz 7 Asama 5'ten sonra bu liste IKI is birden yapiyor: modele hangi
+# araclarin GOSTERILECEGI ve hangi ASK'lerin ONCEDEN ONAYLI oldugu.
+# Okuma araclarinin listeye eklenmesi IZIN GEVSETMEZ: hepsi zaten ALLOW
+# (RISK_VARSAYILAN["READ"]), yani "onceden onayli" olmalarinin bir karsiligi
+# yok. Kazanc iki yonlu: (a) gozetimsiz gorev dosya okuyabilir — okumadan
+# yazan bir gorev cogu is icin yararsizdi, (b) modele 21 yerine 6 sema
+# gidiyor, yani her cagri daha ucuz.
+# Listede OLMAYANLAR bilincli: trash, move, rename (geri alinabilir ama
+# kimse bakmiyorken sessizce dosya oynatmasin), browser_* (ag), converter
+# (MCP yazmasi, geri alinmasi yok).
+araclar = ["write_file", "read_file", "list_dir", "search", "read_document",
+           "degisiklik_gecmisi"]
+yazma_koklari = ["{CALISMA}"]
+mod = "dengeli"
+azami_devam = 3
+
+
+# sohbet: SAF SOHBET. Yeni bir kavram DEGIL — profil zaten arac listesini
+# daraltabiliyordu, bos liste bu yetenegin UC HALI (Faz 7 Asama 5).
+#
+# araclar = []  -> modele HICBIR arac semasi gonderilmez. Bunun iki sonucu
+#   var: (a) her mesajda odenen arac semasi maliyeti sifirlanir, (b) kapi
+#   hic cagrilmaz cunku cagrilacak arac yok. Kapi yine son savunma olarak
+#   yerinde duruyor — devre disi BIRAKILMIYOR, sadece isi kalmiyor.
+# azami_devam = 0 -> sohbet turu kendiliginden devam etmez. Bir sohbet
+#   mesaji tek turdur; "devam" kavraminin burada karsiligi yok.
+#
+# DIKKAT: bos arac listesi izin GEVSETMEZ. gate.Politika.karar'da bos liste
+# de yok-liste de ayni sonucu verir: hicbir ASK onceden onayli degildir.
+[profiller.sohbet]
+araclar = []
+yazma_koklari = []
+mod = "hizli"
+azami_devam = 0
+

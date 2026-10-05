@@ -1,0 +1,25 @@
+# Tam kurulum (gelistirme dahil). Ayni kume: pip install -e .[tam]
+# Yalnizca cekirdek icin: pip install -e .   (bkz. pyproject.toml ekstralari)
+google-genai>=1.0.0
+httpx>=0.27
+mcp[cli]>=1.0.0
+pywebview>=6.0
+# belge okuma
+pymupdf>=1.24.0
+python-docx>=1.1.0
+python-pptx>=0.6.23
+openpyxl>=3.1.0
+# tarayici
+playwright>=1.40.0
+# ocr (Windows yerlesik OCR; Windows disinda atlanir)
+winrt-runtime>=3.0; sys_platform == 'win32'
+winrt-Windows.Foundation>=3.0; sys_platform == 'win32'
+winrt-Windows.Foundation.Collections>=3.0; sys_platform == 'win32'
+winrt-Windows.Globalization>=3.0; sys_platform == 'win32'
+winrt-Windows.Graphics.Imaging>=3.0; sys_platform == 'win32'
+winrt-Windows.Media.Ocr>=3.0; sys_platform == 'win32'
+winrt-Windows.Storage.Streams>=3.0; sys_platform == 'win32'
+# donusturucu (MCP sunucusu)
+Pillow>=10.0.0
+# testler
+pyyaml>=6.0

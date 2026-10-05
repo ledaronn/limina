@@ -1,0 +1,26 @@
+.venv/
+__pycache__/
+.env
+*.env
+*.pem
+*.key
+chrome-profil/
+policy.toml.yedek
+tum_kodlar.txt
+proje_onemli_dosyalar.txt
+# Kisisel klasor, yalnizca depo koku. limina/araclar/ KODDUR; Windows buyuk-kucuk
+# harf ayirmadigi icin "Araclar/" onu da yutuyordu, bu yuzden koke sabitlendi.
+/Araclar/
+policy.toml
+config/persona.md
+config/arayuz.toml
+*.lnk
+*.egg-info/
+build/
+dist/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+
+# Eski varsayilan calisma klasoru (artik ~/Limina, kullanici secer). Kisisel.
+/kum/
