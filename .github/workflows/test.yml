@@ -10,11 +10,16 @@ jobs:
     # Ilk surum Windows'a ozel (WebView2, Chrome/CDP, Explorer, 8.3 kisa ad
     # testleri). Runner'da Chrome hazir; Playwright yalnizca surucu icin.
     runs-on: windows-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
+    # Runner konsolu cp1252: Turkce cikti yazdirmak test kosucusunu
+    # dusuruyordu (UnicodeEncodeError). Butun Python surecleri UTF-8.
+    env:
+      PYTHONUTF8: "1"
+      PYTHONIOENCODING: utf-8
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
           cache: pip
@@ -37,8 +42,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - name: Sozdizimi ve derleme

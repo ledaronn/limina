@@ -47,8 +47,13 @@ bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeli
 Her adımın bir varsayılanı var: **Varsayılanlarla bitir** tek tıkla başlatır. Hepsi sonra
 Ayarlar'dan değiştirilebilir.
 
-**Kurulum (Windows):** Python 3.11+ ve Google Chrome gerekir. Projeyi *Code › Download ZIP* ile
-indirip aç, ardından:
+**İndir (Windows):** [Son sürümü aç](https://github.com/ledaronn/limina/releases/latest) ve
+*Assets* altındaki `Limina-Setup-<sürüm>.exe` dosyasını çalıştır. Python ya da yönetici izni
+gerekmez. Windows "Bilgisayarınız korundu" derse **Ek bilgi → Yine de çalıştır** (kurulum programı
+henüz imzalı değil). Tarayıcı araçları için Google Chrome gerekir.
+
+**Kaynaktan çalıştırma (geliştiriciler):** Python 3.11+ ve Google Chrome gerekir. Projeyi indirip
+aç, ardından:
 
 ```bash
 python -m venv .venv

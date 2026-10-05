@@ -71,10 +71,19 @@ can be changed later in Settings.
 - **No shell, no code execution.** Deliberately. It can write a script; it cannot run one.
 - **Single user, single machine.** Not a server, not multi-tenant.
 
-## Install (Windows)
+## Download
 
-You need **Python 3.11+** and **Google Chrome** (for the browser tools). Download the project
-with *Code › Download ZIP* (and unzip it), or with git:
+**[⬇ Download Limina for Windows](https://github.com/ledaronn/limina/releases/latest)**: open the
+latest release and run `Limina-Setup-<version>.exe` from *Assets*. Windows 10/11, 64-bit; no
+Python and no admin rights needed. The installer is not code-signed yet, so Windows may say
+*"Windows protected your PC"*: click **More info → Run anyway**. Uninstall from Windows Settings ›
+Apps; your settings and chats (`%LOCALAPPDATA%\Limina`) are kept.
+
+You also need [Google Chrome](https://www.google.com/chrome/) for the browser tools.
+
+## Run from source (developers)
+
+You need **Python 3.11+** and **Google Chrome**. Clone with git (or *Code › Download ZIP*):
 
 ```bash
 git clone https://github.com/ledaronn/limina.git
@@ -198,7 +207,7 @@ policy.example.toml
 
 ## Roadmap (short)
 
-1. Packaged installer (`.exe`), so running it needs no Python.
+1. A code-signed installer (no SmartScreen warning) and in-app update notices.
 2. A smaller default token footprint per call (conditional tool schemas by task).
 3. Running the offline evals in English mode as well (they are pinned to the source language).
 

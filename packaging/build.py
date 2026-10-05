@@ -1,7 +1,7 @@
 """packaging/build.py — Windows dagitimi: PyInstaller (onedir) + istege bagli Inno Setup.
 
     python packaging/build.py            # dist/Limina/  (Limina.exe, limina-cli.exe)
-    python packaging/build.py --kurulum  # + dist/Limina-Kurulum-<surum>.exe (Inno Setup gerekir)
+    python packaging/build.py --kurulum  # + dist/Limina-Setup-<surum>.exe (Inno Setup gerekir)
 
 Her adimin sonunda dogrulama var: exe uretildi mi, --tani calisiyor mu,
 Donusturucu MCP sunucusu exe uzerinden ayaga kalkiyor mu. Dogrulanmayan
@@ -97,7 +97,7 @@ def inno() -> None:
         raise SystemExit("Inno Setup 6 bulunamadi. Kur: winget install JRSoftware.InnoSetup  "
                          "(ya da https://jrsoftware.org/isdl.php), sonra tekrar calistir.")
     calistir([str(iscc), f"/DSurum={surum()}", f"/DKok={KOK}", str(KOK / "packaging" / "limina.iss")])
-    cikti = KOK / "dist" / f"Limina-Kurulum-{surum()}.exe"
+    cikti = KOK / "dist" / f"Limina-Setup-{surum()}.exe"
     if not cikti.is_file():
         raise SystemExit(f"Kurulum paketi uretilemedi: {cikti}")
     print(f"  {cikti} ({cikti.stat().st_size / 1_000_000:.0f} MB)")
