@@ -17,7 +17,13 @@ from eklentiler_testi import Policy
 from limina.okuma import ReaderLink
 from limina.eklentiler.registry import invoke
 
-spec=importlib.util.spec_from_file_location('reader_protocol',ROOT/'Araclar/OkumaAtolyesi/assistant_link.py')
+# Okuma Atolyesi ayri bir depo (github.com/ledaronn/okuma-atolyesi). Protokolun
+# karsi tarafi yalnizca o depo Araclar/ altina klonlanmissa sinanir.
+OKUMA=ROOT/'Araclar/OkumaAtolyesi/assistant_link.py'
+if not OKUMA.is_file():
+    print('ATLANDI: Araclar/OkumaAtolyesi yok (ayri depo); okuyucu protokol testi kosulmadi.')
+    sys.exit(0)
+spec=importlib.util.spec_from_file_location('reader_protocol',OKUMA)
 protocol=importlib.util.module_from_spec(spec); spec.loader.exec_module(protocol)
 
 class LinkTest(unittest.TestCase):

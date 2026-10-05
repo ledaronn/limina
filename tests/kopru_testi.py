@@ -18,6 +18,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
 from limina import sohbet as _depo
 from limina import kurulum
+from limina import ceviri as _ceviri
+_ceviri.dil_ayarla("tr")   # metinler kaynak dilde dogrulanir; kisisel arayuz.toml'a bagli kalmasin
 kurulum.politikayi_hazirla(sessiz=True)   # temiz klonda policy.toml sablondan
 _depo.KOK = Path(tempfile.mkdtemp(prefix="limina_test_"))
 

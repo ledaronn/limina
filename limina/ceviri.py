@@ -47,6 +47,10 @@ def dil() -> str:
     """
     global _dil
     if _dil is None:
+        import os
+        if os.environ.get("LIMINA_DIL") in DILLER:      # ekip iscisi: ana surecin dili
+            _dil = os.environ["LIMINA_DIL"]
+            return _dil
         try:
             from limina import ayarlar
             secim = ayarlar.arayuz_oku()["genel"]["dil"]

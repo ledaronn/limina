@@ -31,7 +31,7 @@ class Policy:
 class PluginsTest(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory()
-        self.root = Path(self.temp.name)
+        self.root = Path(self.temp.name).resolve()   # 8.3 kisa ad (RUNNER~1) uzun ada cozulsun
         self.policy = Policy(self.root)
         self.now = datetime(2026, 9, 18, 12, tzinfo=timezone.utc)
 

@@ -23,7 +23,7 @@ from limina.araclar.dosya import write_file
 class Regression(unittest.TestCase):
     def setUp(self):
         self.temp=tempfile.TemporaryDirectory()
-        self.root=Path(self.temp.name)
+        self.root=Path(self.temp.name).resolve()  # 8.3 kisa ad (RUNNER~1) uzun ada cozulsun
         self.policy=Policy(self.root)
 
     def tearDown(self):

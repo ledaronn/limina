@@ -41,6 +41,7 @@ from datetime import datetime
 from pathlib import Path
 
 from limina import DONMUS, PROJE_KOKU, ofis
+from limina import ceviri
 from limina.ceviri import t
 
 ISCI_ARACLARI = ["read_file", "list_dir", "search", "read_document", "degisiklik_gecmisi",
@@ -345,6 +346,9 @@ def isci_baslat(tarif: dict) -> subprocess.Popen:
     python -m limina --isci. LIMINA_POLICY tarifteki dar politika."""
     ortam = dict(os.environ)
     ortam["LIMINA_POLICY"] = tarif["policy"]
+    # Isci ana surecin DILINDE konusur: ayar dosyasini kendisi okursa, dil
+    # anlik degistirilmisse ya da dosya yoksa (temiz kurulum) farkli dile dusebilir.
+    ortam["LIMINA_DIL"] = ceviri.dil()
     # Isci kendi anahtarini keyring/dosyadan okur; ortam degiskeni varsayilan
     # yuvaya ait, adli yuvalar zaten depoda.
     komut = ([sys.executable, "--isci", str(Path(tarif["policy"]).parent / "tarif.json")] if DONMUS

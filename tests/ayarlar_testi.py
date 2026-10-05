@@ -1640,7 +1640,7 @@ def bolum36_sohbet_modu() -> None:
     ornek = (
         "# Tercihler\n\n"
         "## Dil\n- Turkce yaz.\n\n"
-        "## Klasorler\n- kum/ serbest alan.\n\n"
+        f"## Klasorler\n- {vekil_v0.POLITIKA.yazma[0].name}/ serbest alan.\n\n"
         "## Araclar\n- write_file ile yaz.\n\n"
         "## Uslup\n- Kisa ol.\n"
     )
@@ -1648,7 +1648,7 @@ def bolum36_sohbet_modu() -> None:
     dogrula("## Dil" in suzulmus and "## Uslup" in suzulmus,
             "kok/arac anmayan bolumler KALIYOR")
     dogrula("## Klasorler" not in suzulmus,
-            "kok adini (kum/) anan bolum araçsiz turda DUSUYOR")
+            "kok adini (calisma klasoru/) anan bolum araçsiz turda DUSUYOR")
     dogrula("## Araclar" not in suzulmus,
             "arac adini (write_file) anan bolum araçsiz turda DUSUYOR")
     dogrula("# Tercihler" in suzulmus, "H2 oncesi serbest metin her zaman kaliyor")
@@ -1805,7 +1805,7 @@ def bolum37_araclar_paneli() -> None:
     ornek = (
         "# Tercihler\n\n"
         "## Dil\n- Turkce yaz.\n\n"
-        "## Klasorler\n- kum/ serbest alan.\n\n"
+        f"## Klasorler\n- {vekil_v0.POLITIKA.yazma[0].name}/ serbest alan.\n\n"
         "## Araclar\n- write_file ile yaz.\n\n"
         "## Tarayici\n- browser_open ile once wikipedia'ya bak.\n\n"
         "## Uslup\n- Kisa ol.\n"
