@@ -15,7 +15,10 @@ from pathlib import Path
 
 KOK = Path(__file__).resolve().parent
 PAKETLER = [
+    ("guncelleme_testi.py", False),
+    ("guncelleme_arayuz_testi.py", True),
     # (dosya, tarayici_gerekir)
+    ("kimlik_gecis_testi.py", True),
     ("model_testi.py", False),
     ("kayit_testi.py", False),
     ("ceviri_testi.py", False),

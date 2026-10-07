@@ -10,14 +10,14 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from eklentiler_testi import Policy
-from limina import journal, sohbet, taslak, projeler, ekip
-from limina.eklentiler.registry import invoke
-from limina.gui_kopru import Kopru
-from limina.pencere import Api
-from limina.olaylar import Oturum, Durduruldu
-from limina.sonuc import hata
-from limina.mcp_yazma import donustur
-from limina.araclar.dosya import write_file
+from pevrai import journal, sohbet, taslak, projeler, ekip
+from pevrai.eklentiler.registry import invoke
+from pevrai.gui_kopru import Kopru
+from pevrai.pencere import Api
+from pevrai.olaylar import Oturum, Durduruldu
+from pevrai.sonuc import hata
+from pevrai.mcp_yazma import donustur
+from pevrai.araclar.dosya import write_file
 
 
 class Regression(unittest.TestCase):
@@ -43,7 +43,7 @@ class Regression(unittest.TestCase):
         self.assertEqual(api._ekler,['new.pdf'])
 
     def test_retry_wait_stops_immediately(self):
-        from limina.vekil_v0 import _yeniden_deneme_bekle, _model_cagir
+        from pevrai.vekil_v0 import _yeniden_deneme_bekle, _model_cagir
         o=Oturum(onay_saglayici=lambda _:False)
         errors=[]
         def wait():
@@ -59,8 +59,8 @@ class Regression(unittest.TestCase):
         self.assertIsInstance(result,str);self.assertFalse(result.basarili)
 
     def test_stop_after_rate_limit_does_not_send_second_request(self):
-        from limina import vekil_v0 as v
-        from limina.model.taban import OranSiniri
+        from pevrai import vekil_v0 as v
+        from pevrai.model.taban import OranSiniri
         o=Oturum(onay_saglayici=lambda _:False);calls=[]
         def generate(*a):
             calls.append(1);o.durdur();raise OranSiniri(429,'rate limit')
@@ -152,7 +152,7 @@ class Regression(unittest.TestCase):
             journal.geri_al(str(self.root/'new.png'));self.assertFalse((self.root/'new.png').exists())
             result=donustur(lambda args:hata('convert failed'),{'dst_dir':str(self.root)},self.policy)
             self.assertFalse(result.basarili);self.assertEqual(target.read_bytes(),b'original')
-            with patch('limina.mcp_yazma.journal_yaz',side_effect=OSError('journal unavailable')):
+            with patch('pevrai.mcp_yazma.journal_yaz',side_effect=OSError('journal unavailable')):
                 result=donustur(convert,{'dst_dir':str(self.root)},self.policy)
                 self.assertFalse(result.basarili);self.assertEqual(target.read_bytes(),b'original')
 

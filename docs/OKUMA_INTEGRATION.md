@@ -1,12 +1,12 @@
-# Okuma Atölyesi ve Limina
+# Okuma Atölyesi ve Pevrai
 
-Okuma Atölyesi bağımsız Qt uygulaması olmaya devam eder. Asistan paneli kullanıcının seçtiği metni Limina'nın mevcut ajan döngüsüne gönderir; yanıt ve kaynak bilgisi okuyucuya geri gelir. Okuyucuya API anahtarı eklenmez.
+Okuma Atölyesi bağımsız Qt uygulaması olmaya devam eder. Asistan paneli kullanıcının seçtiği metni Pevrai'nın mevcut ajan döngüsüne gönderir; yanıt ve kaynak bilgisi okuyucuya geri gelir. Okuyucuya API anahtarı eklenmez.
 
 ## Kullanım
 
 İki uygulamayı da yeniden başlatın. Okuyucunun üst şeridindeki iğne şeridi sabitler; **Asistan** düğmesi PDF'nin yanında panel açar. Metin seçince altta Açıkla, Özetle, Çevir ve Soru hazırla düğmeleri belirir. Aynı işlemler panelde de vardır. Seçim yoksa açık sayfanın en fazla 3000 karakterlik ilk parçası kullanılır; devamı varsa panel bunu belirtir. Metin yoksa mevcut OCR menüsünü kullanın.
 
-Limina meşgulse istek bekler. Araç onaylarını ve çalışan isteğin durdurulmasını Limina'dan yönetin. Okuyucudaki iptal düğmesi yalnızca bekleyen isteği iptal eder. Yanıtın kaynağı istek anındaki belge/sayfadır; sonradan başka sayfaya geçmek kaynağı değiştirmez.
+Pevrai meşgulse istek bekler. Araç onaylarını ve çalışan isteğin durdurulmasını Pevrai'dan yönetin. Okuyucudaki iptal düğmesi yalnızca bekleyen isteği iptal eder. Yanıtın kaynağı istek anındaki belge/sayfadır; sonradan başka sayfaya geçmek kaynağı değiştirmez.
 
 **Seçimi/yanıtı Smart Notes'a kaydet** doğrudan kullanıcı işlemidir; model çağırmaz. İsteğe bağlı proje seçimi notu Workspace'e bağlar. Bu eklentiler etkin olmalıdır. Sohbetteki kaynak bağlantısı veya not editöründeki **Kaynak sayfasını aç** ilgili PDF'yi açar.
 
@@ -34,7 +34,7 @@ Açma/kapatma altı saniye pencere yanıtını bekler. `status=done` tamamlanmay
 
 Kaynak biçimi `okuma://<kütüphane-kimliği>/<belge-kimliği>/<sayfa>` şeklindedir. Bağlantı yalnızca yapılandırılmış okuyucunun sabit `app.py` dosyasını başlatır; kullanıcı verisinden program/komut yolu alınmaz. Kütüphane yolu mevcut okuma izinleriyle doğrulanır. PDF metni modele güvenilmeyen kaynak verisi olarak iletilir. Boş kuyruk model çağırmaz.
 
-Limina tarafı `limina/okuma.py`, `pencere.py` ve kaynak bağlantısı arayüzüdür. Okuyucu tarafı `Araclar/OkumaAtolyesi/` içindedir; bu kişisel klasör zaten gitignore ile dışlanır. Okuyucu değişikliklerini ayrı paket olarak saklayın; Limina wheel dosyası okuyucuyu içermez.
+Pevrai tarafı `pevrai/okuma.py`, `pencere.py` ve kaynak bağlantısı arayüzüdür. Okuyucu tarafı `Araclar/OkumaAtolyesi/` içindedir; bu kişisel klasör zaten gitignore ile dışlanır. Okuyucu değişikliklerini ayrı paket olarak saklayın; Pevrai wheel dosyası okuyucuyu içermez.
 
 ## Doğrulama
 

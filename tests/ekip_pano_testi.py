@@ -12,13 +12,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ceviri
-from limina.araclar import ekip_pano as P
-from limina.baglam import B
-from limina.gate import Politika, DENY
-from limina import PROJE_KOKU
+from pevrai import ceviri
+from pevrai.araclar import ekip_pano as P
+from pevrai.baglam import B
+from pevrai.gate import Politika, DENY
+from pevrai import PROJE_KOKU
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -32,7 +32,7 @@ def dogrula(kosul: bool, mesaj: str) -> None:
 
 
 def main() -> int:
-    d = Path(tempfile.mkdtemp(prefix="limina_pano_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_pano_"))
     pano = d / "pano.jsonl"
     eski = (B.ekip_pano, B.ajan_adi)
     try:
@@ -91,7 +91,7 @@ def main() -> int:
         print("\n5) Kapi: ana politikada ekip araclari yok -> DENY; panelde paket gizli")
         pol = Politika(PROJE_KOKU / "policy.toml")
         dogrula(pol.karar("ekip_mesaj", {"metin": "x"}).sonuc == DENY, "ana policy.toml: ekip_mesaj DENY (deny by default)")
-        from limina import paketler
+        from pevrai import paketler
         liste = paketler.paket_listesi(pol.araclar, [], pol.kaldirilan, {}, {}, {})
         dogrula(not any(p["paket"] == "ekip" for p in liste), "Araclar panelinde 'ekip' paketi gorunmuyor (gizli)")
     finally:

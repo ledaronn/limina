@@ -13,13 +13,13 @@ import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina.gate import ALLOW, ASK, DENY, Politika, eylem_kategorisi
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai.gate import ALLOW, ASK, DENY, Politika, eylem_kategorisi
 
 # Mesaj metinleri KAYNAK DILDE (Turkce) dogrulanir: ceviri.dil() normalde
 # kullanicinin config/arayuz.toml ayarini okur, testin sonucu kisisel bir
 # ayara bagli olamaz (Ingilizce secili bir makinede bu dosya kirilirdi).
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
 
 HATA = 0

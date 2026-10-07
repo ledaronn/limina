@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "limina"
+name = "pevrai"
 version = "0.1.0"
 description = "A local, permission-gated personal agent: file system, browser and MCP tools behind a single supervised loop."
 readme = "README.md"
@@ -40,25 +40,25 @@ ocr = ["winrt-runtime>=3.0; sys_platform == 'win32'",
        "Pillow>=10.0.0", "pymupdf>=1.24.0"]
 donusturucu = ["pymupdf>=1.24.0", "python-pptx>=0.6.23", "Pillow>=10.0.0"]
 donusturucu-gui = ["customtkinter>=5.2.0", "tkinterdnd2>=0.3.0", "Pillow>=10.0.0"]
-anthropic = ["anthropic>=0.40"]          # Anthropic Claude saglayicisi (limina/model/anthropic_.py)
+anthropic = ["anthropic>=0.40"]          # Anthropic Claude saglayicisi (pevrai/model/anthropic_.py)
 anahtar = ["keyring>=25"]                 # API anahtarini sistem deposunda sakla (yoksa ~/.vekil/credentials.json)
 dev = ["pyyaml>=6.0", "playwright>=1.40.0", "Pillow>=10.0.0"]
 # Hepsi birden (requirements.txt ile ayni kume, GUI haric)
-tam = ["limina[belge,tarayici,ocr,donusturucu,anthropic,anahtar,dev]"]
+tam = ["pevrai[belge,tarayici,ocr,donusturucu,anthropic,anahtar,dev]"]
 
 [project.scripts]
-limina = "limina.baslat:main"
-limina-cli = "limina.vekil_v0:main"
+pevrai = "pevrai.baslat:main"
+pevrai-cli = "pevrai.vekil_v0:main"
 
 [project.urls]
-Documentation = "https://github.com/ledaronn/limina/tree/main/docs"
+Documentation = "https://github.com/ledaronn/pevrai/tree/main/docs"
 
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
-include = ["limina*"]
+include = ["pevrai*"]
 
 [tool.setuptools.package-data]
-limina = ["arayuz/*.html", "arayuz/*.ico", "arayuz/*.js", "arayuz/*.css", "arayuz/eklentiler/*/*.js",
+pevrai = ["arayuz/*.html", "arayuz/*.ico", "arayuz/*.js", "arayuz/*.css", "arayuz/eklentiler/*/*.js",
           "arayuz/ofis/*.js", "arayuz/vendor/*.js", "arayuz/vendor/THREE_LICENSE"]

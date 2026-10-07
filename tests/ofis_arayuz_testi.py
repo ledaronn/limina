@@ -1,4 +1,4 @@
-# ofis_arayuz_testi.py — Ekip ofisi (limina/arayuz/ofis/*.js): headless Chrome, sahte kopru.
+# ofis_arayuz_testi.py — Ekip ofisi (pevrai/arayuz/ofis/*.js): headless Chrome, sahte kopru.
 #
 # WebGL: Chrome --use-angle=swiftshader ile acilir (yazilim GL). WebGL yine de
 # yoksa test 3B yolunu SINAYAMADIGINI yuksek sesle soyler ve kart gorunumu
@@ -26,7 +26,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from limina import PAKET
+from pevrai import PAKET
 
 HATA = 0
 WEBGL_ARGS = ["--use-angle=swiftshader", "--enable-unsafe-swiftshader"]
@@ -67,8 +67,9 @@ SAHTE = """() => {
     if (ad === 'ofis_ajan_karti') return (a) => Promise.resolve({ok: true, ad: a, zincir: [
       {etiket: 'Gemini · gemini-3.5-flash', dolu_bitis: '2026-09-25T23:59'}, {etiket: 'Gemini · gemini-3.5-pro', dolu_bitis: ''}],
       yazdiklari: ['D:/x/giris.md']});
-    if (ad === 'ajan_yaz') return (...a) => { AJANLAR.push({ad: a[0], rol: a[4], renk: a[7], gorunum: 2, baglanti: a[6], baglanti_ad: 'Gemini',
-      model: a[2], etkin_model: a[2], anahtar_var: true, saglayici: 'gemini'}); return Promise.resolve({ok: true}); };
+    if (ad === 'ajan_yaz') return (...a) => { const old=AJANLAR.find(x=>x.ad===a[0]); const value={ad: a[0], rol: a[4], renk: a[7], gorunum: a[8] == null ? 2 : a[8], baglanti: a[6], baglanti_ad: a[6]==='ds'?'DeepSeek':'Gemini',
+      model: a[2], etkin_model: a[2], anahtar_var: true, saglayici: a[1] || (a[6]==='ds'?'openai':'gemini')};
+      if(old)Object.assign(old,value);else AJANLAR.push(value); return Promise.resolve({ok: true}); };
     if (ad === 'ajan_sil') return (a) => { const i = AJANLAR.findIndex((x) => x.ad === a); if (i >= 0) AJANLAR.splice(i, 1); return Promise.resolve({ok: true}); };
     return bos;
   }})};
@@ -676,8 +677,8 @@ def uctan_uca(p) -> None:
     import subprocess
     import tempfile
     print("\n12) Uctan uca: gercek ekip kosusunun olaylari -> ofis durumu")
-    dokum = Path(tempfile.mkdtemp(prefix="limina_ofis_")) / "olaylar.json"
-    ortam = dict(os.environ, LIMINA_OFIS_DOKUM=str(dokum), PYTHONIOENCODING="utf-8")
+    dokum = Path(tempfile.mkdtemp(prefix="pevrai_ofis_")) / "olaylar.json"
+    ortam = dict(os.environ, PEVRAI_OFIS_DOKUM=str(dokum), PYTHONIOENCODING="utf-8")
     r = subprocess.run([sys.executable, str(Path(__file__).parent / "ekip_orkestra_testi.py")], env=ortam,
                        capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=600)
     dogrula(r.returncode == 0 and dokum.exists(), "ekip_orkestra_testi kostu ve olaylari doktu")
@@ -713,10 +714,56 @@ def uctan_uca(p) -> None:
     dogrula(sonuc["bir"] == ["bekleme", "bitti"] and "istisare" in sonuc["gecti"].get("@birlestirici", []), "birlestirici istisarede calisti, bitti")
 
 
+def ajan_duzenleme(p) -> None:
+    print("\nAjan karti -> ortak duzenleme formu -> kaydet")
+    tarayici, sayfa, hatalar = sayfa_ac(p)
+    try:
+        if sayfa.evaluate("Ofis.D.kip") != "3b":
+            dogrula(False, "ajan karti duzenleme icin yazilim WebGL gerekli")
+            return
+        sayfa.evaluate("OfisSahne.D.onSec({tur:'ajan',kod:'yazar'})")
+        sayfa.locator(".of-panel").get_by_role("button",name="Düzenle",exact=True).click()
+        form = sayfa.locator(".of-panel .of-form")
+        sayfa.wait_for_function("document.querySelector('.of-panel .of-form select').options.length===2")
+        dogrula(form.get_by_label("Ad",exact=True).input_value()=="yazar" and form.get_by_label("Ad",exact=True).is_editable() is False,
+                "ajan adi korunur; yeniden adlandirma ikinci ajan olusturmaz")
+        dogrula(form.get_by_label("Model",exact=True).input_value()=="gemini-3.5-flash" and form.get_by_label("Görünüm",exact=True).input_value()=="1",
+                "mevcut model ve gorunum dolduruldu")
+        form.get_by_label("Bağlantı",exact=True).select_option("ds")
+        form.get_by_label("Görünüm",exact=True).select_option(label="4")
+        form.get_by_label("Rol (isteğe bağlı)",exact=True).fill("Taslağı inceler.")
+        form.locator(".of-renk[title='#91a9e8']").click()
+        form.get_by_role("button",name="Kaydet",exact=True).click()
+        sayfa.wait_for_function("Ofis.D.panel.tur==='ajan' && Ekip.D.ajanlar.find(a=>a.ad==='yazar').baglanti==='ds'")
+        args=sayfa.evaluate("CAGRI.filter(c=>c[0]==='ajan_yaz').at(-1)[1]")
+        dogrula(args==["yazar","","deepseek-chat","","Taslağı inceler.","","ds","#91a9e8",3],
+                f"baglanti/model/renk/gorunum tek ajan_yaz ile kaydedildi ({args})")
+        sayfa.locator(".of-panel").get_by_role("button",name="Düzenle",exact=True).click()
+        sayfa.wait_for_timeout(120)
+        form=sayfa.locator(".of-panel .of-form")
+        dogrula(form.get_by_label("Bağlantı",exact=True).input_value()=="ds" and form.get_by_label("Görünüm",exact=True).input_value()=="3",
+                "yeniden acilan form kaydedilen secimleri gosterir")
+        dogrula(sayfa.evaluate("Ekip.D.ajanlar.filter(a=>a.ad==='yazar').length") == 1, "mevcut ajan guncellendi, kopya olusmadi")
+        # Eski dogrudan saglayici kaydi, renk/rol duzenlerken baska baglantiya gecmez.
+        sayfa.evaluate("OfisSahne.D.onSec({tur:'ajan',kod:'tablocu'})")
+        sayfa.locator(".of-panel").get_by_role("button",name="Düzenle",exact=True).click()
+        sayfa.wait_for_timeout(120)
+        form=sayfa.locator(".of-panel .of-form")
+        dogrula(form.get_by_label("Bağlantı",exact=True).input_value()=="", "eski saglayiciyi koru secili")
+        form.get_by_role("button",name="Kaydet",exact=True).click()
+        sayfa.wait_for_timeout(180)
+        args=sayfa.evaluate("CAGRI.filter(c=>c[0]==='ajan_yaz').at(-1)[1]")
+        dogrula(args[:4]==["tablocu","openai","gpt-5-mini",""] and args[6]=="", "eski saglayici/model baglantisiz haliyle korunur")
+        dogrula(not hatalar, f"duzenleme sirasinda sayfa hatasi yok {hatalar}")
+    finally:
+        tarayici.close()
+
+
 def main() -> int:
     from playwright.sync_api import sync_playwright
     statik_kontroller()
     with sync_playwright() as p:
+        ajan_duzenleme(p)
         webgl_yolu(p)
         dar_pencere(p)
         webgl_yok(p)

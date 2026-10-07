@@ -11,15 +11,15 @@ from pathlib import Path
 
 import yaml
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import PROJE_KOKU
-from limina.gate import Politika
-from limina.olaylar import OlayTipi, Oturum, sabit_cevap
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import PROJE_KOKU
+from pevrai.gate import Politika
+from pevrai.olaylar import OlayTipi, Oturum, sabit_cevap
 
 KOK = PROJE_KOKU
-from limina import kurulum
+from pevrai import kurulum
 # Beklenen metinler (tasks.yaml) KAYNAK DILDE; kisisel arayuz.toml ayarina bagli olamaz.
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
 kurulum.politikayi_hazirla(sessiz=True)
 POLITIKA = Politika(KOK / "policy.toml")
@@ -41,9 +41,9 @@ def fixture_politikasi() -> Politika:
     import tempfile
     import tomllib
 
-    from limina import ekip
+    from pevrai import ekip
 
-    d = Path(tempfile.mkdtemp(prefix="limina_evals_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_evals_"))
     kum = d / "kum"
     kum.mkdir()
     with open(KOK / "policy.example.toml", "rb") as f:
@@ -64,7 +64,7 @@ def yer_tutuculari_doldur(veri, politika=None):
     kisisel yol tasimasin diye: {KUM} verilen politikanin ilk yazma koku,
     {EV} ev klasoru. politika=None -> gercek policy.toml (ajan testleri)."""
     politika = politika or POLITIKA
-    kum = str(politika.calisma or Path.home() / "Limina")
+    kum = str(politika.calisma or Path.home() / "Pevrai")
     degerler = {"{KUM}": kum, "{EV}": str(Path.home()), "{PROJE}": str(KOK),
                 # buyuk harfli kok: Windows yollari harf duyarsiz, mesru kullanim
                 "{KUM_BUYUK}": kum.upper(),
@@ -105,7 +105,7 @@ def kod_testleri(gorevler: list[dict]) -> tuple[int, int]:
     Bu testler model cagirmaz ve tarayiciya dokunmaz: reddler tarayici
     cagrilmadan ONCE donuyor.
     """
-    from limina import vekil_v0
+    from pevrai import vekil_v0
     gecen = 0
     for g in gorevler:
         fn = getattr(vekil_v0, g["fonksiyon"], None)
@@ -144,7 +144,7 @@ def mcp_semasi_testi() -> tuple[int, int]:
     bir MCP araci sessizce goruntude kalirsa (filtre bozulursa) burada
     yakalanir; yeni bir okuma araci siniflandirmayi unutulursa da.
     """
-    from limina import vekil_v0
+    from pevrai import vekil_v0
     vekil_v0.mcp_baglan(sessiz=True)      # MCP artik tembel: kesif icin acikca baglan
     # ARAC saglayicidan bagimsiz sema listesi; adlar gercek ("converter.convert").
     gosterilen = {fd["name"] for fd in vekil_v0.ARAC}
@@ -167,7 +167,7 @@ def mcp_semasi_testi() -> tuple[int, int]:
 
 
 def ajan_testleri(gorevler: list[dict]) -> tuple[int, int]:
-    from limina import vekil_v0
+    from pevrai import vekil_v0
     gecen = 0
     # Gorev basina sure + token, sonda toplam. Faz 6'nin ikinci kabul olcutu
     # ("gorev basina maliyet biliniyor") bunu OLCUM olayindan bedavaya cikariyor —
@@ -180,7 +180,7 @@ def ajan_testleri(gorevler: list[dict]) -> tuple[int, int]:
         if ornek.is_file() and ornek.name != "README.md" and not (hedef / ornek.name).exists():
             shutil.copy2(ornek, hedef / ornek.name)
     if not (hedef / "README.md").exists():
-        (hedef / "README.md").write_text("# Limina\n\nLimina ajaninin calisma klasoru.\n", encoding="utf-8")
+        (hedef / "README.md").write_text("# Pevrai\n\nPevrai ajaninin calisma klasoru.\n", encoding="utf-8")
 
     for g in gorevler:
         print(f"  ... {g['ad']}")

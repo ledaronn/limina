@@ -1,4 +1,4 @@
-# ofis_testi.py — ekip ofisinin Python tarafi (limina/ofis.py): masa eslemesi,
+# ofis_testi.py — ekip ofisinin Python tarafi (pevrai/ofis.py): masa eslemesi,
 # kod uzantilari, bilinmeyen arac, gorunusun belirlenimli olmasi, olaylara masa
 # alaninin eklenmesi ve isci olay aktarimi (ADIM_BASLADI/OLCUM dahil).
 #
@@ -13,10 +13,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ceviri, ekip, ofis
-from limina.olaylar import Olay, OlayTipi
+from pevrai import ceviri, ekip, ofis
+from pevrai.olaylar import Olay, OlayTipi
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -104,7 +104,7 @@ def main() -> int:
     ceviri.dil_ayarla("tr")
 
     print("\n5) Isci olay aktarimi: yeni olay turleri ve masa")
-    d = Path(tempfile.mkdtemp(prefix="limina_ofis_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_ofis_"))
     try:
         dosya = d / "olaylar.jsonl"
         satirlar = [

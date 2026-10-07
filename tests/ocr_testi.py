@@ -1,4 +1,4 @@
-# ocr_testi.py — goruntu ve taranmis PDF okuma (limina/ocr.py + belge.py).
+# ocr_testi.py — goruntu ve taranmis PDF okuma (pevrai/ocr.py + belge.py).
 #
 # Windows yerlesik OCR'i kullanir. Dil paketi olmayan bir makinede (CI
 # kosucusu olabilir) OCR yolu OLCULEMEZ; o zaman "kullanilamiyor" dali
@@ -15,12 +15,12 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import belge, ceviri, ocr
-import limina.vekil_v0 as v
-from limina.gate import Politika, ALLOW
-from limina import PROJE_KOKU
+from pevrai import belge, ceviri, ocr
+import pevrai.vekil_v0 as v
+from pevrai.gate import Politika, ALLOW
+from pevrai import PROJE_KOKU
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -53,7 +53,7 @@ def _goruntu(metinler: list[str], genislik: int = 1100):
 def main() -> int:
     pol = Politika(PROJE_KOKU / "policy.toml")
     kum = Path(pol.calisma or pol.yazma[0])
-    d = Path(tempfile.mkdtemp(prefix="limina_ocr_", dir=kum))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_ocr_", dir=kum))
     try:
         print("\n1) OCR kullanilabilirlik")
         neden = ocr.kullanilamaz_nedeni()

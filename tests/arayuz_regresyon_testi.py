@@ -20,7 +20,7 @@ def main():
         page=browser.new_page(viewport={'width':1280,'height':800})
         errors=[];page.on('pageerror',lambda exc:errors.append(str(exc)))
         page.add_init_script(FAKE)
-        page.goto((Path(__file__).resolve().parents[1]/'limina/arayuz/index.html').as_uri())
+        page.goto((Path(__file__).resolve().parents[1]/'pevrai/arayuz/index.html').as_uri())
         page.wait_for_timeout(750)
         page.evaluate("dilAyarla('tr')")
         page.evaluate("() => {girdi.value='Mesaj';ekleriGoster([{ad:'ek.pdf',yol:'ek.pdf'}]);gonder();girdi.value='Yeni mesaj';gonder();}")

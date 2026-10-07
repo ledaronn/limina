@@ -1,14 +1,14 @@
-Limina — third-party notices
+Pevrai — third-party notices
 ============================
 
-Limina itself is MIT licensed (see LICENSE). The logo (the robot mark in the
-title bar, sidebar and limina.ico) is an original design by the project author
+Pevrai itself is MIT licensed (see LICENSE). The logo (the robot mark in the
+title bar, sidebar and pevrai.ico) is an original design by the project author
 and is covered by the same license.
 
 The following third-party material is embedded in the source tree:
 
 Lucide icons — https://lucide.dev
-  The SVG paths in limina/arayuz/index.html (the IKON table) are from Lucide.
+  The SVG paths in pevrai/arayuz/index.html (the IKON table) are from Lucide.
   ISC License
   Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part
   of Feather (MIT). All other copyright (c) for Lucide are held by Lucide
@@ -25,9 +25,9 @@ Lucide icons — https://lucide.dev
   PERFORMANCE OF THIS SOFTWARE.
 
 three.js r159 — https://threejs.org
-  limina/arayuz/vendor/three.min.js (npm three@0.159.0, unmodified apart from a
+  pevrai/arayuz/vendor/three.min.js (npm three@0.159.0, unmodified apart from a
   provenance comment). MIT License, Copyright 2010-2023 three.js authors.
-  Full text: limina/arayuz/vendor/THREE_LICENSE.
+  Full text: pevrai/arayuz/vendor/THREE_LICENSE.
 
 Fonts: no font files are bundled. The UI uses the system font stack
 (Inter if installed, otherwise Segoe UI / system-ui).

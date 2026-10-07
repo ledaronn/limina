@@ -31,7 +31,7 @@ jobs:
           python -m playwright install chromium
 
       - name: Ilk acilis (policy.toml sablondan)
-        run: python -c "from limina import kurulum; print(kurulum.politikayi_hazirla())"
+        run: python -c "from pevrai import kurulum; print(kurulum.politikayi_hazirla())"
 
       - name: Modelsiz test paketleri
         # Model cagrilmaz, anahtar gerekmez. Kisisel dosya yok: policy.toml
@@ -47,7 +47,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Sozdizimi ve derleme
-        run: python -m compileall -q limina tests Donusturucu
+        run: python -m compileall -q pevrai tests Donusturucu
       - name: Kisisel veri sizintisi (depoda olmamali)
         shell: bash
         run: |

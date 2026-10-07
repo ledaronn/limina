@@ -25,9 +25,9 @@ Claude Code'a verildi, bu belge yazılırken sürüyordu. Faz 6'ya başlamadan �
 indiğini ve dört test suite'inin yeşil olduğunu doğrula.
 
 **Paralel iş var:** GPT'de iki ayrı çalışma dönüyor — `Donusturucu`'ya
-`.md`/`.txt` → PDF dönüşümü, ve Limina'dan bağımsız bir PDF görüntüleyici
+`.md`/`.txt` → PDF dönüşümü, ve Pevrai'dan bağımsız bir PDF görüntüleyici
 (işaretleme, fosforlu kalem, son okunanlar kütüphanesi). İkincisi ayrı bir ürün,
-Limina'nın deposuna dokunmuyor. Birincisi bitince "neyi değiştirmeliyiz"
+Pevrai'nın deposuna dokunmuyor. Birincisi bitince "neyi değiştirmeliyiz"
 önerisiyle gelecek; o öneri **kapıya bakan bir karar** olduğu için olduğu gibi
 uygulanmaz, değerlendirilir.
 
@@ -233,7 +233,7 @@ eklendi.
 **Doğrulama, bağımsız → uçtan uca:**
 1. Paketin kendi `mcp_dogrula.py`'si (kendi `.venv`'iyle, bizim köprüye hiç
    dokunmadan) 17 aracı bağımsız doğruladı.
-2. Limina açılışında aynı 17 keşfedildi, 4'ü gösterildi, 13'ü UYARI ile
+2. Pevrai açılışında aynı 17 keşfedildi, 4'ü gösterildi, 13'ü UYARI ile
    gizlendi — modelin şemasında tam beklenen 4 ad.
 3. Gerçek bir ajan görevi ("kütüphanede 'bir fikrin izini sürmek' ara, sonra
    ilgili sayfayı oku") uçtan uca çalıştı: model önce `search_documents`
@@ -244,13 +244,13 @@ eklendi.
 4. `evals.py --hepsi` 22/22 (yeni `mcp_semasi_testi` dahil).
 
 **Bulgu — istemci/sunucu sürüm uyumsuzluğu (zararsız, ama kayda değer):**
-Limina'nın kendi `mcp` istemci sürümü 2.1.1, Okuma Atölyesi'nin kendi
+Pevrai'nın kendi `mcp` istemci sürümü 2.1.1, Okuma Atölyesi'nin kendi
 `.venv`'i (paketin pin'lediği) `mcp==1.30.0`. Bağlantı kurulurken stderr'e
 "Failed to validate request: 31 validation errors for ClientRequest" ile
 başlayan, `method: 'server/discover'` içeren bir hata bloğu basılıyor —
 1.x istemci sözleşmesiyle test edilmiş bir sunucunun, 2.x istemcinin
 göndermeye çalıştığı (muhtemelen) bir yetenek/uzantı isteğini tanımaması.
-**`converter`'da hiç görülmedi** çünkü o `sys.executable` (Limina'nın kendi
+**`converter`'da hiç görülmedi** çünkü o `sys.executable` (Pevrai'nın kendi
 venv'i) ile başlatılıyor — istemci ve sunucu AYNI `mcp` sürümü. Üç ayrı
 gerçek araç çağrısı (`import_pdf`, `search_documents`, `read_pages`) doğru
 sonuç döndürdü; hata **bağlantı kurulurken bir kez** basılıyor, her çağrıda
@@ -329,7 +329,7 @@ Dal kullanılmıyor, iki ajanın yarısı uygulanmış değişikliği kurtarıla
 ### Bilinçli fail-open
 - **`kota.json` yazılamazsa duvar sessizce devre dışı kalır.** `kota_artir`
   hataları yutuyor; sayaç büyümezse tavan hiç dolmaz. Bir disk hatası yüzünden
-  Limina'yı kilitlemek orantısız görüldü, ama bu bir harcama duvarının
+  Pevrai'yı kilitlemek orantısız görüldü, ama bu bir harcama duvarının
   varsayılanının "duvar yok" olması demek.
 
 ### Kabaca çözülmüş
@@ -621,7 +621,7 @@ yönlendirme — başarısızlığı tanımak kolay değil, daha zor).
 
 - **`.md`/`.txt` → PDF** (`Donusturucu`, GPT'de). Kullanıcının örnek görevi
   bugün son adımda kopuyor: ders notu → notlar → PDF. `CONVERSION_MAP`'te
-  `.md` kaynak olarak yok, Limina'nın `.docx` yazan aracı da yok. LibreOffice
+  `.md` kaynak olarak yok, Pevrai'nın `.docx` yazan aracı da yok. LibreOffice
   zaten orada. **Krediyi harcayacak olan şey yeni araçlar, modlar değil** —
   mod olmayan bir aracı çağıramaz.
 - `belge.py` PDF/DOCX/PPTX/XLSX/TXT/MD/CSV okumayı zaten kapsıyor

@@ -6,12 +6,12 @@
 
 ```powershell
 pip install -e .
-python -m limina
+python -m pevrai
 ```
 
 Sol raydaki **beyin simgesi**, **Bugün** merkezli çalışma alanını açar. Sol menüde Bugün, Study & Focus, Smart Notes, Workspace ve Bağlantılar bulunur; dar pencerede menü üstte sıralanır. **Study & Focus**, **Smart Notes** ve **Workspace** bölümlerinde **Etkinleştir** düğmesine basın. Her eklenti ayrı etkinleştirilir; işlem mevcut ayar yazıcısıyla araçları `policy.toml` içinde sınıflandırır. Önceden değiştirilmiş risk seviyeleri korunur. Varsayılan olarak okumalar READ, değişiklikler WRITE, silindi olarak işaretleme DESTRUCTIVE seviyesindedir. Asistanın yazma/silme çağrıları mevcut izin/onay döngüsünden geçer. Formdaki Kaydet, kullanıcının doğrudan işlemidir; model çağrısı değildir.
 
-**Devre dışı bırak** araçları ve panel erişimini kapatır, veriyi silmez. Araçlar panelindeki paket yönetimi de aynı politikayı kullanır. Sohbet başına araç kapatma mevcut biçimde yalnızca AI erişimini daraltır. Bir eklentiyi kapatmak diğer ikisini veya sohbeti kapatmaz. Eklenti servisleri ayrı `limina/eklentiler/<ad>/`, arayüzleri `limina/arayuz/eklentiler/<ad>/` klasörlerindedir; dağıtım bunları birlikte içerir, eksik bir klasör uygulamanın açılmasını engellemez. Yeni sürümü kurduktan sonra uygulamayı yeniden başlatın.
+**Devre dışı bırak** araçları ve panel erişimini kapatır, veriyi silmez. Araçlar panelindeki paket yönetimi de aynı politikayı kullanır. Sohbet başına araç kapatma mevcut biçimde yalnızca AI erişimini daraltır. Bir eklentiyi kapatmak diğer ikisini veya sohbeti kapatmaz. Eklenti servisleri ayrı `pevrai/eklentiler/<ad>/`, arayüzleri `pevrai/arayuz/eklentiler/<ad>/` klasörlerindedir; dağıtım bunları birlikte içerir, eksik bir klasör uygulamanın açılmasını engellemez. Yeni sürümü kurduktan sonra uygulamayı yeniden başlatın.
 
 - **Study:** dersler, sınavlar, konular ve tarih bazlı çalışma planlarını oluşturun/düzenleyin. Bugün panelinde yaklaşan sınavlar, günlük plan ve çalışma toplamları bulunur. Konularda yüzde ilerleme ve 1–5 zorluk tutulur.
 - **Focus:** Pomodoro veya serbest odak başlatın; ders, konu veya workspace görevi seçilebilir. Pomodoro çalışma/mola süreleri ve tur sayısı ayarlanır. Aynı anda tek aktif veya duraklatılmış oturum olabilir.
@@ -25,7 +25,7 @@ Sol raydaki **beyin simgesi**, **Bugün** merkezli çalışma alanını açar. S
 - **Not editörü:** solda arama ve not listesi, sağda başlık/gövde ve bağlantılar bulunur. Kaydet veya metin alanında Ctrl/Cmd+S ile kaydedilir. Kaydedilmemiş taslaklar ekran değişimlerinde ve yeniden başlatmada korunur; not sürümünden ayrı yerel dosyaya yazılır. Değişiklikleri bırak taslağı temizleyerek son kayıtlı sürümü açar. Sürüm geçmişi önce/sonra görünümünü, düzenleyenin kullanıcı mı asistan mı olduğunu ve geri yüklemeyi sunar. Eski taslak daha yeni bir sürümün üzerine yazamaz.
 - **Proje:** solda proje seçimi, sağda görevler, dosyalar, notlar ve günlük vardır. Görevler doğrudan tamamlanabilir veya durumları değiştirilebilir. Sohbette devam et proje adını sohbet kutusunun üstünde gösterir ve her gönderimde sınırlı proje bağlamını modele ekler. Bağlantıyı kaldır bu sohbetin seçimini temizler.
 - **Hızlı erişim:** odak sayacı sohbet dahil diğer ekranlarda küçük bir kontrol olarak görünür. Asistan yanıtındaki Nota kaydet, yanıtı veya o yanıtta seçili metni düzenlenebilir not formuna taşır. Proje ekranından veya proje seçili sohbetten açılan hızlı not formu proje adını başlığında gösterir ve notu o projeye bağlar.
-- **Sade kontroller:** ek form alanları Diğer ayrıntılar altında; silme, sürüm geçmişi ve eklentiyi kapatma gibi işlemler üç nokta menülerindedir. İkonlara metin eşlik eder. Türkçe/İngilizce metinler ve klavye odak göstergeleri desteklenir. Modele giden araç açıklamaları da dil ayarını izler: `tools.py`'deki Türkçe bildirim `limina/ceviri.py` sözlüğünden çevrilir (`registry._cevrilmis`); yeni bir araç ya da alan eklerken Türkçe metnin İngilizce karşılığını `ceviri.EN`'e yazın, `tests/ceviri_testi.py` eksikleri gösterir.
+- **Sade kontroller:** ek form alanları Diğer ayrıntılar altında; silme, sürüm geçmişi ve eklentiyi kapatma gibi işlemler üç nokta menülerindedir. İkonlara metin eşlik eder. Türkçe/İngilizce metinler ve klavye odak göstergeleri desteklenir. Modele giden araç açıklamaları da dil ayarını izler: `tools.py`'deki Türkçe bildirim `pevrai/ceviri.py` sözlüğünden çevrilir (`registry._cevrilmis`); yeni bir araç ya da alan eklerken Türkçe metnin İngilizce karşılığını `ceviri.EN`'e yazın, `tests/ceviri_testi.py` eksikleri gösterir.
 
 ## Kalıcılık, zaman ve geçmiş
 

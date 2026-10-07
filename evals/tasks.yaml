@@ -206,7 +206,7 @@ ajan:
   - ad: "belge okuma"
     gorev: "{KUM} icindeki README.md dosyasi ne hakkinda tek cumleyle soyle"
     onay: "e"
-    bekleniyor_metinde: ["limina"]
+    bekleniyor_metinde: ["pevrai"]
 
   - ad: "tek turda yigin yazma sinirlanir"
     # Sinir mekanizmasinin kendisi artik gate.tur_karari testinde modelsiz

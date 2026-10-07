@@ -44,7 +44,7 @@ mekanizması, 1.4 profil kapsamı, 1.5 sınırlar ve sayaçlar, 1.6 kimlik bilgi
   söylediğinden farklı kılardı (yeniden yüklemede `sohbet.zinciri_dogrula`
   bozulur). **Bilinçli olarak dokunulmadı, kanıt YOK değil ama savunma da YOK.**
 - **Sayaç diske yazılamazsa günlük tavan duvarı sessizce devre dışı kalır.**
-  Bilinçli fail-open (disk hatası yüzünden Limina'yı kilitlemek orantısız);
+  Bilinçli fail-open (disk hatası yüzünden Pevrai'yı kilitlemek orantısız);
   `journal.kota_artir` docstring'inde yazılı. **Kanıt:** `dusmanca_testi.py` 1.5 —
   davranış artık iddia değil, test edilmiş.
 - **MCP sunucusunun yazdığı dosyanın geri alınması yok.** Kapatan bir savunma
@@ -215,7 +215,7 @@ test kırmızı yandı: kod değil fikstür yanlıştı).
 
 ### Kaynak kod yazma köklerinin dışındadır
 
-Limina'nın `.py` dosyaları hiçbir zaman `yazma_koklari` altında olamaz.
+Pevrai'nın `.py` dosyaları hiçbir zaman `yazma_koklari` altında olamaz.
 Olsalardı `write_file` ile onay mekanizmasını değiştirmek kapıdan **ALLOW** alırdı
 — kapı yolun izinli olup olmadığına bakar, dosyanın ne olduğunu bilmez. Kapı,
 kapıyı açan tarafından düzenlenemez kuralının dosya sistemi karşılığı budur.
@@ -295,7 +295,7 @@ Bunu ayakta tutan üç değişmez (`tests/acma_testi.py`, her biri saldırıya u
    eşit (`gate.acma_klasoru_ihlali`). Kesişirse kapı klasörü yok sayar ve nedenini söyler;
    panel daha seçim anında reddeder. Aksi hâlde ajan `write_file` ile bir `.lnk` yazıp
    `open_file` ile açardı — iki aracın birleşimi bir kabuk olurdu.
-2. **Kısayolun hedefi** de yazma köklerinde ya da Limina'nın kodunda olamaz: `kısayol →
+2. **Kısayolun hedefi** de yazma köklerinde ya da Pevrai'nın kodunda olamaz: `kısayol →
    kum/betik.bat` zinciri kapalı. Kısayol → kısayol açılmaz. Hedef `.lnk` dosyasının
    içinden okunur (MS-SHLLINK ayrıştırıcı, yedek WScript.Shell); okunamıyorsa açılmaz.
 3. Klasör dışında hiçbir yol açılmaz; ad klasöre göre çözülür, sürücü-göreli (`C:x`) ve `..`
@@ -313,7 +313,7 @@ belge makro/exploit taşıyorsa bu kapı onu görmez. Ama o belgeyi klasöre kul
 işi "kullanıcının koymadığı şey açılmasın"dır ve onu sağlar.
 
 `subprocess` **her zaman** liste argümanla, `shell=True` **hiçbir zaman** kuralı
-yürürlükte kalır — çünkü Limina kendi alt süreçlerini başlatıyor: `converter`'ın
+yürürlükte kalır — çünkü Pevrai kendi alt süreçlerini başlatıyor: `converter`'ın
 LibreOffice çağrısı, tarayıcının Chrome'u başlatması, MCP sunucularının
 `stdio_client` ile başlatılması. Zaman aşımı zorunlu (`mcp_bridge`:
 `ARAC_CAGRI_ZAMAN_ASIMI`, model: `MODEL_ZAMAN_ASIMI`).

@@ -22,12 +22,12 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ceviri, PROJE_KOKU
-from limina.araclar import acma
-from limina.gate import ALLOW, ASK, DENY, Politika, acma_klasoru_ihlali
-import limina.vekil_v0 as v
+from pevrai import ceviri, PROJE_KOKU
+from pevrai.araclar import acma
+from pevrai.gate import ALLOW, ASK, DENY, Politika, acma_klasoru_ihlali
+import pevrai.vekil_v0 as v
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -79,7 +79,7 @@ def _kisayol(lnk: Path, hedef: Path, argumanlar: str = "") -> bool:
 
 
 def main() -> int:
-    d = Path(tempfile.mkdtemp(prefix="limina_acma_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_acma_"))
     try:
         kum = d / "kum"; kum.mkdir()
         klasor = d / "Kisayollar"; klasor.mkdir()
@@ -94,7 +94,7 @@ def main() -> int:
         dogrula(acma_klasoru_ihlali(kum / "alt", [kum], d) is not None, "yazma kokunun ICINDE: red")
         dogrula(acma_klasoru_ihlali(kum, [kum], d) is not None, "yazma kokune ESIT: red")
         dogrula(acma_klasoru_ihlali(d, [kum], d) is not None, "yazma koku klasorun ICINDE (ust klasor): red")
-        dogrula(acma_klasoru_ihlali(PROJE_KOKU / "limina" / "x", [], PROJE_KOKU) is not None, "kod paketinin icinde: red")
+        dogrula(acma_klasoru_ihlali(PROJE_KOKU / "pevrai" / "x", [], PROJE_KOKU) is not None, "kod paketinin icinde: red")
         dogrula(acma_klasoru_ihlali(PROJE_KOKU / "config", [], PROJE_KOKU) is not None, "config klasoru: red")
         dogrula(acma_klasoru_ihlali(PROJE_KOKU / "Kisayollar", [], PROJE_KOKU) is None, "proje kokunun yaninda (kod degil): kabul")
         pol_kotu = _politika(d, kum / "alt", [kum])
@@ -161,9 +161,9 @@ def main() -> int:
             tur, acik, hata = acma.hedef_cozumle(klasor / "Yok.lnk", pol)
             dogrula(hata is not None and "yok" in hata, "hedefi olmayan kisayol: RED")
             # kod koku
-            _kisayol(klasor / "Kod.lnk", PROJE_KOKU / "limina" / "gate.py")
+            _kisayol(klasor / "Kod.lnk", PROJE_KOKU / "pevrai" / "gate.py")
             tur, acik, hata = acma.hedef_cozumle(klasor / "Kod.lnk", pol)
-            dogrula(hata is not None, "hedef Limina'nin kendi klasorunde: RED")
+            dogrula(hata is not None, "hedef Pevrai'nin kendi klasorunde: RED")
             # COM yedegi ayni sonucu veriyor mu
             com = acma._lnk_com(klasor / "Not Defteri.lnk")
             dogrula(com and Path(com["hedef"]).resolve() == notepad.resolve() and com["argumanlar"] == "/A",
@@ -197,7 +197,7 @@ def main() -> int:
             ogeler = acma.acilabilir_ogeler(pol)
             dogrula("rapor.pdf" in ogeler and "gizli_belge.pdf" not in ogeler,
                     f"talimat listesi: kara listedeki gizlendi ({len(ogeler)} oge)")
-            from limina.talimat import talimat_cumleleri, _erisim
+            from pevrai.talimat import talimat_cumleleri, _erisim
             c = " ".join(talimat_cumleleri(frozenset({"open_file", "list_dir"}), _erisim(frozenset({"list_dir"})),
                                            [d], [], kismi=False, acilabilir=ogeler))
             dogrula("Açabildiğin ögeler" in c and "rapor.pdf" in c, "sistem talimati ogeleri adiyla listeliyor")
@@ -205,7 +205,7 @@ def main() -> int:
             dogrula("boş ya da ayarlanmamış" in c2, "klasor bos/ayarsiz: talimat kullaniciya yolu soyler")
 
         print("\n7) Ayarlar yazici: kesisen klasoru YAZMADAN reddeder")
-        from limina import ayarlar
+        from pevrai import ayarlar
         with patch.object(ayarlar, "POLICY", d / "policy.toml"), patch.object(ayarlar, "KOK", d):
             (kum / "alt2").mkdir(exist_ok=True)
             hata = ayarlar.acma_klasoru_yaz(str(kum / "alt2"))

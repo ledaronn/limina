@@ -30,7 +30,7 @@ def arac_cagri_zaman_asimi() -> float:
     eder ve bu test ortaminda o paket olmayabilir (bkz. KURULUM.md). Kaynagi
     ayristirip sabiti okumak, ayni yontemi kullanan format_ciktisi() ile tutarli.
     """
-    yol = Path(__file__).resolve().parent.parent / "limina" / "mcp_bridge.py"
+    yol = Path(__file__).resolve().parent.parent / "pevrai" / "mcp_bridge.py"
     tree = ast.parse(yol.read_text(encoding="utf-8"))
     for node in tree.body:
         if isinstance(node, ast.Assign) and any(

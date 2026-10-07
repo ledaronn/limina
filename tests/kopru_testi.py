@@ -15,20 +15,20 @@ from pathlib import Path
 # Testler GERCEK sohbet klasorune (~/.vekil/sohbetler) dokunmamali: hem kullanici
 # verisini kirletir hem de testler birbirini etkiler — bir test kaydeder, sonraki
 # Kopru onu diskten yukler ve sayimlar tutmaz (yakalandi).
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import sohbet as _depo
-from limina import kurulum
-from limina import ceviri as _ceviri
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import sohbet as _depo
+from pevrai import kurulum
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")   # metinler kaynak dilde dogrulanir; kisisel arayuz.toml'a bagli kalmasin
 kurulum.politikayi_hazirla(sessiz=True)   # temiz klonda policy.toml sablondan
-_depo.KOK = Path(tempfile.mkdtemp(prefix="limina_test_"))
+_depo.KOK = Path(tempfile.mkdtemp(prefix="pevrai_test_"))
 
-# Model gecmisi limina.model.taban'in sozluk bicimindedir (sohbet.py ayni
+# Model gecmisi pevrai.model.taban'in sozluk bicimindedir (sohbet.py ayni
 # bicimi diske yazar): SDK nesnesi yok, taklit de gerekmiyor.
-from limina.model.taban import kullanici_mesaji, model_turu, sonuc_mesaji, AracCagrisi
+from pevrai.model.taban import kullanici_mesaji, model_turu, sonuc_mesaji, AracCagrisi
 
-from limina.gui_kopru import Kopru
-from limina.olaylar import (
+from pevrai.gui_kopru import Kopru
+from pevrai.olaylar import (
     Durduruldu,
     Olay,
     OlayTipi,
@@ -191,7 +191,7 @@ def test_gorev_hatasi_thread_oldurmez() -> None:
 
 def test_gecmis() -> None:
     print("\n6) Sohbet gecmisi")
-    from limina.olaylar import GECMIS_TAVANI
+    from pevrai.olaylar import GECMIS_TAVANI
 
     o = Oturum(onay_saglayici=lambda i: OnayCevabi.EVET)
     # Gorev 1: 3 oge
@@ -348,7 +348,7 @@ def test_kalicilik() -> None:
 
     # Acilista kayitli sohbetler YUKLENIR ama aktif olan YENI VE BOS bir
     # sohbettir. Eski test "son sohbet aktif acilir" varsayiyordu; davranis
-    # bilerek degisti (kullanici Limina'yi gorev yazmak icin aciyor), test
+    # bilerek degisti (kullanici Pevrai'yi gorev yazmak icin aciyor), test
     # guncellenmemisti. Olculen sey artik: kayitli olan KAYBOLMADI, ama
     # kullanicinin uzerine dusmedi.
     kayitli = [s for s in liste if s["baslik"] == "ilk gorev"]
@@ -400,7 +400,7 @@ def test_kalicilik() -> None:
 def test_sohbet_sirasi() -> None:
     print("\n13) Kenar cubugu sirasi: en yeni ustte, aktif basta, diskten sonra da ayni")
     from datetime import datetime, timedelta
-    from limina.gui_kopru import sohbet_sirasi
+    from pevrai.gui_kopru import sohbet_sirasi
 
     # --- saf karar fonksiyonu ---
     a = {"id": "a", "guncelleme": "2026-09-14T10:00:00"}
@@ -517,16 +517,16 @@ def ag_koprusu() -> None:
     print("\n11) Dusunce Agi koprusu (gercek Api metotlari)")
     import shutil as _sh
     import tempfile as _tf
-    from limina import ag
-    from limina.pencere import Api
+    from pevrai import ag
+    from pevrai.pencere import Api
 
-    kok = Path(_tf.mkdtemp(prefix="limina_agkopru_"))
+    kok = Path(_tf.mkdtemp(prefix="pevrai_agkopru_"))
     eski = ag.AG_KOK
     ag.AG_KOK = kok / "aglar"
     try:
         api = Api.__new__(Api)                      # pywebview penceresi gerekmez
-        from limina import PROJE_KOKU
-        from limina.gate import Politika as _Politika
+        from pevrai import PROJE_KOKU
+        from pevrai.gate import Politika as _Politika
         api._politika = _Politika(PROJE_KOKU / "policy.toml")
 
         r = api.ag_kaydet({"ad": "kopru denemesi", "tetik": "deneme yapilirken",

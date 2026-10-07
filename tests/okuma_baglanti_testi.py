@@ -1,4 +1,4 @@
-"""Reader-to-Limina round trip with isolated databases; no provider calls."""
+"""Reader-to-Pevrai round trip with isolated databases; no provider calls."""
 import importlib.util
 import json
 import os
@@ -14,8 +14,8 @@ ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT))
 sys.path.insert(0,str(Path(__file__).parent))
 from eklentiler_testi import Policy
-from limina.okuma import ReaderLink
-from limina.eklentiler.registry import invoke
+from pevrai.okuma import ReaderLink
+from pevrai.eklentiler.registry import invoke
 
 # Okuma Atolyesi ayri bir depo (github.com/ledaronn/okuma-atolyesi). Protokolun
 # karsi tarafi yalnizca o depo Araclar/ altina klonlanmissa sinanir.
@@ -23,6 +23,8 @@ OKUMA=ROOT/'Araclar/OkumaAtolyesi/assistant_link.py'
 if not OKUMA.is_file():
     print('ATLANDI: Araclar/OkumaAtolyesi yok (ayri depo); okuyucu protokol testi kosulmadi.')
     sys.exit(0)
+# Match the reader's standalone launch path: assistant_link imports ceviri.
+sys.path.insert(0, str(OKUMA.parent))
 spec=importlib.util.spec_from_file_location('reader_protocol',OKUMA)
 protocol=importlib.util.module_from_spec(spec); spec.loader.exec_module(protocol)
 
@@ -33,7 +35,7 @@ class LinkTest(unittest.TestCase):
         self.reader=protocol.AssistantLink(self.root); self.link=ReaderLink(); self.policy=Policy(self.root)
         self.started=[]; self.busy=False
         self.api=SimpleNamespace(_politika=self.policy,_kopru=SimpleNamespace(calisiyor=lambda:self.busy,gorev_baslat=self.start))
-        self.invoke=patch('limina.eklentiler.registry.invoke',side_effect=lambda tool,args,p,actor='user':invoke(tool,args,p,actor,root=self.root/'db')); self.invoke.start()
+        self.invoke=patch('pevrai.eklentiler.registry.invoke',side_effect=lambda tool,args,p,actor='user':invoke(tool,args,p,actor,root=self.root/'db')); self.invoke.start()
         self.tick()
     def tearDown(self):
         self.invoke.stop(); self.env.stop(); self.temp.cleanup()
@@ -80,7 +82,7 @@ class LinkTest(unittest.TestCase):
         app=self.root/'app.py'; app.write_text('')
         self.policy.mcp={'okuma':{'komut':[sys.executable,str(self.root/'server.py')]}}
         uri=f'okuma://{self.reader.library}/'+('a'*32)+'/2'
-        with patch('limina.okuma.subprocess.Popen') as spawn:
+        with patch('pevrai.okuma.subprocess.Popen') as spawn:
             self.assertTrue(self.link.open_source(uri,self.policy)['ok'])
             args=spawn.call_args.args[0]; self.assertEqual(args[-3:],['a'*32,'--page','2'])
             self.assertFalse(spawn.call_args.kwargs['shell'])

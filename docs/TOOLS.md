@@ -2,13 +2,13 @@
 
 ## Araç yazım sözleşmesi
 
-Bir araç = **tek bildirim** (`limina/araclar/*.py`, `@arac` dekoratörü) + fonksiyon.
+Bir araç = **tek bildirim** (`pevrai/araclar/*.py`, `@arac` dekoratörü) + fonksiyon.
 Şema, risk, yol argümanları, paket ve panel adı bildirimden türer; başka hiçbir yere
 dokunulmaz. `policy.toml [araclar]` yine son söz: bildirim varsayılan riski söyler,
 politika sıkılaştırabilir ya da aracı tanımayabilir (deny by default).
 
 ```python
-from limina.araclar.kayit import arac
+from pevrai.araclar.kayit import arac
 
 @arac(ad="write_file", paket="dosya_duzenleme", risk="WRITE",
       baslik="Dosya yazma",                       # panelde görünen ad (kullanıcıya)
@@ -137,7 +137,7 @@ Ayarlar > Dosyalar > Açma klasörü). Kullanıcı Explorer'da ne koyarsa o aç�
 (`tests/acma_testi.py`):
 1. Klasör ajanın yazabildiği hiçbir yerle kesişemez (içinde, dışında, eşit) — kesişirse kapı klasörü
    yok sayar ve nedenini söyler; panel seçim anında reddeder. Aksi hâlde ajan kısayol yazıp açardı.
-2. Kısayolun **hedefi** de ajanın yazabildiği bir yerde ya da Limina'nın kodunda olamaz
+2. Kısayolun **hedefi** de ajanın yazabildiği bir yerde ya da Pevrai'nın kodunda olamaz
    (`kısayol → kum/x.bat` zinciri kapalı). Kısayol → kısayol açılmaz.
 3. Klasör dışındaki hiçbir yol açılmaz; `.url` (internet kısayolu) reddedilir — adresler yalnızca
    tarayıcı araçlarıyla, site listesinden açılır.
@@ -203,7 +203,7 @@ bağlanıp araçları sınıflandırmayı unutursa bu test onu yakalar.
 
 ## Paketler — kullanıcının gördüğü gruplar
 
-Araçlar arayüzde **paket** halinde sunulur (`limina/paketler.py`): `cekirdek`
+Araçlar arayüzde **paket** halinde sunulur (`pevrai/paketler.py`): `cekirdek`
 (list_dir, read_file, search, degisiklik_gecmisi), `belge` (read_document),
 `dosya_duzenleme` (write_file, edit_file, mkdir, move, rename, trash), `acma` (open_file), `tarayici` (browser_*) ve her
 MCP sunucusu kendi paketi (`mcp:<ad>`). Her aracın insan dilinde adı ve açıklaması
@@ -228,8 +228,8 @@ kontrolü).
 ## Yeni araç ekleme kontrol listesi
 
 **Yerel araç:**
-- [ ] `limina/araclar/` altında bir modülde `@arac` ile bildirildi mi (ya da mevcut modüle
-      eklendi mi)? Yeni modülse `limina/araclar/__init__.py`'deki import listesine girdi mi?
+- [ ] `pevrai/araclar/` altında bir modülde `@arac` ile bildirildi mi (ya da mevcut modüle
+      eklendi mi)? Yeni modülse `pevrai/araclar/__init__.py`'deki import listesine girdi mi?
 - [ ] `modele` metni model gözüyle yazıldı mı? (ne zaman kullanılmaz da yazılı mı?)
 - [ ] Yol argümanı varsa `yollar={...}` bildirildi mi? Bildirilmeyen yol argümanı kapıda
       **denetlenmez**.

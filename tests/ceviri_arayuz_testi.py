@@ -11,7 +11,7 @@ import sys
 
 sys.path.insert(0, str(__import__("pathlib").Path(__file__).resolve().parent.parent))
 from playwright.sync_api import sync_playwright
-from limina import PAKET
+from pevrai import PAKET
 
 SAHTE = """() => {
   const bos = () => Promise.resolve({ok: true, olaylar: [], calisiyor: false, sohbetler: [], kota: [],

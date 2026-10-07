@@ -1,8 +1,8 @@
-# policy.example.toml — Limina izin politikasinin SABLONU.
+# policy.example.toml — Pevrai izin politikasinin SABLONU.
 #
-# Ilk acilista (python -m limina) bu dosyadan policy.toml uretilir:
+# Ilk acilista (python -m pevrai) bu dosyadan policy.toml uretilir:
 #   {PROJE} -> bu deponun koku,  {EV} -> kullanicinin ev klasoru,
-#   {CALISMA} -> calisma klasoru (varsayilan {EV}/Limina; ilk kurulum
+#   {CALISMA} -> calisma klasoru (varsayilan {EV}/Pevrai; ilk kurulum
 #   ekraninda secilir, sonra Ayarlar > Dosyalar'dan degistirilebilir/kaldirilabilir).
 # policy.toml KISISELDIR ve depoya girmez (.gitignore): klasorlerin, sitelerin,
 # MCP sunucularin orada durur. Bu sablon herkes icin ortak varsayilandir.
@@ -72,7 +72,7 @@ komut = ["python", "Donusturucu/server.py"]
 # Sunucunun araclari [araclar]'da siniflandirilana kadar modele GOSTERILMEZ.
 
 # Arac adi = risk seviyesi. READ/WRITE_HAFIF/WRITE/EXEC/NETWORK/DESTRUCTIVE
-# Yerlesik araclarin yol argumanlari kayit defterinden (limina/araclar) bilinir.
+# Yerlesik araclarin yol argumanlari kayit defterinden (pevrai/araclar) bilinir.
 # MCP aracinin yol argumani varsa TABLO bicimiyle bildir, kapi o argumani
 # koklere karsi denetlesin (bildirilmeyen yol argumani DENETLENMEZ):
 #   "sunucu.arac" = { risk = "WRITE", yollar = { path = "oku", hedef = "yaz" } }
@@ -232,7 +232,7 @@ mod = "hizli"
 #   - mod = "dengeli": istek butcesi 14. Uc devam turu * 14 = en kotu 42
 #     istek, ve gunluk tavan (varsayilan rolunde 450) her zaman dis sinir.
 #
-# Kullanim: python -m limina.vekil_v0 "gorev metni" --profil gozetimsiz
+# Kullanim: python -m pevrai.vekil_v0 "gorev metni" --profil gozetimsiz
 #
 # YENI BIR PROFIL EKLERKEN: bunu genisletmek yerine yenisini tanimla. Bir
 # profilin kapsami zamanla buyurse "onceden imzalanmis onay" imzalanmamis

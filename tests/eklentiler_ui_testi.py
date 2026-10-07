@@ -5,7 +5,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from eklentiler_testi import Policy
-from limina.eklentiler.registry import catalog, invoke
+from pevrai.eklentiler.registry import catalog, invoke
 from playwright.sync_api import sync_playwright, expect
 from webview.http import start_server
 
@@ -61,7 +61,7 @@ def main():
         page.on("pageerror", lambda exc: errors.append(str(exc)))
         page.expose_function("plugin_api", api)
         page.add_init_script("window.pywebview={api:new Proxy({}, {get:(_,name)=>(...args)=>window.plugin_api(name,args)})};")
-        html = Path(__file__).resolve().parents[1] / "limina/arayuz/index.html"
+        html = Path(__file__).resolve().parents[1] / "pevrai/arayuz/index.html"
         address, _, server = start_server([str(html)])
         assert Path(server.root_path).resolve() == html.parent.resolve()
         _wait_for_server(address)   # start_server returns before the socket accepts

@@ -12,10 +12,10 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import anahtar, ayarlar, ceviri, model
-from limina.gate import Politika
+from pevrai import anahtar, ayarlar, ceviri, model
+from pevrai.gate import Politika
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -29,7 +29,7 @@ def dogrula(kosul: bool, mesaj: str) -> None:
 
 
 def main() -> int:
-    d = Path(tempfile.mkdtemp(prefix="limina_ekip_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_ekip_"))
     eski_dosya, eski_dizin, eski_kr = anahtar.DOSYA, anahtar.YUVA_DIZINI, anahtar._keyring
     eski_ortam = {k: os.environ.pop(k, None) for k in anahtar.ORTAM_DEGISKENI.values()}
     anahtar.DOSYA, anahtar.YUVA_DIZINI, anahtar._keyring = d / "credentials.json", d / "yuvalar.json", (lambda: None)
@@ -123,7 +123,7 @@ anahtar_yuvasi = "ikinci"
             dogrula(Politika(pol_yol).ajanlar["yazar"]["rol"] == "Metinleri yazar.", "diger tanimlar dokunulmadi")
 
         print("\n5) Ajan -> API baglantisi (yeni bicim) ve eski tanimlarin okunmasi")
-        from limina import model_zinciri
+        from pevrai import model_zinciri
         metin = pol_yol.read_text(encoding="utf-8").replace(
             'varsayilan = "gemini-3.5-flash-lite"\n', 'varsayilan = "gemini-3.5-flash-lite"\nzincir = ["is", "ev"]\n', 1)
         metin += ('\n[baglantilar.is]\nad = "Is hesabi"\nsaglayici = "openai"\ntaban_url = "https://api.ornek.com/v1"\n'

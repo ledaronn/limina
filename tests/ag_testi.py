@@ -23,10 +23,10 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ag, ag_motoru as motor, ceviri
-from limina.gate import Politika
+from pevrai import ag, ag_motoru as motor, ceviri
+from pevrai.gate import Politika
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -72,7 +72,7 @@ read_file = "READ"
 
 
 def main() -> int:
-    kok = Path(tempfile.mkdtemp(prefix="limina_ag_"))
+    kok = Path(tempfile.mkdtemp(prefix="pevrai_ag_"))
     eski_kok = ag.AG_KOK
     ag.AG_KOK = kok / "aglar"
     try:
@@ -213,8 +213,8 @@ def main() -> int:
                 "tasima: gecersiz esik silindi, dongudeki engelleme kaldirildi")
 
         print("\n8) Araclar ve ajanin yazma kisitlari")
-        from limina.araclar import ag_araclari
-        from limina.baglam import B
+        from pevrai.araclar import ag_araclari
+        from pevrai.baglam import B
         with patch.object(B, "politika", pol):
             cikti = ag_araclari.ag_oku(None, {"ad": "deneme"})
             dogrula("Ağ okuması" in cikti, "ag_oku okuma metnini dondu")

@@ -10,8 +10,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from limina.eklentiler.common import PluginError, Store
-from limina.eklentiler.registry import TOOLS, catalog, invoke, model_result, register, sync_schemas
+from pevrai.eklentiler.common import PluginError, Store
+from pevrai.eklentiler.registry import TOOLS, catalog, invoke, model_result, register, sync_schemas
 
 
 class Policy:
@@ -182,8 +182,8 @@ class PluginsTest(unittest.TestCase):
         self.assertTrue(all(s["parameters"]["additionalProperties"] is False for s in schemas))
 
     def test_real_gate_install_disable_and_reinstall(self):
-        from limina import ayarlar
-        from limina.gate import Politika
+        from pevrai import ayarlar
+        from pevrai.gate import Politika
         policy_path = self.root / "policy.toml"
         policy_path.write_text('[model]\nvarsayilan="test"\n[filesystem]\nokuma_koklari=[' + json.dumps(str(self.root)) + ']\nyazma_koklari=[]\nyasak_kaliplar=[".env"]\n[araclar]\n', encoding="utf-8")
         with patch.object(ayarlar, "POLICY", policy_path), patch.object(ayarlar, "POLICY_YEDEK", self.root / "backup.toml"):
@@ -206,7 +206,7 @@ class PluginsTest(unittest.TestCase):
             self.assertEqual(Politika(policy_path).karar("exam_list", {}).sonuc, "ALLOW")
 
     def test_real_path_gate_blocks_secrets_traversal_and_write(self):
-        from limina.gate import Politika
+        from pevrai.gate import Politika
         polpath = self.root / "policy.toml"
         polpath.write_text('[model]\nvarsayilan="test"\n[filesystem]\nokuma_koklari=[' + json.dumps(str(self.root)) + ']\nyazma_koklari=[]\nyasak_kaliplar=[".env"]\n[araclar]\n' + '\n'.join(f'{name}="{spec["risk"]}"' for name, spec in TOOLS.items()), encoding="utf-8")
         self.policy = Politika(polpath)
@@ -244,14 +244,14 @@ class PluginsTest(unittest.TestCase):
                 break
             offset = part["next_offset"]
         self.assertEqual("".join(chunks), body)
-        with patch("limina.eklentiler.registry.invoke", return_value={"id": n["id"], "body": body[:4000]}):
+        with patch("pevrai.eklentiler.registry.invoke", return_value={"id": n["id"], "body": body[:4000]}):
             result = model_result("note_read", {"id": n["id"]}, self.policy)
         self.assertEqual(result.count("</untrusted_content>"), 1)
         self.assertEqual(json.loads(result.split("\n")[1])["body"], body[:4000])
 
     def test_missing_plugin_does_not_disable_others(self):
-        from limina.eklentiler.registry import available
-        with patch("limina.eklentiler.registry.available", side_effect=lambda p: p != "notes" and available(p)):
+        from pevrai.eklentiler.registry import available
+        with patch("pevrai.eklentiler.registry.available", side_effect=lambda p: p != "notes" and available(p)):
             entries = {x["id"]: x for x in catalog(self.policy)}
             self.assertFalse(entries["notes"]["enabled"])
             self.assertTrue(entries["study"]["enabled"])
@@ -260,14 +260,14 @@ class PluginsTest(unittest.TestCase):
             self.course()
 
     def test_agent_loop_and_gui_use_same_exam_service(self):
-        from limina import mcp_bridge
+        from pevrai import mcp_bridge
         # Import the real agent loop without starting configured external servers.
         with patch.object(mcp_bridge.Kopru, "bagla", return_value="MCP disabled in isolated test"):
-            from limina import vekil_v0 as agent
-        from limina.gate import Politika
-        from limina.model.taban import AracCagrisi, Yanit, model_turu
-        from limina.olaylar import Oturum, sabit_cevap
-        from limina.pencere import Api
+            from pevrai import vekil_v0 as agent
+        from pevrai.gate import Politika
+        from pevrai.model.taban import AracCagrisi, Yanit, model_turu
+        from pevrai.olaylar import Oturum, sabit_cevap
+        from pevrai.pencere import Api
         policy_path = self.root / "policy.toml"
         policy_path.write_text('[model]\nvarsayilan="test"\n[araclar]\n' + '\n'.join(f'{name}="{spec["risk"]}"' for name, spec in TOOLS.items()), encoding="utf-8")
         pol = Politika(policy_path)
@@ -289,7 +289,7 @@ class PluginsTest(unittest.TestCase):
             return invoke(name, args, policy, actor, root=self.root / "db", clock=lambda: self.now)
         with patch.object(agent, "POLITIKA", pol), patch.object(agent, "ARAC", list(agent.ARAC)), \
              patch.object(agent.modelkat, "kur", return_value=object()), patch.object(agent, "_model_cagir", side_effect=model), \
-             patch("limina.eklentiler.registry.invoke", side_effect=isolated_invoke):
+             patch("pevrai.eklentiler.registry.invoke", side_effect=isolated_invoke):
             agent.arac_semalarini_tazele(sessiz=True)
             text, continuation = agent._calistir_ic("Sınav oluştur", "hizli", Oturum(sabit_cevap("e")), None)
             self.assertEqual(text, "Tamam")

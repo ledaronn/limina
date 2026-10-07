@@ -1,4 +1,4 @@
-# ekip_arayuz_testi.py — Ekip alani (limina/arayuz/ekip.js): headless Chrome, sahte API.
+# ekip_arayuz_testi.py — Ekip alani (pevrai/arayuz/ekip.js): headless Chrome, sahte API.
 #
 # Olculen: alan aciliyor, gorev baslatma dogru API cagrisiyla (proje + secili ajanlar),
 # ekip_plan onay karti EKIP ALANINDA (sohbet akisinda degil), canli olaylar uye
@@ -12,7 +12,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from limina import PAKET
+from pevrai import PAKET
 
 HATA = 0
 

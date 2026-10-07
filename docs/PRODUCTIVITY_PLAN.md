@@ -4,17 +4,17 @@ Durum: Kullanıcı planı onayladı. Uygulama ve doğrulama ayrıntıları [PROD
 
 ## Mevcut mimaride doğrulanan noktalar
 
-- Python masaüstü uygulaması; pywebview arayüzü `limina/arayuz/index.html`, Python API'si `limina/pencere.py` içinde.
-- Yerel araçlar `limina/vekil_v0.py` içindeki `ARAC_TABLOSU` ve JSON şemalarıyla sunuluyor. MCP araçları `limina/mcp_bridge.py` üzerinden aynı araç döngüsüne katılıyor.
-- `limina/gate.py` araç sınıflandırmasını, izinleri, dosya köklerini ve profil sınırlarını denetliyor. Tanımsız araçlar reddediliyor.
-- `limina/paketler.py` ve `limina/ayarlar.py` paketleri kaldırma/geri ekleme ve araç görünürlüğünü yönetiyor.
+- Python masaüstü uygulaması; pywebview arayüzü `pevrai/arayuz/index.html`, Python API'si `pevrai/pencere.py` içinde.
+- Yerel araçlar `pevrai/vekil_v0.py` içindeki `ARAC_TABLOSU` ve JSON şemalarıyla sunuluyor. MCP araçları `pevrai/mcp_bridge.py` üzerinden aynı araç döngüsüne katılıyor.
+- `pevrai/gate.py` araç sınıflandırmasını, izinleri, dosya köklerini ve profil sınırlarını denetliyor. Tanımsız araçlar reddediliyor.
+- `pevrai/paketler.py` ve `pevrai/ayarlar.py` paketleri kaldırma/geri ekleme ve araç görünürlüğünü yönetiyor.
 - Kalıcı uygulama verileri için mevcut yaklaşım kullanıcı dizinindeki `.vekil` klasörü; dosya değişiklikleri `journal.py` ile kaydediliyor. İncelenen uygulama kodunda SQLite tabanlı eklenti deposu yok.
-- Çalışma ağacında model, arayüz, politika ve test değişiklikleri mevcut. Bunlar korunacak. `limina/model/` ve sağlayıcıdan bağımsız araç şemaları mevcut olduğundan belgelerdeki eski tek sağlayıcı anlatımı tasarım temeli alınmayacak.
-- Paketleme şu anda yalnızca `limina` paketini açıkça listeliyor. Yeni alt paketler ve arayüz varlıkları dağıtıma dahil edilecek.
+- Çalışma ağacında model, arayüz, politika ve test değişiklikleri mevcut. Bunlar korunacak. `pevrai/model/` ve sağlayıcıdan bağımsız araç şemaları mevcut olduğundan belgelerdeki eski tek sağlayıcı anlatımı tasarım temeli alınmayacak.
+- Paketleme şu anda yalnızca `pevrai` paketini açıkça listeliyor. Yeni alt paketler ve arayüz varlıkları dağıtıma dahil edilecek.
 
 ## Önerilen yapı ve sınırlar
 
-Üç özellik `limina/eklentiler/study`, `limina/eklentiler/notes` ve `limina/eklentiler/workspace` altında ayrı modüller olacak. Her birinin veri/migration, servis, araç şeması ve UI katmanı ayrılacak. Küçük bir ortak yükleyici, mevcut yerel araç tablosuna ve paket yönetimine bağlanacak; yeni model veya sohbet sistemi kurulmayacak.
+Üç özellik `pevrai/eklentiler/study`, `pevrai/eklentiler/notes` ve `pevrai/eklentiler/workspace` altında ayrı modüller olacak. Her birinin veri/migration, servis, araç şeması ve UI katmanı ayrılacak. Küçük bir ortak yükleyici, mevcut yerel araç tablosuna ve paket yönetimine bağlanacak; yeni model veya sohbet sistemi kurulmayacak.
 
 Her eklenti bağımsız etkinleştirilebilecek ve yüklenebilecek. Modül bulunmadığında veya devre dışıyken araçları sunulmayacak, paneli erişilebilir görünmeyecek ve ana asistan çalışacak. Kurulum/kaldırma kullanıcı verisini silmeyecek. Paket varlığını belirlemek için eklenti iş mantığını koşulsuz içe aktarmak gerekmeyecek.
 

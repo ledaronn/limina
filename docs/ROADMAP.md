@@ -61,7 +61,7 @@ geçilmez. Süreler tek geliştirici ve haftada birkaç akşam varsayımıyla ve
 - Araç yazım şablonu (yeni araç eklemek 20 dakikalık iş olmalı)
 
 **Kabul kriterleri**
-- [ ] Dönüştürücü hem Limina'dan hem Claude Desktop'tan çağrılabiliyor
+- [ ] Dönüştürücü hem Pevrai'dan hem Claude Desktop'tan çağrılabiliyor
 - [ ] MCP sunucusu çöktüğünde ajan çökmüyor, hatayı metin olarak alıyor
 - [ ] Yerel araç ile MCP aracı döngü açısından ayırt edilemiyor
 
@@ -452,7 +452,7 @@ etmek hesabın askıya alınma riskini taşır.
 | Uzun zincirde birikimli hata | Yüksek | Adım limiti, denetimli mod, eval seti |
 | `pyautogui` kırılganlığı | Orta | Son çare olarak konumlandırıldı |
 | Kapsam kayması ("her şeyi yapsın") | Yüksek | Faz kapıları, "Ne değildir" bölümü |
-| Model/API fiyat veya davranış değişikliği | Orta | `limina/model/` sağlayıcı katmanı (Gemini / OpenAI-uyumlu / Anthropic) + `mod` katmanı; sağlayıcı ve model adı `policy.toml [model]`'den değişir, kod dokunulmaz (bkz. ARCHITECTURE.md §2) |
+| Model/API fiyat veya davranış değişikliği | Orta | `pevrai/model/` sağlayıcı katmanı (Gemini / OpenAI-uyumlu / Anthropic) + `mod` katmanı; sağlayıcı ve model adı `policy.toml [model]`'den değişir, kod dokunulmaz (bkz. ARCHITECTURE.md §2) |
 
 ## Şu an ne yapmalı
 
@@ -469,17 +469,17 @@ kendi hızında konuşulmalı, hiçbiri acele bir karar değil:
    (profil araç listesini daraltıyor; sohbet modunda 3934 → 442 token). Kalan
    kısım göreve *bakıp* otomatik daraltma — ayrı bir maliyet çalışması.
 2. **Zamanlanmış başlatma** gerçekten gerekirse: Windows Görev Zamanlayıcı
-   `vekil_v0.py --profil <ad>`'ı tetikler, Limina içi zamanlayıcı kurulmaz; o
+   `vekil_v0.py --profil <ad>`'ı tetikler, Pevrai içi zamanlayıcı kurulmaz; o
    zaman "sabah raporu" özet dosyalarını süzen bir okuma işi olur.
 3. **Modele giden metnin dili — bitti.** Sistem talimatı, araç bildirimleri,
    `durum_yaz` ve araç çıktıları `config/arayuz.toml [genel] dil` ayarını izliyor
-   (`limina/ceviri.py`); canlı doğrulama `gemini-3.5-flash-lite` ile yapıldı.
-   Eklenti araçları (`limina/eklentiler`, 56 araç / 95 açıklama) da aynı
+   (`pevrai/ceviri.py`); canlı doğrulama `gemini-3.5-flash-lite` ile yapıldı.
+   Eklenti araçları (`pevrai/eklentiler`, 56 araç / 95 açıklama) da aynı
    sözlükten çevriliyor. Kalan: `evals.py` İngilizce modda da koşulmalı (şu an
    kaynak dile sabit).
 4. **Görüntü okuma — bitti (2026-09-20).** `read_document` artık PNG/JPG/ekran
    görüntüsünü ve metin katmanı olmayan PDF sayfalarını Windows'un yerleşik
-   OCR'ından geçiriyor (`limina/ocr.py`, `[ocr]` ekstrası; model indirmez, dil
+   OCR'ından geçiriyor (`pevrai/ocr.py`, `[ocr]` ekstrası; model indirmez, dil
    paketi Windows'tan). Sayfa başına karar: karışık belgede yalnızca taranmış
    sayfa OCR'lanır, `[OCR]` etiketlenir, başa "hatalı karakter olabilir" uyarısı
    girer. Tavanlar: çağrı başına 20 sayfa, 4000 px kenar. Windows dışında ya da

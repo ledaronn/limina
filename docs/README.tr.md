@@ -1,14 +1,18 @@
-# Limina
+# Pevrai
+
+Adı **Personal Evolving Versatile Reasoning Artificial Intelligence** ifadesinden
+türetilmiştir. [Ad geçişi ve mevcut verilerin korunması](AD_DEGISIKLIGI.md).
 
 **Kendi bilgisayarında çalışan ve iş yapmadan önce soran kişisel bir yapay zekâ asistanı.**
 
 Ona sade bir dille bir iş verirsin: *"İndirilenler'deki PDF'leri özetle"*, *"şu fotoğrafları
-tarihe göre adlandır"*, *"bu konuyu araştırıp rapor yaz"*. Limina dosyalarını okur, tarayıcıyı
+tarihe göre adlandır"*, *"bu konuyu araştırıp rapor yaz"*. Pevrai dosyalarını okur, tarayıcıyı
 ve belgeleri kullanarak işi yapar. Yalnızca izin verdiğin klasörlere dokunur, riskli her adımda
 sana sorar ve yaptığı her dosya değişikliği geri alınabilir. Sohbetlerin, ayarların ve yedeklerin
-bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeline gönderilen metindir.
+bilgisayarında kalır. Model çağrıları seçtiğin servise, web istekleri izin verdiğin sitelere gider.
+İsteğe bağlı sürüm denetimi GitHub'a yalnızca sürüm sorgusu gönderir; kişisel veri eklemez.
 
-![Limina dosya yazmadan önce sorar: görev, attığı adımlar ve onay kartı](img/home.png)
+![Pevrai dosya yazmadan önce sorar: görev, attığı adımlar ve onay kartı](img/home.png)
 
 ## Neler yapabilirsin
 
@@ -23,6 +27,8 @@ bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeli
   kullanabilir) ve onlara birlikte tek bir görev verirsin. İşin nasıl bölüneceğini sen
   onaylarsın; ardından her ajan ayrı ve daha kısıtlı bir süreçte çalışır. Canlı **3B ofiste**
   ajanlar yaptıkları işin masasına yürür; isteklerini de orada onaylarsın.
+  Ajan kartındaki **Düzenle** ile bağlantısını, modelini, rengini ve görünümünü değiştirebilirsin;
+  aynı form Ekip > Ajanlar'da da bulunur.
 - **Düşünce Ağı kur.** Fikirleri, kuralları ve dosyaları ağırlıklı bağlantılarla birleştiren
   3B bir harita. Ağı "ateşlemek", bir görev için gereken bağlamı model çağırmadan, öngörülebilir
   bir sırayla toplar.
@@ -34,10 +40,14 @@ bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeli
 
 ## İlk açılış
 
+**Ayarlar → Genel → Güncellemeleri denetle**, açılışta arka planda en fazla 24 saatte
+bir yeni kararlı sürüm arar. Kapatırsan istek göndermez. Yeni sürüm bildirimi kapatılabilir;
+**İndir** GitHub Releases sayfasını açar. Dosyaların ve sohbetlerin bu sorguya eklenmez.
+
 İlk açılışta kısa bir kurulum ekranı gelir:
 
 1. **Dil.** İngilizce (varsayılan) ya da Türkçe; istediğin zaman değiştirebilirsin.
-2. **Klasörler.** Ajanın okuyup yazabileceği bir *çalışma klasörü* (varsayılan `~/Limina`; kendi
+2. **Klasörler.** Ajanın okuyup yazabileceği bir *çalışma klasörü* (varsayılan `~/Pevrai`; kendi
    klasörünü seçebilir ya da hiç seçmeyebilirsin) ve yalnızca okuyacağı klasörler (İndirilenler,
    Masaüstü…). Hiçbir klasör zorunlu değil.
 3. **Araçlar ve eklentiler.** Kullanmadıklarını kapatırsın; kapalı aracı model hiç görmez.
@@ -47,8 +57,8 @@ bilgisayarında kalır; dışarı çıkan tek şey seçtiğin yapay zekâ modeli
 Her adımın bir varsayılanı var: **Varsayılanlarla bitir** tek tıkla başlatır. Hepsi sonra
 Ayarlar'dan değiştirilebilir.
 
-**İndir (Windows):** [Son sürümü aç](https://github.com/ledaronn/limina/releases/latest) ve
-*Assets* altındaki `Limina-Setup-<sürüm>.exe` dosyasını çalıştır. Python ya da yönetici izni
+**İndir (Windows):** [Son sürümü aç](https://github.com/ledaronn/pevrai/releases/latest) ve
+*Assets* altındaki `Pevrai-Setup-<sürüm>.exe` dosyasını çalıştır. Python ya da yönetici izni
 gerekmez. Windows "Bilgisayarınız korundu" derse **Ek bilgi → Yine de çalıştır** (kurulum programı
 henüz imzalı değil). Tarayıcı araçları için Google Chrome gerekir.
 
@@ -59,7 +69,7 @@ aç, ardından:
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e .[tam]
-python -m limina
+python -m pevrai
 ```
 
 ---
@@ -70,7 +80,7 @@ Yerelde çalışan, araç çağırabilen kişisel bir ajan. Bir LLM API'sini ak�
 olarak kullanır; dosya sistemi, tarayıcı ve MCP araçlarını tek bir denetimli döngü
 üzerinden kontrol eder.
 
-> Paket adı `limina`.
+> Paket adı `pevrai`.
 
 **Kabuk erişimi yoktur ve olmayacaktır.** Genel bir komut çalıştırıcı (`shell.run`),
 kabuk erişimi ve model tarafından üretilmiş kodun çalıştırılması Faz 7'de yazılı
@@ -95,7 +105,7 @@ Kapsamı baştan daraltmak, projenin bitmesinin tek şartı:
 
 | Karar | Gerekçe |
 |---|---|
-| Araçlar MCP sunucusu olarak yazılır | Araçlar uygulamaya gömülü kalmaz; Limina, Claude Desktop, Cursor aynı aracı kullanır |
+| Araçlar MCP sunucusu olarak yazılır | Araçlar uygulamaya gömülü kalmaz; Pevrai, Claude Desktop, Cursor aynı aracı kullanır |
 | Önce CLI, GUI en sonda | GUI, hatalı bir çekirdeği gizler ve geliştirmeyi yavaşlatır |
 | Hatalar modele metin olarak döner | Model kendi kendini düzeltebilsin; hata yutulursa ajan değil script olur |
 | Otomasyon sırası: API > CLI > tarayıcı > fare/klavye | Piksel ve koordinat en kırılgan katman, son çare |
@@ -131,10 +141,10 @@ Detay: [ARCHITECTURE.md](ARCHITECTURE.md)
 
 ## Dizin yapısı
 
-Kod `limina/` paketinde; kullanıcının ellediği şeyler (policy.toml, config/) depo
+Kod `pevrai/` paketinde; kullanıcının ellediği şeyler (policy.toml, config/) depo
 kökünde. **Kişisel dosyalar depoya girmez**: `policy.toml`, `config/persona.md` ve
 `config/arayuz.toml` `.gitignore`'da, ilk açılışta şablonlarından üretilir
-(`limina/kurulum.py`).
+(`pevrai/kurulum.py`).
 
 ```
 .
@@ -144,11 +154,11 @@ kökünde. **Kişisel dosyalar depoya girmez**: `policy.toml`, `config/persona.m
 ├─ requirements.txt        # tam kurulum (= pip install -e .[tam])
 ├─ policy.example.toml     # izin politikası ŞABLONU ({PROJE}, {EV} yer tutucuları)
 ├─ policy.toml             # KİŞİSEL, depoya girmez: kökler, siteler, araç riskleri, MCP, kaldırılan paketler
-├─ limina/
+├─ pevrai/
 │  ├─ vekil_v0.py          # ajan döngüsü (calistir / devam_et), MCP tembel bağlantısı; eski adlar geriye dönük uyumlu
 │  ├─ talimat.py           # sistem talimatı: her görevde veriden kurulur (kökler, gösterilen araçlar, persona)
 │  ├─ durum.py             # gözetimsiz görev durum dosyası, devam görevi, dönüş özeti
-│  ├─ cli.py               # komut satırı (limina-cli): görev, --devam, --gecmis, --geri-al, site yönetimi
+│  ├─ cli.py               # komut satırı (pevrai-cli): görev, --devam, --gecmis, --geri-al, site yönetimi
 │  ├─ araclar/             # @arac kayıt defteri (kayit.py) + dosya.py, tarayici_araclari.py, ortak.py
 │  ├─ baglam.py            # çalışma zamanı tekilleri (politika, tarayıcı, MCP köprüsü)
 │  ├─ gate.py              # izin kapısı: yol/uzantı/site doğrulama, risk seviyeleri, tavanlar, kaldırılan paketler
@@ -168,7 +178,7 @@ kökünde. **Kişisel dosyalar depoya girmez**: `policy.toml`, `config/persona.m
 │  ├─ mcp_bridge.py        # harici MCP sunucularını araç kaydına bağlar, çıktıyı kırpıp sarmalar
 │  ├─ olaylar.py           # olay tipleri, Oturum, onay sözleşmesi
 │  ├─ gui_kopru.py         # ajan thread'i <-> UI thread'i köprüsü
-│  ├─ pencere.py           # pywebview penceresi, JS'e açılan Api (limina)
+│  ├─ pencere.py           # pywebview penceresi, JS'e açılan Api (pevrai)
 │  ├─ modeller.py          # policy.toml'daki model adları hâlâ geçerli mi
 │  ├─ kisayol.py           # masaüstü kısayolu
 │  └─ arayuz/index.html    # tek dosya HTML/CSS/JS arayüz (kaynak dil Türkçe + İngilizce sözlük)
@@ -190,29 +200,29 @@ python -m venv .venv
 .venv\Scripts\activate            # Windows; Unix'te: source .venv/bin/activate
 pip install -e .[tam]             # ya da: pip install -r requirements.txt
 set GOOGLE_API_KEY=...            # ya da Ayarlar > Model'den anahtar gir (Gemini / OpenAI-uyumlu / Anthropic)
-python -m limina                  # ilk açılış: kurulum ekranı (dil, klasörler, paketler) + şablonlar
-python -m limina.vekil_v0 "calisma klasorumu listele"
+python -m pevrai                  # ilk açılış: kurulum ekranı (dil, klasörler, paketler) + şablonlar
+python -m pevrai.vekil_v0 "calisma klasorumu listele"
 ```
 
 Diğer komutlar:
 
 ```bash
-python -m limina.vekil_v0 "gorev" --mod derin     # efor modu: hizli|dengeli|derin|azami
-python -m limina.vekil_v0 "gorev" --profil <ad>   # gorev profili: onceden imzali onay, daraltilmis kapsam
-python -m limina.vekil_v0 "soru"  --profil sohbet # saf sohbet: hic arac yok (girdi token ~%86 az)
-python -m limina.vekil_v0 --devam <kimlik>        # bir tavana carpip yarim kalan gorevi kaldigi yerden surdur
+python -m pevrai.vekil_v0 "gorev" --mod derin     # efor modu: hizli|dengeli|derin|azami
+python -m pevrai.vekil_v0 "gorev" --profil <ad>   # gorev profili: onceden imzali onay, daraltilmis kapsam
+python -m pevrai.vekil_v0 "soru"  --profil sohbet # saf sohbet: hic arac yok (girdi token ~%86 az)
+python -m pevrai.vekil_v0 --devam <kimlik>        # bir tavana carpip yarim kalan gorevi kaldigi yerden surdur
 # Profil azami_devam tasiyorsa gorev tavana carpinca KENDILIGINDEN devam eder
 # (profilsiz yolda ETMEZ: durum yazilir, devam kararini kullanici verir).
-python -m limina.vekil_v0 --gecmis            # geri alinabilecek islemleri listele
-python -m limina.vekil_v0 --geri-al [dosya]   # son islemi (ya da belirtilen dosyayi) geri al
-python -m limina.vekil_v0 --siteler           # tarayicinin acabilecegi siteleri listele
-python -m limina.vekil_v0 --site-ekle <alan>
-python -m limina.vekil_v0 --site-sil <alan>
+python -m pevrai.vekil_v0 --gecmis            # geri alinabilecek islemleri listele
+python -m pevrai.vekil_v0 --geri-al [dosya]   # son islemi (ya da belirtilen dosyayi) geri al
+python -m pevrai.vekil_v0 --siteler           # tarayicinin acabilecegi siteleri listele
+python -m pevrai.vekil_v0 --site-ekle <alan>
+python -m pevrai.vekil_v0 --site-sil <alan>
 python tests/dusmanca_testi.py               # dusmanca test paketi: savunmalari kirma denemeleri (model cagirmaz)
 python tests/evals.py                        # kapi + kod testleri (model cagirmaz)
 python tests/evals.py --hepsi                # + ajan testleri (kota harcar)
-python -m limina                      # grafik arayuz (pywebview gerekir)
-python -m limina.kisayol              # masaustune Limina.lnk (calistiran Python'un pythonw'u, konsolsuz, ikonlu)
+python -m pevrai                      # grafik arayuz (pywebview gerekir)
+python -m pevrai.kisayol              # masaustune Pevrai.lnk (calistiran Python'un pythonw'u, konsolsuz, ikonlu)
 python tests/kopru_testi.py                  # thread + onay + durdurma + sohbet kalicilik testleri
 python tests/ayarlar_testi.py                # ayarlar paneli + saf karar fonksiyonlari (model cagirmaz)
 python tests/arayuz_testi.py                 # arayuz guvenlik ve yerlesim denetimi

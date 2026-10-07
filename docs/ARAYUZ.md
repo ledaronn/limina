@@ -1,4 +1,4 @@
-# Arayüz Tasarımı — Limina
+# Arayüz Tasarımı — Pevrai
 
 Faz 5 spesifikasyonu. Bu belge **ne yapılacağını** tanımlar, kodu içermez.
 
@@ -6,13 +6,14 @@ Faz 5 spesifikasyonu. Bu belge **ne yapılacağını** tanımlar, kodu içermez.
 
 ## 1. Kimlik
 
-**Ad:** Limina — Latince *limen* (eşik) kelimesinin çoğulu, "eşikler".
+**Ad:** Pevrai — *Personal Evolving Versatile Reasoning Artificial Intelligence*
+ifadesinin baş harflerinden oluşur. "Pev-ray" diye okunur.
 
-Seçim gerekçesi: ürünün gerçeğini söylüyor. Bu ajan her adımda bir eşikten geçiyor —
-izin kapısı, onay, risk sınırı. Aynı zamanda kullanıcının "insan çağından makine çağına
-ara form" temasını taşıyor. *Liminal* (arada olma hali) kelimesinin köküyle aynı yerden
-geliyor. Kısa, her dilde okunur, `limina` paket adı olarak temiz, ve kendini övmüyor —
-Claude, Copilot, Gemini gibi bir role ya da kaynağa işaret ediyor.
+Seçim gerekçesi: kısa, iki heceli ve kişisel bir yapay zekâ yardımcısının amacını
+taşıyan bir ad. Kişisel, gelişen, çok yönlü ve muhakeme eden yapay zekâ fikrini
+anlatır; insan ile makinenin birlikte çalışmasına işaret eder. `pevrai` Python
+paketi ve komut adıdır. Bu açılım ürünün tasarım yönünü anlatır; kendi kendine
+model eğitimi veya denetimsiz yetki genişletme özelliği vaat etmez.
 
 **Logo:** Minimal, geometrik. Yuvarlatılmış kare bir robot başı, iki nokta göz, ağız yok.
 Baş, altı açık ince dikdörtgen bir çerçevenin içinde durur — eşik/kapı eşiği.
@@ -53,7 +54,7 @@ sohbet (ikon anahtarı `konusma`; `sohbet` profil adıyla karışmasın), efor m
 | Kenarlık | `#3A342A` | `#E5DFD5` |
 | Ana metin | `#EDE8E0` | `#221F1A` |
 | İkincil metin | `#9A9188` | `#6B645C` |
-| **Vurgu (Limina bronzu)** | `#C8873E` | `#A66A28` |
+| **Vurgu (Pevrai bronzu)** | `#C8873E` | `#A66A28` |
 | ALLOW | `#5B9E6B` | `#3D7A4C` |
 | ASK | `#C8873E` | `#A66A28` |
 | DENY / hata | `#C05252` | `#A63D3D` |
@@ -87,7 +88,7 @@ kenar çubuğu solda, girdi altta sabit.
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│ ☰  ● Limina        gemini-3.5-flash-lite   MCP: 1   ⚙   │  durum şeridi
+│ ☰  ● Pevrai        gemini-3.5-flash-lite   MCP: 1   ⚙   │  durum şeridi
 ├────────────┬─────────────────────────────────────────────┤
 │            │                                             │
 │  Sohbetler │           SOHBET AKIŞI                      │
@@ -120,7 +121,7 @@ dosyalar mesajın altında küçük çipler halinde.
 
 ### 4.2 Ajan yanıtı
 Tam markdown render: başlık, liste, tablo, **kalın**, `satır içi kod`, kod blokları
-(sözdizimi renklendirmeli, kopyala düğmeli). Sol altında küçük Limina logosu — yanıt
+(sözdizimi renklendirmeli, kopyala düğmeli). Sol altında küçük Pevrai logosu — yanıt
 akarken canlı.
 
 ### 4.3 Araç kartı
@@ -276,7 +277,7 @@ satırını yaz. Dil değişimi anında uygulanır (statik metinler, kutu kontro
 karşılama, kenar çubuğu, açık ayarlar sekmesi); akışta zaten çizilmiş kartlar
 sohbet yeniden açılınca çevrilir.
 
-**Python tarafı aynı ayarı izler** (`limina/ceviri.py`). Aynı desen, aynı kural:
+**Python tarafı aynı ayarı izler** (`pevrai/ceviri.py`). Aynı desen, aynı kural:
 `t("Türkçe kaynak metin", yer_tutucu=deger)`, çeviri `ceviri.EN` sözlüğünde.
 Kapsam: onay kartındaki etki cümlesi ve fark başlıkları, kapı red gerekçeleri,
 döngü/model hataları, dönüş özeti (`ozet_metni`), `--gecmis` ve geri alma
@@ -294,7 +295,7 @@ yakalaması gereken şeydir.
   çünkü onu yalnızca insan okur.
 - **Günlük (journal) alan adları** (`"tip": "yazma"`): veri.
 - **MCP sunucularının kendi araç açıklamaları:** sunucudan geldiği gibi gider.
-  (Eklenti araçları — `limina/eklentiler` — ÇEVRİLİR: bildirimler `tools.py`'de
+  (Eklenti araçları — `pevrai/eklentiler` — ÇEVRİLİR: bildirimler `tools.py`'de
   Türkçe durur, `registry._cevrilmis` çıkışta aynı sözlükten çevirir; test
   `registry.TOOLS`'u da tarar.)
 
@@ -312,10 +313,10 @@ doğru kurdu. `tests/ceviri_testi.py` `@arac` bildirimlerini de tarar.
 
 | Dosya | Sorumluluk |
 |---|---|
-| `limina/olaylar.py` | Olay tipleri, `Oturum`, `OnayIstegi`, `onay_iste`, hazır sağlayıcılar |
-| `limina/gui_kopru.py` | Ajan thread'i ↔ UI thread'i köprüsü, olay kuyruğu, onay bekleme |
-| `limina/pencere.py` | pywebview penceresi, JS'e açılan `Api` yüzeyi |
-| `limina/arayuz/index.html` | Tek dosya HTML/CSS/JS arayüz |
+| `pevrai/olaylar.py` | Olay tipleri, `Oturum`, `OnayIstegi`, `onay_iste`, hazır sağlayıcılar |
+| `pevrai/gui_kopru.py` | Ajan thread'i ↔ UI thread'i köprüsü, olay kuyruğu, onay bekleme |
+| `pevrai/pencere.py` | pywebview penceresi, JS'e açılan `Api` yüzeyi |
+| `pevrai/arayuz/index.html` | Tek dosya HTML/CSS/JS arayüz |
 | `tests/kopru_testi.py` | Köprüyü modelsiz sınar |
 | `tests/arayuz_testi.py` | Kaçışlama, uzak kaynak ve yerleşim kurallarını denetler |
 

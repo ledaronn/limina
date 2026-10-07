@@ -11,9 +11,9 @@ import sys
 import types as pytypes
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import sohbet
-from limina import kurulum
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import sohbet
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)   # temiz klonda policy.toml sablondan
 HATA = 0
 

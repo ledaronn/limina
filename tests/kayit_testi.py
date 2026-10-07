@@ -17,17 +17,17 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ayarlar, gate
+from pevrai import ayarlar, gate
 
 # Mesaj metinleri KAYNAK DILDE (Turkce) dogrulanir: ceviri.dil() normalde
 # kullanicinin config/arayuz.toml ayarini okur, testin sonucu kisisel bir
 # ayara bagli olamaz (Ingilizce secili bir makinede bu dosya kirilirdi).
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
-from limina.araclar import kayit
-from limina.gate import ALLOW, ASK, DENY, Politika
+from pevrai.araclar import kayit
+from pevrai.gate import ALLOW, ASK, DENY, Politika
 
 HATA = 0
 
@@ -56,7 +56,7 @@ def bolum1_kayit() -> None:
     dogrula(kayit.bilgiler()["trash"][0] == "Çöpe taşıma", "panel bilgisi bildirimden")
     dogrula(kayit.okuyanlar() == ("list_dir", "search", "read_file", "read_document"), "okuyanlar sirasi sabit")
 
-    from limina import vekil_v0, paketler
+    from pevrai import vekil_v0, paketler
     dogrula(vekil_v0.ARAC_TABLOSU["write_file"] is k["write_file"].fn, "vekil_v0.ARAC_TABLOSU kayit defterinden")
     dogrula(any(x["name"] == "trash" for x in vekil_v0.ARAC), "vekil_v0.ARAC kayit defterinden")
     dogrula(paketler.YERLESIK["tarayici"]["araclar"]["browser_download"] == "DESTRUCTIVE", "paketler.YERLESIK kayit defterinden")
@@ -103,7 +103,7 @@ move = "WRITE_HAFIF"
 
 def bolum2_kapi() -> None:
     print("\n2) Kapi: bildirimsel yol dogrulamasi")
-    d = Path(tempfile.mkdtemp(prefix="limina_kayit_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_kayit_"))
     oku, yaz = d / "oku", d / "yaz"
     oku.mkdir(); yaz.mkdir()
     (oku / "a.txt").write_text("x", encoding="utf-8")
@@ -145,7 +145,7 @@ def bolum2_kapi() -> None:
 
 def bolum3_ayarlar() -> None:
     print("\n3) ayarlar.arac_siniflandir(yollar=...)")
-    d = Path(tempfile.mkdtemp(prefix="limina_kayit_ayar_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_kayit_ayar_"))
     eski = (ayarlar.KOK, ayarlar.POLICY, ayarlar.POLICY_YEDEK)
     ayarlar.KOK, ayarlar.POLICY, ayarlar.POLICY_YEDEK = d, d / "policy.toml", d / "policy.toml.yedek"
     try:

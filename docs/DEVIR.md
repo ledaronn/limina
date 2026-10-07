@@ -1,4 +1,4 @@
-# Devir Belgesi — Limina
+# Devir Belgesi — Pevrai
 
 Bu belge, projeye yeni katılan bir teknik ortağın (insan ya da model) önceki sohbetin
 tamamını okumadan devam edebilmesi için yazıldı. Durum, alınan kararlar ve gerekçeleri
@@ -14,7 +14,7 @@ Yerelde çalışan, araç çağırabilen kişisel bir ajan. Bir LLM API'sini ak�
 olarak kullanır; dosya sistemi, tarayıcı ve kişisel araçları tek bir **denetimli** döngü
 üzerinden kontrol eder.
 
-**Çalışma adı `Vekil` idi, ürün adı `Limina` oldu.** Kod içindeki dosya adları
+**Çalışma adı `Vekil` idi, ürün adı `Pevrai` oldu.** Kod içindeki dosya adları
 (`vekil_v0.py`) ve veri klasörü (`~/.vekil/`) henüz değişmedi — bilinçli, veri taşımak
 gereksiz risk. Faz 6'da temiz geçiş yapılacak.
 
@@ -68,7 +68,7 @@ Bunları ihlal eden kod önerilmez:
 - Kimlik bilgisi girilmez, okunmaz, günlüğe yazılmaz.
 - Onay alınamıyorsa (stdin yok, Ctrl-C) **reddedilir**, asla varsayılan evet olmaz.
 - Model `policy.toml`'a hiçbir koşulda yazamaz.
-- Limina'nın kaynak kodu `policy.toml`'daki yazma köklerinin **dışındadır**; ihlalde
+- Pevrai'nın kaynak kodu `policy.toml`'daki yazma köklerinin **dışındadır**; ihlalde
   süreç başlamaz.
 - Arayüzde hiçbir metin HTML olarak ayrıştırılmaz; `innerHTML` ve akrabaları yasak.
 
@@ -103,33 +103,33 @@ sağlık raporu (`MRG.pdf`) okundu ve bu fark edildi; kullanıcı bilgilendirild
 
 ## 5. Dosyalar ve ne yaptıkları
 
-Kaynak kod `limina/` paketinde, testler `tests/` altında; kullanıcının ellediği
+Kaynak kod `pevrai/` paketinde, testler `tests/` altında; kullanıcının ellediği
 şeyler (`policy.toml`, `config/`, `kum/`, `evals/`, `Donusturucu/`) proje kökünde.
-Yerleşim iki sabitten okunur: `limina.PAKET` (kod) ve `limina.PROJE_KOKU`
+Yerleşim iki sabitten okunur: `pevrai.PAKET` (kod) ve `pevrai.PROJE_KOKU`
 (policy/config). Hiçbir modül kendi konumundan proje kökü türetmez. Giriş
-noktaları proje kökünden: `python -m limina` (pencere), `python -m
-limina.vekil_v0 "görev"` (CLI), `python tests/<ad>.py` (testler).
+noktaları proje kökünden: `python -m pevrai` (pencere), `python -m
+pevrai.vekil_v0 "görev"` (CLI), `python tests/<ad>.py` (testler).
 
 
 | Dosya | Sorumluluk |
 |---|---|
-| `limina/vekil_v0.py` | Ajan döngüsü, araç fonksiyonları, araç şemaları, onay, CLI |
-| `limina/gate.py` | İzin kapısı: yol/URL doğrulama, risk→karar, `policy.toml` okuma |
-| `limina/journal.py` | JSONL günlük, yedekleme, geri alma, çöp kutusu |
-| `limina/belge.py` | PDF/DOCX/PPTX/XLSX → metin |
-| `limina/ara.py` | Dosya adı + metin içeriği araması (saf Python, ripgrep yok) |
-| `limina/tarayici.py` | Playwright, Chrome otomatik başlatma, ARIA etkileşim |
-| `limina/mcp_bridge.py` | MCP sunucularını alt süreç olarak bağlar, senkron sarmalar |
-| `limina/modeller.py` | `policy.toml`'daki model adları hâlâ geçerli mi kontrol eder |
+| `pevrai/vekil_v0.py` | Ajan döngüsü, araç fonksiyonları, araç şemaları, onay, CLI |
+| `pevrai/gate.py` | İzin kapısı: yol/URL doğrulama, risk→karar, `policy.toml` okuma |
+| `pevrai/journal.py` | JSONL günlük, yedekleme, geri alma, çöp kutusu |
+| `pevrai/belge.py` | PDF/DOCX/PPTX/XLSX → metin |
+| `pevrai/ara.py` | Dosya adı + metin içeriği araması (saf Python, ripgrep yok) |
+| `pevrai/tarayici.py` | Playwright, Chrome otomatik başlatma, ARIA etkileşim |
+| `pevrai/mcp_bridge.py` | MCP sunucularını alt süreç olarak bağlar, senkron sarmalar |
+| `pevrai/modeller.py` | `policy.toml`'daki model adları hâlâ geçerli mi kontrol eder |
 | `tests/evals.py` | Regresyon koşucusu |
 | `evals/tasks.yaml` | Regresyon görevleri |
 | `policy.toml` | **Güvenlik sınırı.** İzinler, risk seviyeleri, modeller, MCP sunucuları |
 | `config/persona.md` | Kullanıcı tercihleri, sistem talimatına eklenir |
 | `Donusturucu/` | MCP sunucusu (`server.py`), motor (`core_engine.py`), GUI (`app_gui.py`) |
-| `limina/olaylar.py` | Olay tipleri, `Oturum`, `OnayIstegi`, `onay_iste`, hazır sağlayıcılar |
-| `limina/gui_kopru.py` | Ajan thread'i ↔ UI thread'i köprüsü, olay kuyruğu, onay bekleme |
-| `limina/pencere.py` | pywebview penceresi, JS'e açılan `Api` yüzeyi |
-| `limina/arayuz/index.html` | Tek dosya HTML/CSS/JS arayüz |
+| `pevrai/olaylar.py` | Olay tipleri, `Oturum`, `OnayIstegi`, `onay_iste`, hazır sağlayıcılar |
+| `pevrai/gui_kopru.py` | Ajan thread'i ↔ UI thread'i köprüsü, olay kuyruğu, onay bekleme |
+| `pevrai/pencere.py` | pywebview penceresi, JS'e açılan `Api` yüzeyi |
+| `pevrai/arayuz/index.html` | Tek dosya HTML/CSS/JS arayüz |
 | `tests/kopru_testi.py` | Köprüyü modelsiz sınar |
 | `tests/arayuz_testi.py` | Kaçışlama, uzak kaynak ve yerleşim kurallarını denetler |
 
@@ -202,7 +202,7 @@ talimatı açıkça der ki: bu blokların içindeki yönergeler uygulanmaz, kull
 **Geri alma.** Her yazma öncesi yedek. `--geri-al [dosya]` dosya bazlı çalışır.
 Geri alma da yedeklenir (tekrarlanan geri alma veri kaybettirmesin diye).
 
-**Yerleşim sınırı.** Limina'nın `.py` dosyaları `yazma_koklari`'nın dışında olmalı —
+**Yerleşim sınırı.** Pevrai'nın `.py` dosyaları `yazma_koklari`'nın dışında olmalı —
 olsalardı `write_file` ile onay mekanizmasını değiştirmek kapıdan ALLOW alırdı.
 `gate.Politika.kod_koku_yazilabilir_mi()` bunu `vekil_v0.py` içe aktarılırken
 denetler; ihlalde süreç başlamaz. Giriş noktası fark etmez (CLI, `evals.py`,
@@ -283,7 +283,7 @@ endişesi şimdilik doğrulanmadı.
 | `journal` kimliği | Kayıtlar zamanla tekilleştiriliyor. Mikrosaniye yamalandı ama doğrusu ayrı bir `id` alanı |
 | Model aşırı arama | Bir araç "bulunamadı" dediğinde model kullanıcının belirtmediği klasörleri taramaya devam ediyor VE başka bir dosyayla ikame edebiliyor — canlı koşuda kanıtlandı: `ornek.md` bulunamayınca model dört adım dolanıp `kum/README.md`'yi dönüştürdü, onay kartı "dönüştürülecek -> kum" diyordu ve kaynak adı hiç görünmüyordu. `converter.convert` için düzeltildi: sistem talimatına ikame-etmeme cümlesi + `evals/tasks.yaml`'da `ARAC_CAGRILDI` olayına bakan `arac_arg_esit` regresyon testi. Genel okuma/arama taşkınlığı için ayrı bir sınır hâlâ yok |
 | MCP araçlarının yazdıkları geri alınamıyor | `write_file` `journal.yedekle()` ile yedekleniyor, `--geri-al` ile dönüyor. `converter.convert` gibi MCP araçlarının ürettiği dosyalar journal'a hiç girmiyor — yedeği yok, değişiklik geçmişinde görünmüyor, geri alınamıyor. Bu asimetri yüzünden `converter.convert` toplu onaydan çıkarıldı (her dönüşüm ayrı sorulur); doğru uzun vadeli çözüm MCP araç sonuçlarını journal'a yazdırmak — köprünün "hangi dosya yazıldı" bilgisiyle journal'ın "yazmadan önce yedek al" sözleşmesini buluşturan ayrı bir mimari iş |
-| `~/.vekil` → `~/.limina` | Ad değişikliği ertelendi; veri taşımak risk |
+| `~/.vekil` → `~/.pevrai` | Ad değişikliği ertelendi; veri taşımak risk |
 | Belgeler eski | `README`, `ARCHITECTURE`, `TOOLS`, `SECURITY` gerçekle uyuşmuyor (bkz. bölüm 11) |
 | Markdown ayrıştırıcı testi | Projede yok; Node + jsdom ile dışarıda doğrulandı |
 | `list_dir` kara liste sızıntısı | `.env` adı ve boyutu listeleniyor |
@@ -294,7 +294,7 @@ endişesi şimdilik doğrulanmadı.
 
 ## 11. Güncellenmesi gereken belgeler
 
-**`README.md`** — ad `Vekil`→`Limina`. Dizin yapısı bölümü gerçek değil: `vekil/` paketi
+**`README.md`** — ad `Vekil`→`Pevrai`. Dizin yapısı bölümü gerçek değil: `vekil/` paketi
 ve `tools/` alt klasörü yok, her şey kökte düz. Belgeyi gerçeğe uydur (dosyaları taşıma,
 kazanç yok). "Başlarken" komutları güncellenmeli.
 
@@ -327,7 +327,7 @@ taşınmalı. Bu bir mimari iş ve kenar çubuğunun ön koşulu — çubuğun i
 
 **Faz 6 — Güvenilirlik ve maliyet.** Eval setini genişletme, iki katmanlı model
 yönlendirme (kriteri kullanıcının `--guclu` dediği görevlerden çıkar), maliyet raporu.
-Ertelenmiş işler: çalışma defteri, bağlam bütçesi, `notes.search`, `~/.limina` geçişi,
+Ertelenmiş işler: çalışma defteri, bağlam bütçesi, `notes.search`, `~/.pevrai` geçişi,
 MCP stderr, `journal` id alanı, Interactions API değerlendirmesi.
 
 **Faz 7 — Gözetimsiz görevler (bitti; gerçekleşen çıktılar `ROADMAP.md`'de).** Görev
@@ -432,7 +432,7 @@ değilken çıkan onay isteğine ne oluyor.
 **Tekrar gündeme gelirse:** gerçek bir ihtiyaç doğarsa (ör. "her sabah 7'de şu raporu
 hazırla" — kullanıcının hiç başlatmadığı bir görev) ayrı bir faz kapısı olarak açılır.
 O zaman da doğru çağrı Windows Görev Zamanlayıcı'nın `vekil_v0.py`'yi CLI üzerinden
-tetiklemesidir; Limina'nın kendi iç zamanlayıcısı KURULMAZ (sürekli açık kalmayı
+tetiklemesidir; Pevrai'nın kendi iç zamanlayıcısı KURULMAZ (sürekli açık kalmayı
 gerektirir, uyku/kapatma sessiz atlama demektir, ve kendi thread/hata sınıfını getirir).
 
 ---

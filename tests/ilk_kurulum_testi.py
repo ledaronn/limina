@@ -17,11 +17,11 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-_GECICI = Path(tempfile.mkdtemp(prefix="limina_kurulum_"))
-os.environ["LIMINA_VEKIL_KOK"] = str(_GECICI / ".vekil")   # journal.INEN de buraya
+_GECICI = Path(tempfile.mkdtemp(prefix="pevrai_kurulum_"))
+os.environ["PEVRAI_VEKIL_KOK"] = str(_GECICI / ".vekil")   # journal.INEN de buraya
 
-from limina import KAYNAK_KOK, ayarlar, ceviri, kurulum  # noqa: E402
-from limina.gate import ALLOW, Politika  # noqa: E402
+from pevrai import KAYNAK_KOK, ayarlar, ceviri, kurulum  # noqa: E402
+from pevrai.gate import ALLOW, Politika  # noqa: E402
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -40,7 +40,7 @@ def ortam() -> Path:
     ev = Path(tempfile.mkdtemp(prefix="ev_", dir=_GECICI))
     for ad in ("Downloads", "Desktop", "Documents"):
         (ev / ad).mkdir()
-    calisma = ev / "Limina"
+    calisma = ev / "Pevrai"
     metin = (KAYNAK_KOK / "policy.example.toml").read_text(encoding="utf-8")
     metin = (metin.replace("{PROJE}", kok.as_posix()).replace("{EV}", ev.as_posix())
                   .replace("{CALISMA}", calisma.as_posix()))
@@ -49,7 +49,7 @@ def ortam() -> Path:
     (kok / "policy.toml").write_text(metin, encoding="utf-8")
     calisma.mkdir()
     (ev / ".vekil" / "indirilen").mkdir(parents=True)
-    from limina import journal
+    from pevrai import journal
     journal.INEN = ev / ".vekil" / "indirilen"   # sablondaki {EV}/.vekil/indirilen ile ayni
     ayarlar.KOK = kok
     ayarlar.POLICY = kok / "policy.toml"
@@ -64,21 +64,21 @@ def main() -> int:
     print("\n1) Sablon: kum yok, calisma klasoru yer tutucusu")
     sablon = (KAYNAK_KOK / "policy.example.toml").read_text(encoding="utf-8")
     dogrula("{PROJE}/kum" not in sablon and "{CALISMA}" in sablon, "sablonda proje ici kum yok, {CALISMA} var")
-    dogrula(kurulum.CALISMA == Path.home() / "Limina", "varsayilan calisma klasoru ~/Limina")
+    dogrula(kurulum.CALISMA == Path.home() / "Pevrai", "varsayilan calisma klasoru ~/Pevrai")
     dogrula("{CALISMA}" not in kurulum._doldur("{CALISMA}"), "kurulum yer tutucuyu dolduruyor")
 
     print("\n2) Calisma klasoru degistirilir: her yer (okuma, yazma, yerel kok, profiller) tasinir")
     ev = ortam()
     pol = Politika(ayarlar.POLICY)
-    dogrula(pol.calisma == (ev / "Limina").resolve(), "baslangic calisma klasoru ~/Limina")
-    dogrula(pol.profiller["gozetimsiz"]["yazma_koklari"] == [(ev / "Limina").resolve()],
+    dogrula(pol.calisma == (ev / "Pevrai").resolve(), "baslangic calisma klasoru ~/Pevrai")
+    dogrula(pol.profiller["gozetimsiz"]["yazma_koklari"] == [(ev / "Pevrai").resolve()],
             "profil calisma klasorunu kapsiyor")
     yeni = ev / "Projelerim"; yeni.mkdir()
     dogrula(ayarlar.calisma_klasoru_degistir(str(yeni)) is None, "baska klasor secildi")
     pol = Politika(ayarlar.POLICY)
     metin = ayarlar.POLICY.read_text(encoding="utf-8")
     dogrula(pol.calisma == yeni.resolve() and yeni.resolve() in pol.okuma, "yeni klasor okuma+yazma koku")
-    dogrula((ev / "Limina").resolve() not in pol.okuma + pol.yazma, "eski klasor hicbir kokte kalmadi")
+    dogrula((ev / "Pevrai").resolve() not in pol.okuma + pol.yazma, "eski klasor hicbir kokte kalmadi")
     dogrula(pol.profiller["gozetimsiz"]["yazma_koklari"] == [yeni.resolve()]
             and pol.profiller["eval_testi"]["yazma_koklari"] == [yeni.resolve()],
             "gorev profilleri de yeni klasore tasindi")
@@ -95,16 +95,16 @@ def main() -> int:
     dogrula(yeni.resolve() not in pol.okuma, "okuma kokunden de cikti")
     dogrula(pol.profiller["gozetimsiz"]["yazma_koklari"] == [], "profil bos kapsamla yuklendi (patlamadi)")
     dogrula(yeni.is_dir(), "klasorun kendisine dokunulmadi")
-    dogrula(ayarlar.calisma_klasoru_degistir(str(ev / "Limina")) is None, "sonradan yeniden eklendi")
+    dogrula(ayarlar.calisma_klasoru_degistir(str(ev / "Pevrai")) is None, "sonradan yeniden eklendi")
     pol = Politika(ayarlar.POLICY)
-    dogrula(pol.calisma == (ev / "Limina").resolve() and (ev / "Limina").resolve() in pol.okuma,
+    dogrula(pol.calisma == (ev / "Pevrai").resolve() and (ev / "Pevrai").resolve() in pol.okuma,
             "geri eklenen klasor okuma+yazma")
     dogrula(ayarlar.calisma_klasoru_degistir(str(ev / "olmayan")) is not None, "olmayan klasor reddedildi")
     dogrula(ayarlar.calisma_klasoru_degistir(str(ayarlar.KOK)) is not None,
             "proje (kod) koku calisma klasoru olamaz")
 
     print("\n4) Yazma kokunu Ayarlar'dan silmek artik geri alinmiyor (profil kilitlemiyor)")
-    hata = ayarlar.kok_sil("yazma", str(ev / "Limina"))
+    hata = ayarlar.kok_sil("yazma", str(ev / "Pevrai"))
     dogrula(hata is None, f"sablondaki (ileri egik cizgili) yazma koku panelden silindi: {hata}")
     dogrula(Politika(ayarlar.POLICY).calisma is None, "silindi")
 
@@ -113,12 +113,12 @@ def main() -> int:
     d = ayarlar.kurulum_durumu()
     dogrula(d["ok"] and d["gerekli"], "yeni kurulumda ekran gerekli")
     dogrula(d["dil"] == "en", "varsayilan dil Ingilizce")
-    dogrula(d["calisma"] == str((ev / "Limina").resolve()), "calisma klasoru gosterildi")
+    dogrula(d["calisma"] == str((ev / "Pevrai").resolve()), "calisma klasoru gosterildi")
     ek = {k["ad"]: k["secili"] for k in d["ek_klasorler"]}
     dogrula(ek == {"Downloads": True, "Desktop": True, "Documents": False}, f"ek okuma klasorleri: {ek}")
     paket = {p["ad"]: p["acik"] for p in d["paketler"]}
     dogrula("tarayici" in paket and "ekip" not in paket, f"secilebilir paketler (gizli yok): {sorted(paket)}")
-    (ev / "Limina" / ".gitkeep").unlink(missing_ok=True)
+    (ev / "Pevrai" / ".gitkeep").unlink(missing_ok=True)
     hatalar = ayarlar.kurulum_uygula({
         "dil": "tr", "tema": "acik", "ekip_gorunumu": "kart",
         "calisma": {"tur": "yok"},
@@ -132,23 +132,23 @@ def main() -> int:
     dogrula(a["genel"]["kurulum_tamam"] and not ayarlar.kurulum_gerekli(), "kurulum tamam isaretlendi")
     pol = Politika(ayarlar.POLICY)
     dogrula(pol.calisma is None, "calisma klasoru yok secildi")
-    dogrula(not (ev / "Limina").exists(), "kendiliginden acilmis BOS varsayilan klasor kaldirildi")
+    dogrula(not (ev / "Pevrai").exists(), "kendiliginden acilmis BOS varsayilan klasor kaldirildi")
     dogrula((ev / "Downloads").resolve() not in pol.okuma and (ev / "Documents").resolve() in pol.okuma
             and (ev / "Desktop").resolve() in pol.okuma, "ek okuma klasorleri secime gore")
     dogrula("tarayici" in pol.kaldirilan, "tarayici paketi kapatildi")
 
     print("\n6) Ilk kurulum: ozel klasor; dolu varsayilan klasor silinmez")
     ev = ortam()
-    (ev / "Limina" / "notum.txt").write_text("x", encoding="utf-8")
+    (ev / "Pevrai" / "notum.txt").write_text("x", encoding="utf-8")
     ozel = ev / "Isler"; ozel.mkdir()
     hatalar = ayarlar.kurulum_uygula({"calisma": {"tur": "ozel", "yol": str(ozel)}})
     dogrula(hatalar == [] and Politika(ayarlar.POLICY).calisma == ozel.resolve(), f"ozel klasor: {hatalar}")
-    dogrula((ev / "Limina" / "notum.txt").exists(), "icinde dosya olan eski klasore dokunulmadi")
+    dogrula((ev / "Pevrai" / "notum.txt").exists(), "icinde dosya olan eski klasore dokunulmadi")
     hatalar = ayarlar.kurulum_uygula({"calisma": {"tur": "ozel", "yol": ""}})
     dogrula(hatalar != [] and ayarlar.arayuz_oku()["genel"]["kurulum_tamam"],
             "secilmemis ozel klasor hata verir ama kurulum kilitlenmez")
     hatalar = ayarlar.kurulum_uygula({"calisma": {"tur": "varsayilan"}})
-    dogrula(hatalar == [] and Politika(ayarlar.POLICY).calisma == (ev / "Limina").resolve(),
+    dogrula(hatalar == [] and Politika(ayarlar.POLICY).calisma == (ev / "Pevrai").resolve(),
             "varsayilana geri donuldu")
 
     print("\n7) Mevcut kurulumda kurulum.politikayi_hazirla klasor ACMAZ")
@@ -157,8 +157,8 @@ def main() -> int:
     kurulum.PERSONA.parent.mkdir(parents=True, exist_ok=True); kurulum.PERSONA.write_text("", encoding="utf-8")
     try:
         kurulum.politikayi_hazirla(sessiz=True)
-        dogrula(not (Path.home() / "Limina").exists() or (Path.home() / "Limina").stat().st_mtime < _BASLANGIC,
-                "mevcut policy.toml varken ~/Limina olusturulmadi")
+        dogrula(not (Path.home() / "Pevrai").exists() or (Path.home() / "Pevrai").stat().st_mtime < _BASLANGIC,
+                "mevcut policy.toml varken ~/Pevrai olusturulmadi")
     finally:
         kurulum.POLICY, kurulum.PERSONA = eski
 

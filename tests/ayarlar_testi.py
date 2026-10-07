@@ -14,16 +14,16 @@ import tempfile
 import tomllib
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import PAKET, PROJE_KOKU
-from limina import ayarlar
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import PAKET, PROJE_KOKU
+from pevrai import ayarlar
 
 # Mesaj metinleri KAYNAK DILDE (Turkce) dogrulanir: ceviri.dil() normalde
 # kullanicinin config/arayuz.toml ayarini okur, testin sonucu kisisel bir
 # ayara bagli olamaz (Ingilizce secili bir makinede bu dosya kirilirdi).
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
-from limina.gate import (tavan_karari, tur_karari, durum_karari, kok_karari,
+from pevrai.gate import (tavan_karari, tur_karari, durum_karari, kok_karari,
                   butce_karari, devam_karari)
 
 HATA = 0
@@ -86,7 +86,7 @@ odeme = "yasak"
 
 def ortam_kur() -> Path:
     """Gecici bir proje kokü: policy.toml + gate.py kopyasi."""
-    kok = Path(tempfile.mkdtemp(prefix="limina_ayar_")).resolve()   # 8.3 kisa ad cozulsun (urunde PROJE_KOKU da cozulmus)
+    kok = Path(tempfile.mkdtemp(prefix="pevrai_ayar_")).resolve()   # 8.3 kisa ad cozulsun (urunde PROJE_KOKU da cozulmus)
     (kok / "kum").mkdir()
     (kok / "policy.toml").write_text(
         BASLANGIC.format(kok=(kok / "kum").as_posix()), encoding="utf-8")
@@ -188,7 +188,7 @@ def main() -> int:
     # istisna oldugunu gorebilmek icin varsayilani geri "sor" yapiyoruz.
     ayarlar.eylem_yaz("", "indirme", "sor")
     ayarlar.eylem_yaz("wikipedia.org", "indirme", "izin")
-    from limina.gate import ALLOW, ASK, Politika
+    from pevrai.gate import ALLOW, ASK, Politika
     pol = Politika(ayarlar.POLICY)
     dogrula(pol.karar("browser_download", {"name": "a.pdf"},
                       "https://tr.wikipedia.org/x").sonuc == ALLOW,
@@ -280,7 +280,7 @@ def main() -> int:
         dogrula(ayarlar.sayi_yaz(bolum, anahtar, kotu) is not None, f"reddedildi: {anahtar}={kotu!r}")
     dogrula(oku()["dongu"]["azami_adim"] == 12, "reddedilenler dosyaya DOKUNMADI")
 
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
     pol2 = _P(ayarlar.POLICY)
     dogrula(pol2.gunluk_tavan == {"varsayilan": 800, "guclu": 0}, "Politika tavanlari okuyor")
     # [dongu] artik gate.Politika tarafindan hic okunmuyor (bkz. bolum 20:
@@ -336,7 +336,7 @@ def main() -> int:
     dogrula(oku()["model"]["persona_acik"] is False, "dosyada false")
     dogrula(ayarlar.bayrak_yaz("model", "persona_acik", "hayir") is not None, "metin reddedildi")
     dogrula(ayarlar.bayrak_yaz("model", "uydurma", True) is not None, "taninmayan bayrak")
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
     dogrula(_P(ayarlar.POLICY).persona_acik is False, "Politika bayragi okuyor")
 
     bolum18_tavan_karari()
@@ -411,10 +411,10 @@ def bolum19_tur_karari() -> None:
 def bolum20_mod_yuklemesi() -> None:
     print("\n20) Efor modu yuklemesi (gate.Politika, gercek TOML uzerinden)")
     import tempfile as _tf
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
 
     def gecici_policy(icerik: str) -> Path:
-        d = Path(_tf.mkdtemp(prefix="limina_mod_"))
+        d = Path(_tf.mkdtemp(prefix="pevrai_mod_"))
         yol = d / "policy.toml"
         yol.write_text(icerik, encoding="utf-8")
         return yol
@@ -457,11 +457,11 @@ def bolum21_mod_kotasi() -> None:
     import tempfile as _tf
     from datetime import datetime
 
-    from limina import journal
-    from limina.gate import ALLOW, Politika as _P
-    from limina.pencere import Api
+    from pevrai import journal
+    from pevrai.gate import ALLOW, Politika as _P
+    from pevrai.pencere import Api
 
-    gecici_kok = Path(_tf.mkdtemp(prefix="limina_kota_"))
+    gecici_kok = Path(_tf.mkdtemp(prefix="pevrai_kota_"))
     gercek_kota = journal.KOTA
     journal.KOTA = gecici_kok / "kota.json"
 
@@ -539,7 +539,7 @@ def bolum21_mod_kotasi() -> None:
 
 def bolum22_dis_kaynak() -> None:
     print("\n22) MCP disi kaynak sarmalama (saf, model kutuphanesi gerekmez)")
-    from limina.mcp_bridge import dis_kaynak, MAX_MCP_CIKTI
+    from pevrai.mcp_bridge import dis_kaynak, MAX_MCP_CIKTI
 
     kisa = dis_kaynak("converter", "convert", "Donusturuldu: a.md -> a.pdf")
     dogrula(kisa.startswith('<untrusted_content source="mcp:converter" tool="convert">\n'),
@@ -571,9 +571,9 @@ def bolum23_journal_geri_alma() -> None:
     journal.KOTA deseniyle ayni), gercek ~/.vekil'e DOKUNULMAZ.
     """
     print("\n23) Yedek/geri-al mekanizmasi (journal.py + vekil_v0.write_file)")
-    from limina import journal
-    from limina import vekil_v0
-    gecici_kok = Path(tempfile.mkdtemp(prefix="limina_journal_"))
+    from pevrai import journal
+    from pevrai import vekil_v0
+    gecici_kok = Path(tempfile.mkdtemp(prefix="pevrai_journal_"))
     eskiler = (journal.KOK, journal.KAYIT, journal.YEDEK, journal.COP)
     journal.KOK = gecici_kok
     journal.KAYIT = gecici_kok / "journal.jsonl"
@@ -640,8 +640,8 @@ def bolum24_yikici_yazma() -> None:
     ELLE True/False veriyordu, bu fonksiyonun kendi boyut hesabindan gecmiyordu.
     """
     print("\n24) Yikici yazma tespiti (vekil_v0._yikici_yazma_mi, saf fonksiyon)")
-    from limina import vekil_v0
-    gecici_kok = Path(tempfile.mkdtemp(prefix="limina_yikici_"))
+    from pevrai import vekil_v0
+    gecici_kok = Path(tempfile.mkdtemp(prefix="pevrai_yikici_"))
     try:
         yikici_mi = vekil_v0._yikici_yazma_mi
 
@@ -714,7 +714,7 @@ def bolum25_modlar() -> None:
         dogrula(ayarlar.mod_yaz("derin", "adim", 15) is None, "derin.adim yazildi")
         dogrula(oku()["modlar"]["derin"]["adim"] == 15, "dosyada gorunuyor")
 
-        from limina.gate import Politika as _P
+        from pevrai.gate import Politika as _P
         pol = _P(ayarlar.POLICY)
         dogrula(pol.modlar["hizli"]["model"] == "guclu",
                 "Politika hizli.model = guclu okuyor (yazilan GERCEKTEN etkili)")
@@ -782,8 +782,8 @@ def bolum27_durum_dosyasi() -> None:
     print("\n27) Durum dosyasi yazimi (vekil_v0._durum_dosyasi_yaz, model gerekmez)")
     import tempfile as _tf
     import json as _json
-    from limina import vekil_v0
-    gecici_kok = Path(_tf.mkdtemp(prefix="limina_durum_"))
+    from pevrai import vekil_v0
+    gecici_kok = Path(_tf.mkdtemp(prefix="pevrai_durum_"))
     gercek_durum_kok = vekil_v0.DURUM_KOK
     vekil_v0.DURUM_KOK = gecici_kok / "durum"
     try:
@@ -876,9 +876,9 @@ def bolum28_durum_kaydet() -> None:
     """
     print("\n28) Durum kaydi (vekil_v0._durum_kaydet, model SAHTE fonksiyonla degistirildi)")
     import tempfile as _tf
-    from limina import vekil_v0
-    from limina import journal as _journal
-    gecici_kok = Path(_tf.mkdtemp(prefix="limina_durumkaydet_"))
+    from pevrai import vekil_v0
+    from pevrai import journal as _journal
+    gecici_kok = Path(_tf.mkdtemp(prefix="pevrai_durumkaydet_"))
     eskiler = (_journal.KOK, _journal.KAYIT, _journal.YEDEK, _journal.COP)
     _journal.KOK = gecici_kok
     _journal.KAYIT = gecici_kok / "journal.jsonl"
@@ -893,7 +893,7 @@ def bolum28_durum_kaydet() -> None:
             self.args = args
 
     class _SahteYanit:
-        # limina.model.Yanit'in _durum_kaydet'in okudugu kismi: .cagrilar
+        # pevrai.model.Yanit'in _durum_kaydet'in okudugu kismi: .cagrilar
         def __init__(self, cagrilar):
             self.cagrilar = cagrilar
 
@@ -988,7 +988,7 @@ def bolum30_devam_taraf() -> None:
     print("\n30) Devam tarafi (_uzlastirma_satiri / _devam_gorevi_kur / "
           "_durum_oku / devam_et kok reddi, model gerekmez)")
     import tempfile as _tf
-    from limina import vekil_v0
+    from pevrai import vekil_v0
     # --- _uzlastirma_satiri ---
     dogrula(vekil_v0._uzlastirma_satiri([], ["D:\\kum\\a.txt"]) == "",
             "yapilanlar bossa uzlastirma da bos")
@@ -1015,7 +1015,7 @@ def bolum30_devam_taraf() -> None:
     dogrula("D:\\kum\\k1.txt" in gorev_metni, "dogrulanan_yazmalar gorev metninde GORUNUYOR")
 
     # --- _durum_oku: _durum_dosyasi_yaz ile round-trip, DOSYA SEVIYESINDE ---
-    gecici_kok = Path(_tf.mkdtemp(prefix="limina_devam_"))
+    gecici_kok = Path(_tf.mkdtemp(prefix="pevrai_devam_"))
     gercek_durum_kok = vekil_v0.DURUM_KOK
     vekil_v0.DURUM_KOK = gecici_kok / "durum"
     try:
@@ -1064,10 +1064,10 @@ def bolum31_profil_yuklemesi() -> None:
     gercek TOML uzerinden (bolum 20'nin mod-yuklemesi deseniyle ayni)."""
     print("\n31) Gorev profili yuklemesi (gate.Politika, gercek TOML uzerinden)")
     import tempfile as _tf
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
 
     def gecici_policy(icerik: str) -> Path:
-        d = Path(_tf.mkdtemp(prefix="limina_profil_"))
+        d = Path(_tf.mkdtemp(prefix="pevrai_profil_"))
         (d / "kum").mkdir()
         yol = d / "policy.toml"
         yol.write_text(icerik.format(kok=(d / "kum").as_posix()), encoding="utf-8")
@@ -1117,7 +1117,7 @@ def bolum31_profil_yuklemesi() -> None:
     hata_bekle('\n[profiller.kotu2]\naraclar = ["olmayan_arac"]\n',
                "taninmayan/siniflandirilmamis", "siniflandirilmamis arac")
     # Kapsam disindaki kok profili patlatmaz, DUSURULUR (daraltma): kullanici
-    # bir yazma kokunu cikarinca onu anan profil yuzunden Limina kilitlenmesin.
+    # bir yazma kokunu cikarinca onu anan profil yuzunden Pevrai kilitlenmesin.
     pol_disari = _P(gecici_policy(TABAN + (
         '\n[profiller.kotu3]\naraclar = ["write_file"]\n'
         'yazma_koklari = ["C:/tamamen/baska/bir/yer", "{kok}/alt"]\n')))
@@ -1141,9 +1141,9 @@ def bolum32_profil_karar_entegrasyonu() -> None:
     model cagrisina HIC gitmeden reddeder."""
     print("\n32) Profil - kapi entegrasyonu (gate.Politika.karar + vekil_v0.calistir reddi)")
     import tempfile as _tf
-    from limina.gate import ALLOW, ASK, DENY, Politika as _P
+    from pevrai.gate import ALLOW, ASK, DENY, Politika as _P
 
-    d = Path(_tf.mkdtemp(prefix="limina_profilkarar_"))
+    d = Path(_tf.mkdtemp(prefix="pevrai_profilkarar_"))
     (d / "kum").mkdir()
     kok = (d / "kum").as_posix()
     policy_metni = (
@@ -1195,7 +1195,7 @@ def bolum32_profil_karar_entegrasyonu() -> None:
             f"DENY (yazma kokleri disinda) profille de ACILMAZ: {karar_yabanci.sonuc}")
 
     # vekil_v0.calistir: taninmayan profille model cagrisina HIC gitmeden reddediyor mu?
-    from limina import vekil_v0
+    from pevrai import vekil_v0
     onceki_politika = vekil_v0.POLITIKA
     vekil_v0.POLITIKA = pol
     try:
@@ -1240,7 +1240,7 @@ def bolum33_istek_butcesi() -> None:
     # GERCEK policy.toml SALT OKUNUR bicimde aciliyor: taban degerlerin
     # modlarin ruhuna uydugunu (hizli < dengeli < derin < azami) dogrulamak
     # icin gercek dosyaya bakmak sart, fixture'a bakmak bunu olcmez.
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
     gercek = _P(PROJE_KOKU / "policy.toml")
     istekler = [gercek.modlar[m]["istek"] for m in ("hizli", "dengeli", "derin", "azami")]
     dogrula(istekler == sorted(istekler) and len(set(istekler)) == 4,
@@ -1263,7 +1263,7 @@ def bolum33_istek_butcesi() -> None:
 
 
 def _bolum33_panel(kok: Path) -> None:
-    from limina.gate import ALLOW, Politika as _P
+    from pevrai.gate import ALLOW, Politika as _P
     dogrula(ayarlar.mod_yaz("derin", "istek", 25) is None, "panelden istek yazildi")
     dogrula(oku()["modlar"]["derin"]["istek"] == 25, "dosyada 25")
     dogrula(_P(ayarlar.POLICY).modlar["derin"]["istek"] == 25,
@@ -1335,8 +1335,8 @@ def bolum34_devam_karari() -> None:
 
     # --- Politika: azami_devam yuklemesi, FAIL-CLOSED ---
     import tempfile as _tf
-    from limina.gate import ALLOW, Politika as _P
-    d = Path(_tf.mkdtemp(prefix="limina_devam_"))
+    from pevrai.gate import ALLOW, Politika as _P
+    d = Path(_tf.mkdtemp(prefix="pevrai_devam_"))
     try:
         (d / "kum").mkdir()
         taban = (
@@ -1381,8 +1381,8 @@ def bolum35_donus_ozeti() -> None:
     """
     print("\n35) Donus ozeti (vekil_v0.ozet_metni / _ozet_yaz)")
     import tempfile as _tf
-    from limina import vekil_v0
-    from limina import journal as _journal
+    from pevrai import vekil_v0
+    from pevrai import journal as _journal
     # --- ozet_metni SAF mi: model kutuphanesine hic dokunmuyor mu ---
     kayit = {
         "kimlik": "k1", "gorev": "ornek gorev", "mod": "dengeli",
@@ -1461,8 +1461,8 @@ def bolum35_donus_ozeti() -> None:
     # eslesiyor". Gorsel render pywebview penceresi acmadan sinanamaz; burada
     # sinanan sey olayin arayuze giden YOLU: gui_kopru arsive yaziyor mu (yani
     # sohbet yeniden acildiginda ozet kayboluyor mu) ve kimlik tasiniyor mu.
-    from limina import gui_kopru as _gk
-    from limina.olaylar import Olay as _Olay, OlayTipi as _OT
+    from pevrai import gui_kopru as _gk
+    from pevrai.olaylar import Olay as _Olay, OlayTipi as _OT
     sahte_sohbet = {"arsiv": [], "baslik": ""}
     kopru = _gk.Kopru.__new__(_gk.Kopru)          # __init__ calistirmadan
     kopru._aktif = None
@@ -1481,7 +1481,7 @@ def bolum35_donus_ozeti() -> None:
             "ozet markdown() ile ciziliyor — ham HTML enjekte EDILMIYOR")
 
     # --- KOTA DOLU halde de uretiliyor mu: model cagrisi HIC yapilmiyor ---
-    d = Path(_tf.mkdtemp(prefix="limina_ozet_"))
+    d = Path(_tf.mkdtemp(prefix="pevrai_ozet_"))
     eski_kok = vekil_v0.OZET_KOK
     try:
         vekil_v0.OZET_KOK = d / "ozet"
@@ -1505,7 +1505,7 @@ def bolum35_donus_ozeti() -> None:
                 "gecici .yeni dosyasi yok (atomik replace tamamlandi)")
 
         # Ozet koku journal.KOK altinda: ajanin YAZAMADIGI yer.
-        from limina.gate import Politika as _P
+        from pevrai.gate import Politika as _P
         gercek = _P(PROJE_KOKU / "policy.toml")
         ozet_kok = _journal.KOK / "ozet"
         dogrula(not any(ozet_kok == y or y in ozet_kok.parents for y in gercek.yazma),
@@ -1533,10 +1533,10 @@ def bolum36_sohbet_modu() -> None:
     """
     print("\n36) Sohbet modu (arac listesi bos profil)")
     import tempfile as _tf
-    from limina import vekil_v0
-    from limina.gate import Politika as _P, ASK as _ASK
+    from pevrai import vekil_v0
+    from pevrai.gate import Politika as _P, ASK as _ASK
 
-    d = Path(_tf.mkdtemp(prefix="limina_sohbet_"))
+    d = Path(_tf.mkdtemp(prefix="pevrai_sohbet_"))
     try:
         (d / "kum").mkdir()
         taban = (
@@ -1673,7 +1673,7 @@ def bolum36_sohbet_modu() -> None:
             "sohbet anahtari araclar_hepsi (panelle ayni yol) uzerinden gidiyor")
     dogrula('"sohbet"' not in arayuz.split("function gonder()")[0][-3000:],
             "arayuz profil ADINI bilmiyor — JS'ten keyfi profil secilemez")
-    from limina import pencere
+    from pevrai import pencere
     dogrula(not hasattr(pencere, "SOHBET_PROFILI"),
             "pencere.SOHBET_PROFILI kalkti: ikinci yol kapandi")
     import inspect
@@ -1685,10 +1685,10 @@ def bolum37_araclar_paneli() -> None:
     """Araclar paneli: KAPATIR, ACAMAZ; kapi degismez; sohbet basina."""
     print("\n37) Araclar paneli daraltmasi")
     import tempfile as _tf
-    from limina import vekil_v0
-    from limina import pencere
-    from limina import sohbet as _depo
-    from limina.olaylar import Oturum, OnayCevabi, daraltma_guncelle
+    from pevrai import vekil_v0
+    from pevrai import pencere
+    from pevrai import sohbet as _depo
+    from pevrai.olaylar import Oturum, OnayCevabi, daraltma_guncelle
 
     hepsi = vekil_v0._gorev_araclari(None)
     adlar = vekil_v0.gosterilen_araclar(hepsi)
@@ -1745,7 +1745,7 @@ def bolum37_araclar_paneli() -> None:
 
     # --- Api: panelden eklenemez, sohbet anahtari = hepsi kapali, yeni sohbet sifirlar ---
     eski_kok = _depo.KOK
-    _depo.KOK = Path(_tf.mkdtemp(prefix="limina_arac_"))
+    _depo.KOK = Path(_tf.mkdtemp(prefix="pevrai_arac_"))
     try:
         api = pencere.Api(pol)
         r = api.arac_ayarla("olmayan.arac", True)
@@ -1874,10 +1874,10 @@ def bolum38_paketler() -> None:
     Hepsi kendi gecici policy.toml'unda; gercek dosyaya dokunmaz."""
     print("\n38) Paketler (kaldir / geri ekle / MCP / siniflandirma)")
     import tempfile as _tf
-    from limina import paketler
-    from limina.gate import DENY, Politika
+    from pevrai import paketler
+    from pevrai.gate import DENY, Politika
 
-    kok = Path(_tf.mkdtemp(prefix="limina_paket_"))
+    kok = Path(_tf.mkdtemp(prefix="pevrai_paket_"))
     (kok / "kum").mkdir()
     eski = (ayarlar.KOK, ayarlar.POLICY, ayarlar.POLICY_YEDEK)
     ayarlar.KOK, ayarlar.POLICY, ayarlar.POLICY_YEDEK = kok, kok / "policy.toml", kok / "policy.toml.yedek"
@@ -1956,7 +1956,7 @@ def bolum38_paketler() -> None:
                 "butun bu yazmalar dosyanin bas yorumunu korudu")
 
         # --- kaldirilan paketin semasi MODELE GITMEZ (vekil_v0._gorev_araclari) ---
-        from limina import vekil_v0
+        from pevrai import vekil_v0
         ayarlar.paket_kaldir("tarayici")
         eski_pol = vekil_v0.POLITIKA
         vekil_v0.POLITIKA = Politika(ayarlar.POLICY)

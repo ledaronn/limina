@@ -1,14 +1,16 @@
-# Limina
+# Pevrai
+
+The name stands for **Personal Evolving Versatile Reasoning Artificial Intelligence**.
 
 **A personal AI assistant that works on your own computer, and asks before it acts.**
 
 You type a task in plain language: *"summarize the PDFs in my Downloads folder"*, *"rename these
-photos by date"*, *"research this topic and write a report"*. Limina reads your files, uses a
+photos by date"*, *"research this topic and write a report"*. Pevrai reads your files, uses a
 browser and works with documents to get it done. It only touches folders you allow, it asks you
 before anything risky, and every file change can be undone. Your chats, settings and backups stay
 on your machine; the only thing that leaves it is the text sent to the AI model you choose.
 
-![Limina asks before writing a file: the task, each step it took, and an approval card](docs/img/home.png)
+![Pevrai asks before writing a file: the task, each step it took, and an approval card](docs/img/home.png)
 
 > Türkçe: [docs/README.tr.md](docs/README.tr.md) · Design docs (Turkish): [docs/](docs/)
 
@@ -19,7 +21,7 @@ on your machine; the only thing that leaves it is the text sent to the AI model 
 - **Work with your files.** Read PDFs, Word, PowerPoint, Excel and CSV files, plus images
   and scanned pages via Windows OCR. Write, move, rename and trash files, and convert
   documents (e.g. DOCX → PDF). Every change goes to a journal and can be undone.
-- **Use the web.** Limina opens Chrome with its own profile and can read, click, fill forms and
+- **Use the web.** Pevrai opens Chrome with its own profile and can read, click, fill forms and
   download, but only on sites you allow. It never enters passwords or card details.
 - **Run a team of agents.** Hire several AI agents (each can use a different model) and give
   them one task together. You approve how the work is split, and each agent then works in a
@@ -40,7 +42,7 @@ on your machine; the only thing that leaves it is the text sent to the AI model 
 On first launch a short setup screen asks for:
 
 1. **Language.** English (default) or Turkish; you can switch any time.
-2. **Folders.** A *workspace folder* where the agent may read and write (default `~/Limina`;
+2. **Folders.** A *workspace folder* where the agent may read and write (default `~/Pevrai`;
    pick your own or have none), plus read-only folders such as Downloads and Desktop. No folder
    is mandatory.
 3. **Tools and plugins.** Turn off what you don't need. The model never even sees a disabled
@@ -58,7 +60,7 @@ can be changed later in Settings.
 
 ## Safety model — what it is and isn't
 
-- **Deny by default.** Every tool call passes through a permission gate (`limina/gate.py`)
+- **Deny by default.** Every tool call passes through a permission gate (`pevrai/gate.py`)
   before it runs. A tool that isn't classified in `policy.toml` never runs. Risky calls ask
   you first; nothing defaults to "yes".
 - **Path jail.** The agent can only read inside your *read roots* and write inside your
@@ -73,11 +75,12 @@ can be changed later in Settings.
 
 ## Download
 
-**[⬇ Download Limina for Windows](https://github.com/ledaronn/limina/releases/latest)**: open the
-latest release and run `Limina-Setup-<version>.exe` from *Assets*. Windows 10/11, 64-bit; no
+**[⬇ Download Pevrai for Windows](https://github.com/ledaronn/pevrai/releases/latest)**: open the
+latest release and run `Pevrai-Setup-<version>.exe` from *Assets*. Windows 10/11, 64-bit; no
 Python and no admin rights needed. The installer is not code-signed yet, so Windows may say
 *"Windows protected your PC"*: click **More info → Run anyway**. Uninstall from Windows Settings ›
-Apps; your settings and chats (`%LOCALAPPDATA%\Limina`) are kept.
+Apps; your settings and chats (`%LOCALAPPDATA%\Pevrai`) are kept. Existing installations
+continue to read their previous data folder; renaming does not move or erase personal files.
 
 You also need [Google Chrome](https://www.google.com/chrome/) for the browser tools.
 
@@ -86,12 +89,12 @@ You also need [Google Chrome](https://www.google.com/chrome/) for the browser to
 You need **Python 3.11+** and **Google Chrome**. Clone with git (or *Code › Download ZIP*):
 
 ```bash
-git clone https://github.com/ledaronn/limina.git
-cd limina
+git clone https://github.com/ledaronn/pevrai.git
+cd pevrai
 python -m venv .venv
 .venv\Scripts\activate
 pip install -e .[tam]         # everything; or `pip install -e .` for the minimal set
-python -m limina              # opens the desktop window and the setup screen
+python -m pevrai              # opens the desktop window and the setup screen
 ```
 
 After the setup screen, open **Settings › Model** and add one or more API connections. Each connection has a
@@ -135,7 +138,7 @@ the templates:
 | `config/arayuz.toml` | — | UI settings (language, theme, …) |
 
 **Folders are yours to arrange.** By default the agent reads and writes a *workspace folder*
-(`~/Limina`) and may read `~/Downloads` and `~/Desktop`. No folder is mandatory: pick another
+(`~/Pevrai`) and may read `~/Downloads` and `~/Desktop`. No folder is mandatory: pick another
 workspace, add more read or write roots, or have no workspace at all (the agent then cannot
 write files). Changing the workspace moves it everywhere it is used (read/write roots, local
 file roots, task profiles); the files themselves are never touched. Change folders in
@@ -145,10 +148,10 @@ file roots, task profiles); the files themselves are never touched. Change folde
 CLI:
 
 ```bash
-python -m limina.vekil_v0 "list my workspace folder"        # one task
-python -m limina.vekil_v0 "question" --profil sohbet         # chat only, no tools
-python -m limina.vekil_v0 --gecmis                           # undoable actions
-python -m limina.vekil_v0 --geri-al [file]                   # undo
+python -m pevrai.vekil_v0 "list my workspace folder"        # one task
+python -m pevrai.vekil_v0 "question" --profil sohbet         # chat only, no tools
+python -m pevrai.vekil_v0 --gecmis                           # undoable actions
+python -m pevrai.vekil_v0 --geri-al [file]                   # undo
 python tests/evals.py                                        # gate + code tests (no model calls)
 python tests/dusmanca_testi.py                               # adversarial suite (no model calls)
 ```
@@ -186,7 +189,7 @@ gate. See [setup, tool reference and examples](docs/PRODUCTIVITY.md).
 
 - Windows 10/11 (first release is Windows-only: WebView2, Chrome via CDP, Explorer integration)
 - Python 3.11+
-- Google Chrome (for browser tools; Limina launches it with its own profile)
+- Google Chrome (for browser tools; Pevrai launches it with its own profile)
 - LibreOffice (optional, for the converter's DOCX/PPTX → PDF)
 
 Optional extras: `pip install -e .[belge]` (document readers), `.[ocr]` (Windows built-in OCR for images and scanned PDFs; no model download, language packs come from Windows), `.[tarayici]` (Playwright),
@@ -195,7 +198,7 @@ Optional extras: `pip install -e .[belge]` (document readers), `.[ocr]` (Windows
 ## Layout
 
 ```
-limina/            the package: agent loop, gate, journal, browser, MCP bridge, UI
+pevrai/            the package: agent loop, gate, journal, browser, MCP bridge, UI
   arayuz/          single-file HTML/JS UI (Turkish source strings + English dictionary)
 Donusturucu/       document converter — MCP server + standalone GUI
 config/            templates for personal config
@@ -207,11 +210,18 @@ policy.example.toml
 
 ## Roadmap (short)
 
-1. A code-signed installer (no SmartScreen warning) and in-app update notices.
+1. A code-signed installer (no SmartScreen warning).
 2. A smaller default token footprint per call (conditional tool schemas by task).
 3. Running the offline evals in English mode as well (they are pinned to the source language).
 
 Full roadmap and decision log: [docs/ROADMAP.md](docs/ROADMAP.md), [docs/DEVIR.md](docs/DEVIR.md).
+
+Existing installations: [name change and preserved settings](docs/AD_DEGISIKLIGI.md).
+
+The desktop app checks GitHub for a newer stable release in the background, at most
+once every 24 hours. Disable **Settings → General → Check for updates** to stop these
+requests. The check sends no documents, conversations or API keys. Its dismissible
+notice opens the Releases page; downloads and installation remain manual.
 
 ## Language of the source
 
@@ -219,7 +229,7 @@ Identifiers, comments, docstrings and design docs are **Turkish** — a delibera
 convention, not an oversight. Everything a user or the model sees (UI, approval
 cards, errors, summaries, system instruction, tool descriptions, tool output)
 follows the language setting and ships in English and Turkish
-(`limina/ceviri.py`, `CEVIRI.en` in the UI). Contributions in English are
+(`pevrai/ceviri.py`, `CEVIRI.en` in the UI). Contributions in English are
 welcome; keep existing names as they are.
 
 ## License

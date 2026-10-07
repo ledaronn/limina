@@ -198,12 +198,12 @@ satırları olmadan hiçbiri çalışmaz — deny by default.
 
 ## Kod ve testler
 
-- `limina/ag_motoru.py` — şema doğrulama (fail-closed), bileşen çözümü, yayılım,
-  statik analiz, okuma metni. Limina'dan bağımsız: izin kararı ve dosya okuma
+- `pevrai/ag_motoru.py` — şema doğrulama (fail-closed), bileşen çözümü, yayılım,
+  statik analiz, okuma metni. Pevrai'dan bağımsız: izin kararı ve dosya okuma
   dışarıdan geri çağırımla verilir.
-- `limina/ag.py` — depo (`.gecmis` dahil), izin köprüsü, v1→v2 taşıma, arayüz
+- `pevrai/ag.py` — depo (`.gecmis` dahil), izin köprüsü, v1→v2 taşıma, arayüz
   uyarlayıcısı.
-- `limina/araclar/ag_araclari.py` — dört araç.
+- `pevrai/araclar/ag_araclari.py` — dört araç.
 - `tests/ag_testi.py` — v1'in dört hatasının hepsi ayrı ayrı sabitlenmiş;
   bozuk ağ yüklenmiyor (döngüde engelleme dahil); kapılar, pozitif döngü,
   determinizm; **okuma kökü dışı ve kara liste dosyası ateşlemiyor, içerik
@@ -213,7 +213,7 @@ satırları olmadan hiçbiri çalışmaz — deny by default.
 
 ## Ağ alanı (3B arayüz)
 
-Sol raydaki **Ağ** düğmesi tam sayfa bir alan açar (`limina/arayuz/ag.js`).
+Sol raydaki **Ağ** düğmesi tam sayfa bir alan açar (`pevrai/arayuz/ag.js`).
 Üç boyut kendi elimizle yazıldı — dış kütüphane yok, çevrimdışı çalışır:
 her düğümün konumu `[x, y, z]`, döndürme iki açı, izdüşüm basit perspektif
 (`k = FOV / (FOV + z)`). Uzak baloncuk küçülür ve soluklaşır, çizim derinliğe

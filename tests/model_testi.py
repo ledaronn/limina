@@ -1,4 +1,4 @@
-"""model_testi.py — saglayici katmani (limina.model), AGSIZ.
+"""model_testi.py — saglayici katmani (pevrai.model), AGSIZ.
 
 Uc adaptorun bicim cevirileri ve hata eslemesi sinanir. Gemini SDK nesneleri
 gercek google-genai tipleriyle (kuruluysa), OpenAI-uyumlu adaptor
@@ -15,8 +15,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina.model import taban
-from limina.model.taban import (AracCagrisi, ModelHatasi, OranSiniri, SunucuHatasi,
+from pevrai.model import taban
+from pevrai.model.taban import (AracCagrisi, ModelHatasi, OranSiniri, SunucuHatasi,
                                 ardisik_birlestir, kullanici_mesaji, model_turu, sonuc_mesaji)
 
 HATA = 0
@@ -63,7 +63,7 @@ def bolum1_taban() -> None:
     dogrula(c1["id"] and c2["id"] and c1["id"] != c2["id"] and s1["id"] == c1["id"] and s2["id"] == c2["id"],
             "kimliksiz cagri/sonuc ciftleri sirayla eslendi")
     dogrula("id" not in eski[1]["parcalar"][0], "orijinal gecmis degismedi (kopya)")
-    from limina.model.openai_uyumlu import OpenAIUyumlu
+    from pevrai.model.openai_uyumlu import OpenAIUyumlu
     m = OpenAIUyumlu._mesajlar(eski, "")
     dogrula(m[1]["tool_calls"][0]["id"] == m[2]["tool_call_id"] and m[1]["tool_calls"][1]["id"] == m[3]["tool_call_id"],
             "OpenAI: eski sohbetin tool_call_id'leri eslesiyor")
@@ -72,7 +72,7 @@ def bolum1_taban() -> None:
 def bolum2_openai() -> None:
     print("\n2) OpenAI-uyumlu adaptor (MockTransport)")
     import httpx
-    from limina.model.openai_uyumlu import OpenAIUyumlu
+    from pevrai.model.openai_uyumlu import OpenAIUyumlu
 
     msj = OpenAIUyumlu._mesajlar(GECMIS, "SISTEM")
     dogrula(msj[0] == {"role": "system", "content": "SISTEM"}, "sistem ilk mesaj")
@@ -148,7 +148,7 @@ def bolum2_openai() -> None:
 
 def bolum3_anthropic() -> None:
     print("\n3) Anthropic adaptoru (saf cevirme)")
-    from limina.model.anthropic_ import Anthropic
+    from pevrai.model.anthropic_ import Anthropic
     msj = Anthropic._mesajlar(GECMIS)
     dogrula(msj[0] == {"role": "user", "content": [{"type": "text", "text": "kum'u listele"}]}, "kullanici blogu")
     a = msj[1]
@@ -173,7 +173,7 @@ def bolum4_gemini() -> None:
     except Exception:
         print("  NOT    google-genai kurulu degil, cevirme testi atlandi")
         return
-    from limina.model.gemini import Gemini, _coz, _kodla
+    from pevrai.model.gemini import Gemini, _coz, _kodla
     dogrula(_kodla("converter.convert") == "converter__convert" and _coz("converter__convert") == "converter.convert",
             "nokta <-> __ kodlamasi yalnizca adaptorde")
     g = Gemini.__new__(Gemini)          # __init__ Client kurar; burada gerekmiyor
@@ -193,10 +193,10 @@ def bolum5_anahtar_ve_kur() -> None:
     print("\n5) Anahtar deposu ve kur()")
     import os
     import tempfile
-    from limina import anahtar, model
-    from limina.gate import Politika
+    from pevrai import anahtar, model
+    from pevrai.gate import Politika
 
-    d = Path(tempfile.mkdtemp(prefix="limina_anahtar_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_anahtar_"))
     eski_dosya, eski_kr = anahtar.DOSYA, anahtar._keyring
     anahtar.DOSYA = d / "credentials.json"
     anahtar._keyring = lambda: None          # dosya yolunu sina

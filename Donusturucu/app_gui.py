@@ -33,7 +33,7 @@ class ConverterApp(DnDCTk):
         self.title("Belge Dönüştürücü Studio Pro")
         self.geometry("960x740")
         self.minsize(880, 620)
-        
+
         ctk.set_appearance_mode("dark")
         self.configure(fg_color="#0B0D13")
 
@@ -412,7 +412,7 @@ class ConverterApp(DnDCTk):
             self.file_scroll.pack(fill="both", expand=True, padx=4, pady=4)
             self.btn_delete_selected.configure(state="normal" if selected_count > 0 else "disabled")
             self.btn_clear_all.configure(state="normal")
-            
+
             btn_text = f"⚡ Seçilen {selected_count} Dosyayı Dönüştür" if selected_count > 0 else "⚡ Dosya Seçiniz"
             self.btn_convert.configure(
                 state="normal" if (selected_count > 0 and not self.is_processing) else "disabled",

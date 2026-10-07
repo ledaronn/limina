@@ -130,9 +130,9 @@ Adım başına %95 başarı, 10 adımlık görevde ~%60 toplam başarı demektir
 > ya da pencere açılırken arka planda bağlanır (`vekil_v0.mcp_baglan`).
 
 
-### Model çağırma (`limina/model/` — sağlayıcı katmanı)
+### Model çağırma (`pevrai/model/` — sağlayıcı katmanı)
 
-Sağlayıcı soyutlaması `limina/model/` altında: `taban.py` sağlayıcıdan bağımsız mesaj
+Sağlayıcı soyutlaması `pevrai/model/` altında: `taban.py` sağlayıcıdan bağımsız mesaj
 biçimini (`{"rol", "parcalar": [metin | cagri | sonuc]}` — `sohbet.py`'nin diske yazdığı
 biçimle aynı), araç şeması biçimini (`{"name","description","parameters"}`) ve `Saglayici`
 sözleşmesini (`uret`, `modeller`) tanımlar; `gemini.py`, `openai_uyumlu.py` (OpenAI,
@@ -141,7 +141,7 @@ biçimlerine çevirir. Sağlayıcıya özgü opak veri (Gemini 3 `thought_signat
 parçasındaki `ek` alanında taşınır. Hatalar dört sınıfa eşlenir (`OranSiniri` 429,
 `SunucuHatasi` 5xx, `ZamanAsimi`, `ModelHatasi`); yeniden deneme kararı
 `vekil_v0._model_cagir`'da, sağlayıcıdan bağımsız. Seçim `policy.toml [model] saglayici`,
-anahtar `limina/anahtar.py` (Ayarlar'dan kaydedilen — keyring, yoksa `~/.vekil/credentials.json` — ortam değişkeninin önünde;
+anahtar `pevrai/anahtar.py` (Ayarlar'dan kaydedilen — keyring, yoksa `~/.vekil/credentials.json` — ortam değişkeninin önünde;
 policy.toml'a, journal'a, sohbete asla yazılmaz). Tek soyutlama katmanı bu değil; ikincisi `mod`: `hizli`/
 `dengeli`/`derin`/`azami`, her biri `policy.toml [modlar]`'da `varsayilan`/`guclu`
 rolünden birine ve bir adım/çağrı demetine bağlı (yukarı bkz.). Bu **kullanıcının görev
@@ -335,9 +335,9 @@ kapsamlıdır**: bir onay sonraki oturuma taşınmaz.
 
 ## 4. Neden MCP?
 
-Araçlar Limina'nın içine gömülü sınıflar yerine ayrı MCP sunucuları olarak yazılır:
+Araçlar Pevrai'nın içine gömülü sınıflar yerine ayrı MCP sunucuları olarak yazılır:
 
-- Aynı araç Limina, Claude Desktop, Cursor veya başka bir istemciden kullanılabilir.
+- Aynı araç Pevrai, Claude Desktop, Cursor veya başka bir istemciden kullanılabilir.
 - Araç çöktüğünde ajan çökmez; süreç sınırı bir izolasyon katmanıdır.
 - Araç ayrı test edilir; ajan döngüsünü çalıştırmadan doğrulanabilir.
 
@@ -389,8 +389,8 @@ ekler; döngü açısından ikisi arasında fark yoktur, **iki fark hariç:**
 | İndirilenler (ara klasör) | `~/.vekil/indirilen/` | `browser_download` buraya iner, kalıcı değil |
 | Notlar / bilgi tabanı | Düz `.md` dosyaları + `search` aracı | Erken vektör DB gereksiz karmaşıklık |
 
-`~/.vekil/` klasör adı bilinçli olarak değiştirilmedi — proje adı Limina olsa da, mevcut
-günlük/yedek/çöp/indirilen verisini `~/.limina/`'ya taşımanın getirisi yok, riski var
+`~/.vekil/` klasör adı bilinçli olarak değiştirilmedi — proje adı Pevrai olsa da, mevcut
+günlük/yedek/çöp/indirilen verisini `~/.pevrai/`'ya taşımanın getirisi yok, riski var
 (geri alma geçmişi kopabilir). İsim değişse bile Faz 6'ya kadar burası sabit kalır.
 
 Vektör deposu (Chroma/FAISS) yalnızca "aradığımı kelimeyle bulamıyorum" problemi gerçekten

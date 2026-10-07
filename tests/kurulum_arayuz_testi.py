@@ -16,7 +16,7 @@ from playwright.sync_api import expect, sync_playwright  # noqa: E402
 
 DURUM = {
     "ok": True, "gerekli": True, "dil": "en", "tema": "koyu", "ekip_gorunumu": "ofis",
-    "calisma": "C:\\Users\\ornek\\Limina", "calisma_varsayilan": "C:\\Users\\ornek\\Limina",
+    "calisma": "C:\\Users\\ornek\\Pevrai", "calisma_varsayilan": "C:\\Users\\ornek\\Pevrai",
     "ek_klasorler": [
         {"ad": "Downloads", "baslik": "İndirilenler", "yol": "C:\\Users\\ornek\\Downloads", "var": True, "secili": True},
         {"ad": "Desktop", "baslik": "Masaüstü", "yol": "C:\\Users\\ornek\\Desktop", "var": True, "secili": True},
@@ -56,7 +56,7 @@ def sayfa_ac(browser, durum, genislik=1280):
     sayfa.on("pageerror", lambda e: hatalar.append(str(e)))
     sayfa.add_init_script("try{localStorage.clear()}catch(e){}")
     sayfa.add_init_script(FAKE % json.dumps(durum))
-    sayfa.goto((Path(__file__).resolve().parents[1] / "limina/arayuz/index.html").as_uri())
+    sayfa.goto((Path(__file__).resolve().parents[1] / "pevrai/arayuz/index.html").as_uri())
     return sayfa, hatalar
 
 
@@ -80,13 +80,13 @@ def main():
         perde = sayfa.locator("#kurulum-perde")
         expect(perde).to_be_visible(timeout=5000)
         dogrula(True, "ilk acilista ekran acildi")
-        expect(sayfa.locator("#kurulum-baslik")).to_have_text("Welcome to Limina")
+        expect(sayfa.locator("#kurulum-baslik")).to_have_text("Welcome to Pevrai")
         dogrula(sayfa.locator("#mod-ad").inner_text() == "Balanced" and sayfa.locator("#model-ad").inner_text() == "Automatic",
                 "Ingilizce acilista mod/model dugmeleri de Ingilizce (HTML'deki Turkce ilk metin kalmadi)")
         dogrula(sayfa.locator("input[name=k-dil]:checked").evaluate("e=>e.closest('label').textContent") == "English",
                 "varsayilan dil English")
         sayfa.get_by_text("Türkçe", exact=True).click()
-        expect(sayfa.locator("#kurulum-baslik")).to_have_text("Limina'ya hoş geldin")
+        expect(sayfa.locator("#kurulum-baslik")).to_have_text("Pevrai'ya hoş geldin")
         dogrula(sayfa.evaluate("DIL") == "tr", "dil secimi hemen uygulandi")
         sayfa.get_by_role("button", name="Devam").click()
         expect(sayfa.locator("#kurulum-baslik")).to_have_text("Klasörler")

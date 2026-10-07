@@ -463,10 +463,10 @@ kökünde DEĞİL.
 zaten netleştirdiği ilke burada da geçerli: "Tetikleyici APTAL olmalı —
 işletim sistemi zamanlayıcısı `vekil_v0.py`'yi bir görev metniyle çağırır.
 Ayrı bir bot değil, ikinci bot ikinci izin kapısı, ikinci günlük, ikinci
-anahtar demek." Limina içinde bir zamanlayıcı, Limina'nın SÜREKLİ açık
+anahtar demek." Pevrai içinde bir zamanlayıcı, Pevrai'nın SÜREKLİ açık
 kalmasını gerektirir (uyku/kapatma = sessiz atlama) ve kendi thread
 yönetimi/hata sınıfını getirir. **Sonuç: Windows Görev Zamanlayıcı, `vekil_v0.py`'yi
-CLI üzerinden (`--profil <ad> "görev metni"`) tetikler; Limina'nın kendi iç
+CLI üzerinden (`--profil <ad> "görev metni"`) tetikler; Pevrai'nın kendi iç
 zamanlayıcısı kurulmaz.**
 
 ### 5.3 `_model_cagir`'in saf karar kısmının ayrılması
@@ -561,11 +561,11 @@ taşınmaz; görmediğin dosyaya kod yazma.
   çalıştıran bir sürüm projenin ilk EXEC aracı olur ve bu iş emrinin dışında
   ayrı bir karar gerektirir — reddedildi/ertelendi, kod yazılmadı. Sabah
   raporu: `journal` (profil alanıyla) + durum dosyaları GÜVENİLİR kaynak,
-  yeni yazma yetkisi yok, tetikleyici Windows Görev Zamanlayıcı (Limina içi
+  yeni yazma yetkisi yok, tetikleyici Windows Görev Zamanlayıcı (Pevrai içi
   zamanlayıcı yok) — tasarım net ama kod yazılmadı.
 - **Bölüm B (yapılmayacaklar), değişmedi:** Okuma Atölyesi'nin 13 yazma
   aracı bağlanmayacak; `[dongu]` geri gelmeyecek; mod/profil birleşmeyecek;
-  bakım listesi (`edit_file`, journal id, `~/.limina` geçişi, vb.) açılmayacak;
+  bakım listesi (`edit_file`, journal id, `~/.pevrai` geçişi, vb.) açılmayacak;
   yeni araç eklenmeyecek (`durum_yaz` istisna, normal listede değil).
 
 ### Aşama 0 — Devir belgesinde düzeltme
@@ -796,13 +796,13 @@ bir insan. Fazın adı gözetimsiz görevler; gözetimsizlik henüz yok.
 **Kapanmamış, kendi başına gate gerektiren iki karar (Faz 7'nin içinde
 DEĞİL, ayrı):**
 
-1. **`kod_yaz` — asıl soru "bir kod yazma aracı kur" değil, "Limina ilk
+1. **`kod_yaz` — asıl soru "bir kod yazma aracı kur" değil, "Pevrai ilk
    EXEC-riskli aracını alsın mı."** Yazma-only bir sürüm zaten `write_file`'dan
    farksız (§5.2). Çalıştıran bir sürüm `shell.run`'ın daha önce neden
    reddedildiğine dokunur, ve "EXEC" kelimesinin GÖZETİMSİZ modda ne anlama
    geldiğini (kimse onay isteğini görmüyorsa ASK ne yapar) yeniden düşünmeyi
    gerektirir.
-2. **Zamanlayıcı — Windows Görev Zamanlayıcı doğru çağrıydı** (Limina'nın
+2. **Zamanlayıcı — Windows Görev Zamanlayıcı doğru çağrıydı** (Pevrai'nın
    sürekli açık kalması gerekmiyor) ama yeni bir yüzey açıyor: kim tetikliyor,
    hangi profille, çıktıyı kim görüyor (sabah raporu bununla kesişiyor, §5.2b).
 
@@ -1401,7 +1401,7 @@ testi yazıldı, aşama durmadı.
 
 ## İE2 Aşama 5 — Sohbet modu
 
-Kullanıcı Limina'yı sohbet için de kullanmak istiyor. Öncesinde her mesajda
+Kullanıcı Pevrai'yı sohbet için de kullanmak istiyor. Öncesinde her mesajda
 21 araç şeması ödeniyordu ve kapı gereksizce devredeydi.
 
 ### Tasarım — yeni kavram eklenmedi

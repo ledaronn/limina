@@ -22,14 +22,14 @@ import tomllib
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
-GECICI = Path(tempfile.mkdtemp(prefix="limina_zincir_"))
-os.environ["LIMINA_VEKIL_KOK"] = str(GECICI / "vekil")      # limina ice aktarilmadan ONCE
+GECICI = Path(tempfile.mkdtemp(prefix="pevrai_zincir_"))
+os.environ["PEVRAI_VEKIL_KOK"] = str(GECICI / "vekil")      # pevrai ice aktarilmadan ONCE
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import PROJE_KOKU, ayarlar, ceviri, ekip, model_zinciri
-from limina.gate import Politika
+from pevrai import PROJE_KOKU, ayarlar, ceviri, ekip, model_zinciri
+from pevrai.gate import Politika
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -158,10 +158,10 @@ class Sahte(BaseHTTPRequestHandler):
 SURUCU = r'''
 import json, sys
 sys.path.insert(0, ".")
-from limina import ceviri
+from pevrai import ceviri
 ceviri.dil_ayarla("tr")
-import limina.vekil_v0 as v
-from limina.olaylar import Oturum, sabit_cevap
+import pevrai.vekil_v0 as v
+from pevrai.olaylar import Oturum, sabit_cevap
 olaylar = []
 def yayinla(o):
     olaylar.append({"tip": o.tip.name, "veri": {k: str(x)[:300] for k, x in (o.veri or {}).items()}})
@@ -174,7 +174,7 @@ print("SONUC_JSON " + json.dumps({"metin": r, "olaylar": olaylar}, ensure_ascii=
 
 def kostur(pol_yol: Path, vekil: Path, mod: str = "hizli", secili: str = "") -> dict:
     ortam = dict(os.environ)
-    ortam.update({"LIMINA_POLICY": str(pol_yol), "LIMINA_VEKIL_KOK": str(vekil), "PYTHONIOENCODING": "utf-8"})
+    ortam.update({"PEVRAI_POLICY": str(pol_yol), "PEVRAI_VEKIL_KOK": str(vekil), "PYTHONIOENCODING": "utf-8"})
     for k in ("GOOGLE_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
         ortam.pop(k, None)
     surucu = GECICI / "surucu.py"

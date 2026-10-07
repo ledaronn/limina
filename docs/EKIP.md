@@ -1,7 +1,7 @@
 # Ekip — çoklu ajan (isteğe bağlı bileşen)
 
 Tek görev, birden fazla ajan, **aynı çalışma alanı**. Kullanıcı sol raydaki **Ekip** alanından
-(ya da sohbette `/ekip <görev>` yazarak) bir görev verir; Limina görevi ekip üyelerine böler,
+(ya da sohbette `/ekip <görev>` yazarak) bir görev verir; Pevrai görevi ekip üyelerine böler,
 üyeler paralel çalışır, sonunda bir birleştirici toparlar. Özellik ancak en az bir ajan
 tanımlıysa çalışır (Ekip > Ajanlar) — isteyen kullanır, tanımsızsa hiçbir şey değişmez.
 
@@ -14,7 +14,7 @@ tanımlıysa çalışır (Ekip > Ajanlar) — isteyen kullanır, tanımsızsa hi
    bir kez daha istenir (hata notuyla), sonra görev "plan kurulamadı" ile biter.
 2. **Tek onay kartı** (`ekip_plan`): kullanıcı bölüşümü görür — hangi ajan, hangi yollar, ne
    yapacak, birleştirme adımı. Onaylamazsa hiçbir işçi başlamaz.
-3. **İşçiler** ayrı süreçtir (`Limina.exe --isci` / `python -m limina --isci`), her biri
+3. **İşçiler** ayrı süreçtir (`Pevrai.exe --isci` / `python -m pevrai --isci`), her biri
    **türetilmiş dar bir politikayla** (`ekip.isci_politikasi`, `~/.vekil/ekip/<kimlik>/<ad>/policy.toml`):
    - yazma kökleri = yalnızca sahip olduğu yollar (gerçek yazma köklerinin alt kümesi — daha
      genişi üretilemez, `ValueError`);
@@ -27,7 +27,7 @@ tanımlıysa çalışır (Ekip > Ajanlar) — isteyen kullanır, tanımsızsa hi
      arası kilitli (`tests/ag_eszamanli_testi.py`: 4 süreç × 25 düğüm, kilitsiz 25/100 kalıyordu);
    - tek profil `ekip_isci` (aynı yollar, önceden onaylı) ve onay sağlayıcısı **her şeye hayır**:
      profilin önceden onayladığı dışında hiçbir ASK geçmez.
-   İşçi `LIMINA_POLICY` ile o politikayı okur; tarif ile uyuşmazsa çalışmaz. Günlük kayıtları
+   İşçi `PEVRAI_POLICY` ile o politikayı okur; tarif ile uyuşmazsa çalışmaz. Günlük kayıtları
    `ajan: <ad>` etiketlidir, geri alma işçi başına yapılabilir. Olayları kendi
    `olaylar.jsonl`'ine yazar; ana süreç bunları `[ajan]` etiketiyle etkinlik kartına aktarır.
    **Doğruluk kontrolü:** işçi bitince yazdıkları günlükten okunur; model "yazdım" dediği hâlde
@@ -66,13 +66,13 @@ Uçtan uca (`ekip_orkestra_testi`): `giris` işçisi `sonuc`'a "başlıkları ##
 
 ## Ekip ofisi (3B)
 
-Sol raydaki **Ekip** düğmesi 3B bir ofis açar (`limina/arayuz/ofis/`, tasarım:
+Sol raydaki **Ekip** düğmesi 3B bir ofis açar (`pevrai/arayuz/ofis/`, tasarım:
 [OFIS_TASARIM.md](OFIS_TASARIM.md)). Görselleştirme ve etkileşim katmanıdır: **hiçbir izin
 vermez**, plan onayı, dar işçi politikası ve kapı aynen kalır; başlatma, pano, durdurma ve
 ajan kaydı aşağıdaki mevcut köprü çağrılarıdır. Ekrandaki her hareket gerçek bir olaydan gelir.
 
 - **Masalar** (iş türleri): kod, dosya, arşiv, istişare, Düşünce Ağı köşesi, web, onay kapısı,
-  dinlenme alanı. Araç → masa eşlemesi yalnızca `limina/ofis.py`'de (`masa_bul`); her
+  dinlenme alanı. Araç → masa eşlemesi yalnızca `pevrai/ofis.py`'de (`masa_bul`); her
   `arac_cagrildi` olayı `masa` alanını taşır (ana süreç ve işçi aktarımı, tek yardımcı
   `masa_ekle`). Eşlenmeyen araç `diger`e düşer, kaybolmaz. Kod masası kod **çalıştırmaz**.
   `mkdir` bir hazırlık adımıdır: masası `yerinde`, ajan olduğu yerde kalır (tasarımdaki tablodan
@@ -103,7 +103,7 @@ ajan kaydı aşağıdaki mevcut köprü çağrılarıdır. Ekrandaki her hareket
   bu dizüstünde zamanla 21 → 34 ms); `hepsi.py` çizim çağrısını sınar, 33 ms hedefi
   `python tests/ofis_arayuz_testi.py --olcum` ile ayrıca sınanır.
 - **WebGL yoksa** aşağıdaki kart görünümü açılır, üstte tek satır bilgi; three.js hiç yüklenmez.
-- three.js r159 depoda (`limina/arayuz/vendor/`, MIT, sürüm ve SHA-256 başta); tembel yüklenir.
+- three.js r159 depoda (`pevrai/arayuz/vendor/`, MIT, sürüm ve SHA-256 başta); tembel yüklenir.
 
 ## Tek ajana doğrudan görev
 
@@ -116,7 +116,7 @@ Klasör yoksa işçiye "mkdir ile oluştur" notu gider (mkdir kendi yolunda önc
 
 ## Kart görünümü (WebGL yoksa)
 
-`limina/arayuz/ekip.js`, `window.Ekip`. Dört sekme:
+`pevrai/arayuz/ekip.js`, `window.Ekip`. Dört sekme:
 
 - **Görev** — proje seç (boş = ilk yazma kökü), ekibe girecek ajanları çiplerle seç
   (varsayılan: anahtarı olan herkes), görevi yaz, **Ekibi başlat**. Altında canlı bölüm:
@@ -157,7 +157,7 @@ satırı), ama onay kartı yalnızca Ekip alanı açıkken oraya, kapalıyken ak
 
 ## Sınırlar (bilerek)
 
-- Çalışma alanı: seçili projenin klasörü; proje yoksa çalışma klasörü (varsayılan `~/Limina`).
+- Çalışma alanı: seçili projenin klasörü; proje yoksa çalışma klasörü (varsayılan `~/Pevrai`).
   Çalışma klasörü kaldırılmışsa ekip görevi başlamaz, Ayarlar > Dosyalar'a yönlendirir.
 - İşçilerde tarayıcı yok (tek CDP portu) ve MCP yok (MCP yazmaları günlüğe girmez).
 - İşçi onay isteyemez: onay istemesi gereken bir iş (DESTRUCTIVE, kapsam dışı yol) işçide

@@ -1,4 +1,4 @@
-# ag_arayuz_testi.py — Dusunce Agi alani (limina/arayuz/ag.js): headless Chrome, sahte kopru.
+# ag_arayuz_testi.py — Dusunce Agi alani (pevrai/arayuz/ag.js): headless Chrome, sahte kopru.
 #
 # Olculen: alan aciliyor ve 3B tuval gercekten CIZIYOR (bos degil); baloncuga
 # tiklayinca denetci onu aciyor; tur/kapi/esik degisiklikleri ag_kaydet'e
@@ -15,7 +15,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from limina import PAKET
+from pevrai import PAKET
 
 HATA = 0
 

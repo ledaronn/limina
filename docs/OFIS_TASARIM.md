@@ -20,16 +20,16 @@ somut ol; "ne yaptım, nasıl doğruladım, bilmen gereken ne" düzeninde yaz.
 **Önce oku (bu sırayla):**
 
 1. `docs/EKIP.md`: bugünkü ekip sistemi (planlayıcı, işçi süreçleri, pano, birleştirici, güvenlik).
-2. `limina/ekip.py`: orkestrasyon. Özellikle `ekip_gorevi`, `planla`, `isci_hazirla`,
+2. `pevrai/ekip.py`: orkestrasyon. Özellikle `ekip_gorevi`, `planla`, `isci_hazirla`,
    `isci_politikasi`, `_olaylari_aktar` ve olayların nasıl yayınlandığı.
-3. `limina/arayuz/ekip.js`: bugünkü Ekip alanı (`window.Ekip`, `olay()`, sekmeler).
-4. `limina/arayuz/ag.js`: projedeki tek 3B sahne (Düşünce Ağı). Kendi yazılmış perspektif
+3. `pevrai/arayuz/ekip.js`: bugünkü Ekip alanı (`window.Ekip`, `olay()`, sekmeler).
+4. `pevrai/arayuz/ag.js`: projedeki tek 3B sahne (Düşünce Ağı). Kendi yazılmış perspektif
    izdüşümü, sürükleme/döndürme/yakınlaştırma, `iskelet()` bir kez kurulur, `dongu()` rAF.
    Etkileşim dersleri buradan alınır (bkz. §9).
-5. `limina/arayuz/index.html`: `gorunum()`, `olayIsle()`, `t()` / `CEVIRI.en`, `el()`, `ikon()`,
+5. `pevrai/arayuz/index.html`: `gorunum()`, `olayIsle()`, `t()` / `CEVIRI.en`, `el()`, `ikon()`,
    `IKON` sözlüğü, `menuAc`, `toast`, CSS değişkenleri (`--vurgu`, `--yuzey`, …).
-6. `limina/olaylar.py` (`OlayTipi`), `limina/pencere.py` (köprü; `ekip_*` metotları),
-   `limina/model_zinciri.py` (API bağlantıları ve model zinciri).
+6. `pevrai/olaylar.py` (`OlayTipi`), `pevrai/pencere.py` (köprü; `ekip_*` metotları),
+   `pevrai/model_zinciri.py` (API bağlantıları ve model zinciri).
 7. `tests/hepsi.py` ve Ekip testleri: `ekip_testi`, `ekip_isci_testi`, `ekip_orkestra_testi`,
    `ekip_arayuz_testi`.
 
@@ -39,7 +39,7 @@ Geçmeyen varsa önce kullanıcıya söyle; kendi değişikliğinle karıştırm
 **Kullanıcıya sor (kodlamaya başlamadan, tek mesajda, önerilen seçenek önde).** Aşağıdakiler
 kullanıcının kararı; her birinde önerilen varsayılan var, kullanıcı "sen karar ver" derse onu uygula:
 
-1. **3B kütüphane:** three.js'in tek dosyalık sürümünü depoya koymak (`limina/arayuz/vendor/`,
+1. **3B kütüphane:** three.js'in tek dosyalık sürümünü depoya koymak (`pevrai/arayuz/vendor/`,
    MIT lisansı, sürüm sabit, çevrimdışı). *Öneri: evet.* Alternatif: ag.js gibi kendi
    izdüşümümüz. Bu, masa ve karakter gibi katı nesneler için çok zahmetli ve kötü görünür.
 2. **Görsel üslup:** düşük poligonlu, sade, uygulamanın koyu ve sıcak renk paletinde.
@@ -74,10 +74,10 @@ Ekranda görünen her hareket gerçek bir olaydan gelir; **uydurma animasyon yok
 
 - **Akış:** kullanıcı görevi verir → **planlayıcı** (tek model çağrısı, `plan_yaz` zorlanır)
   görevi 2–6 alt göreve ve **yazma yollarına** böler → kullanıcı **tek onay kartıyla** planı
-  onaylar → her alt görev **ayrı bir işletim sistemi sürecinde** çalışır (`python -m limina
+  onaylar → her alt görev **ayrı bir işletim sistemi sürecinde** çalışır (`python -m pevrai
   --isci`), dar bir politikayla → işçiler **pano** üzerinden birbirine yazabilir → hepsi bitince
   **birleştirici** ana süreçte sonucu toparlar.
-- **Olaylar** (`limina/olaylar.py`, `OlayTipi`) arayüze `olaylari_cek` yoklamasıyla gelir ve
+- **Olaylar** (`pevrai/olaylar.py`, `OlayTipi`) arayüze `olaylari_cek` yoklamasıyla gelir ve
   `index.html` içindeki `olayIsle()` → `window.Ekip.olay(o)` yoluyla Ekip alanına ulaşır.
   Ekiple ilgili bugünkü olaylar:
   - `ekip_mesaj {durum: planlaniyor|calisiyor|birlestiriliyor|bitti, kimlik, uyeler?}`
@@ -93,7 +93,7 @@ Ekranda görünen her hareket gerçek bir olaydan gelir; **uydurma animasyon yok
     `ADIM_BASLADI` ve `OLCUM` de aktarılmalı (Faz 1).
 - **Ajan tanımı:** `policy.toml [ajanlar.<ad>]` içinde `saglayici, model, anahtar_yuvasi, rol,
   taban_url` alanları var. Uygulama artık **API bağlantıları** kullanıyor
-  (`[baglantilar.<kimlik>]`, `limina/model_zinciri.py`; Ayarlar > Model). Ajanlar hâlâ eski,
+  (`[baglantilar.<kimlik>]`, `pevrai/model_zinciri.py`; Ayarlar > Model). Ajanlar hâlâ eski,
   tek sağlayıcılı alanları kullanıyor. Faz 1'de ajanlar bağlantılara bağlanacak.
 - **İşçi araçları:** `read_file, list_dir, search, read_document, degisiklik_gecmisi,
   write_file, edit_file, mkdir, ekip_mesaj, ekip_gelen`. İşçilerde **tarayıcı, MCP, taşıma,
@@ -109,7 +109,7 @@ Ekranda görünen her hareket gerçek bir olaydan gelir; **uydurma animasyon yok
 ### 3.1 Masalar (iş türleri)
 
 Masa = bir **yetenek kümesi**. Bir araç çağrısı hangi masada yapılıyorsa ajan o masaya gider.
-Eşleme **tek bir yerde** tanımlanır (Python: `limina/ofis.py` içinde `MASALAR` ve
+Eşleme **tek bir yerde** tanımlanır (Python: `pevrai/ofis.py` içinde `MASALAR` ve
 `masa_bul(arac, args) -> masa_kodu`) ve arayüze köprüyle verilir. JS aynı tabloyu kopyalamaz.
 
 | Kod | Ad (TR / EN) | Ne olur | Araçlar (varsayılan eşleme) |
@@ -167,7 +167,7 @@ bosta ──(ekip_isci başladı)──▶ planda_bekliyor ──(arac_cagrildi)
 Python (gerçek)                              JS (sunum)
 ────────────────                             ─────────────────────────────
 ekip.py olaylari  ──► olaylari_cek ──► olayIsle ──► Ofis.olay(o)
-limina/ofis.py                                        │
+pevrai/ofis.py                                        │
   MASALAR, masa_bul()   ◄── ofis_duzeni() ─────────   ├─ durum.js   saf durum makinesi (test edilir)
   ajan görünüşü                                       ├─ sahne.js   three.js sahnesi, render
                                                       └─ ofis.js    DOM panelleri, etkileşim, window.Ofis
@@ -175,15 +175,15 @@ limina/ofis.py                                        │
 
 **Dosyalar (öneri):**
 
-- `limina/ofis.py`: `MASALAR`, `masa_bul(arac, args)`, `ajan_gorunumu(ad, tanim)`. Saf
+- `pevrai/ofis.py`: `MASALAR`, `masa_bul(arac, args)`, `ajan_gorunumu(ad, tanim)`. Saf
   fonksiyonlar, model ya da ağ çağrısı yok. `tests/ofis_testi.py` ile test edilir.
-- `limina/arayuz/ofis/durum.js`: **DOM ve three.js'e dokunmayan** saf durum makinesi:
+- `pevrai/arayuz/ofis/durum.js`: **DOM ve three.js'e dokunmayan** saf durum makinesi:
   `durumUygula(durum, olay) -> yeniDurum`. Bütün olay→durum mantığı burada. Playwright
   `evaluate` ile tablo testleri yazılır.
-- `limina/arayuz/ofis/sahne.js`: three.js sahnesi. Durumu okur ve çizer; **karar vermez**.
-- `limina/arayuz/ofis/ofis.js`: `window.Ofis = {ac, kapat, olay}`. Paneller (ajan kartı,
+- `pevrai/arayuz/ofis/sahne.js`: three.js sahnesi. Durumu okur ve çizer; **karar vermez**.
+- `pevrai/arayuz/ofis/ofis.js`: `window.Ofis = {ac, kapat, olay}`. Paneller (ajan kartı,
   masa kartı, görev çubuğu, plan onayı, pano), köprü çağrıları.
-- `limina/arayuz/vendor/three.module.min.js` + `vendor/THREE_LICENSE`: sürüm sabit, dosyanın
+- `pevrai/arayuz/vendor/three.module.min.js` + `vendor/THREE_LICENSE`: sürüm sabit, dosyanın
   başına yorumla sürüm ve kaynak yazılır.
 - Mevcut `ekip.js`: **silinmez**. Ajanlar, Projeler ve Geçmiş formları ofisin **yan
   çekmecesine** taşınır (aynı fonksiyonlar yeniden kullanılır). Görev sekmesinin canlı kısmı
@@ -202,7 +202,7 @@ bitirmeden sonrakine geçme. Her fazın sonunda kullanıcıya kısa bir durum ra
 
 ### Faz 1: Arka uç: masa eşlemesi, zengin olaylar, bağlantı tabanlı ajanlar
 
-1. `limina/ofis.py`: `MASALAR` (§3.1), `masa_bul()`. Kod uzantıları listesi tek yerde.
+1. `pevrai/ofis.py`: `MASALAR` (§3.1), `masa_bul()`. Kod uzantıları listesi tek yerde.
 2. **Olay zenginleştirme:** `arac_cagrildi` olayına `masa` alanı ekle. Hem ana süreçte hem
    işçi aktarımında olsun; ekleme tek bir yardımcıda yapılsın. Eski istemciler bu alanı
    görmezden gelir, geriye uyumlu.
@@ -320,8 +320,8 @@ bitirmeden sonrakine geçme. Her fazın sonunda kullanıcıya kısa bir durum ra
 
 ### 6.2 Proje kuralları
 
-- **Dokunma:** Codex'in dosyaları: `limina/eklentiler/`, `limina/arayuz/eklentiler*`,
-  `tests/eklentiler_*`, `docs/PRODUCTIVITY*`, `limina/okuma.py`, `docs/OKUMA_INTEGRATION.md`.
+- **Dokunma:** Codex'in dosyaları: `pevrai/eklentiler/`, `pevrai/arayuz/eklentiler*`,
+  `tests/eklentiler_*`, `docs/PRODUCTIVITY*`, `pevrai/okuma.py`, `docs/OKUMA_INTEGRATION.md`.
 - **Kişisel dosyalar asla kaydedilmez:** `policy.toml`, `config/persona.md`,
   `config/arayuz.toml`. Testler kullanıcının gerçek `policy.toml`'una **yazmaz**: geçici kopya
   kullan ve `ayarlar.POLICY` / `POLICY_YEDEK`'i test boyunca oraya yönlendir
@@ -330,7 +330,7 @@ bitirmeden sonrakine geçme. Her fazın sonunda kullanıcıya kısa bir durum ra
   kullanıcının gerçek API'sine gider (bu oldu, bkz. `tests/ekip_orkestra_testi.py`).
 - **Kabuk yok:** kod çalıştıran bir araç ekleme. "Kod masası" yalnızca dosya işidir.
 - **Çeviri:** her yeni kullanıcı metni `t("…")` ile yazılır ve `CEVIRI.en` (index.html) ile
-  Python'daki `limina/ceviri.py` `EN` sözlüğüne İngilizcesi eklenir.
+  Python'daki `pevrai/ceviri.py` `EN` sözlüğüne İngilizcesi eklenir.
   `tests/ceviri_arayuz_testi.py` İngilizce modda ekranları açıp eksik çeviriyi yakalar;
   **ofisi ve panellerini de bu teste ekle**. Kullanıcı verisi (ajan adı, model adı) `t()`'den
   geçmez.

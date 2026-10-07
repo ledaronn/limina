@@ -1,6 +1,6 @@
-# PyInstaller giris betigi (Limina.exe). Tek is: limina.baslat.main.
+# PyInstaller giris betigi (Pevrai.exe). Tek is: pevrai.baslat.main.
 import sys
 
-from limina.baslat import main
+from pevrai.baslat import main
 
 sys.exit(main())

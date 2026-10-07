@@ -32,7 +32,7 @@ def dogrula(kosul: bool, mesaj: str) -> None:
 YAZICI = r'''
 import sys
 sys.path.insert(0, sys.argv[1])
-from limina.araclar import ag_araclari as aa
+from pevrai.araclar import ag_araclari as aa
 if sys.argv[4] == "kilitsiz":
     aa.ag_dugum_ekle = aa.ag_dugum_ekle.__wrapped__        # kilidi atla (karsilastirma icin)
 for i in range(int(sys.argv[3])):
@@ -51,7 +51,7 @@ def kostur(kok: Path, kip: str) -> int:
         "dugumler": [{"kimlik": "kok", "tur": "fikir", "baslik": "Kok", "metin": "x", "yol": "", "kapi": "herhangi",
                       "esik": None, "k": None, "kaynak": "kullanici", "konum": [0, 0, 0]}]}), encoding="utf-8")
     betik = kok / "yazici.py"; betik.write_text(YAZICI, encoding="utf-8")
-    ortam = dict(os.environ, LIMINA_VEKIL_KOK=str(vekil), PYTHONIOENCODING="utf-8")
+    ortam = dict(os.environ, PEVRAI_VEKIL_KOK=str(vekil), PYTHONIOENCODING="utf-8")
     surecler = [subprocess.Popen([sys.executable, str(betik), str(KOK), str(n), str(ADET), kip], env=ortam,
                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE) for n in range(SUREC)]
     for s in surecler:
@@ -63,7 +63,7 @@ def kostur(kok: Path, kip: str) -> int:
 
 
 def main() -> int:
-    kok = Path(tempfile.mkdtemp(prefix="limina_ag_eszamanli_"))
+    kok = Path(tempfile.mkdtemp(prefix="pevrai_ag_eszamanli_"))
     try:
         print(f"\n1) {SUREC} surec x {ADET} dugum, ayni aga ayni anda")
         n = kostur(kok, "kilitli")

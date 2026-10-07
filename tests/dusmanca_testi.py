@@ -24,27 +24,29 @@ durur; burada o kanallarin SARMALAMA tarafi modelsiz sininiyor.
 from __future__ import annotations
 
 import json
+from contextlib import contextmanager
 import shutil
+import socket
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
 
-from limina import gate
+from pevrai import gate
 
 # Mesaj metinleri KAYNAK DILDE (Turkce) dogrulanir: ceviri.dil() normalde
 # kullanicinin config/arayuz.toml ayarini okur, testin sonucu kisisel bir
 # ayara bagli olamaz (Ingilizce secili bir makinede bu dosya kirilirdi).
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
-from limina import journal
-from limina import mcp_bridge
-from limina.gate import ALLOW, ASK, DENY, Politika
-from limina.olaylar import Olay, OlayTipi, OnayCevabi, OnayIstegi, Oturum, onay_iste, sabit_cevap
+from pevrai import journal
+from pevrai import mcp_bridge
+from pevrai.gate import ALLOW, ASK, DENY, Politika
+from pevrai.olaylar import Olay, OlayTipi, OnayCevabi, OnayIstegi, Oturum, onay_iste, sabit_cevap
 
-from limina import PAKET, PROJE_KOKU
+from pevrai import PAKET, PROJE_KOKU
 
 HATA = 0
 KOK = PROJE_KOKU                       # policy.toml burada, kod PAKET'te
@@ -52,7 +54,7 @@ KOK = PROJE_KOKU                       # policy.toml burada, kod PAKET'te
 # worktree'de bu dosya baska bir dizinde durur ama policy.toml'un kokleri
 # MUTLAK yol tasir. Ikisini ayirmak, testin kok DISINDA bir yolu "kok ici"
 # sanmasina yol acardi (git bisect'te yakalandi).
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
 KUM = Path(Politika(KOK / "policy.toml").calisma or Politika(KOK / "policy.toml").yazma[0])
 
@@ -276,7 +278,7 @@ def bolum12_enjeksiyon() -> None:
     dogrula("cikti kirpildi" in uzun, "kirpma kullaniciya/modele bildiriliyor")
 
     # --- Kanal 3: durum dosyasi -----------------------------------------
-    from limina import vekil_v0 as v
+    from pevrai import vekil_v0 as v
     zehirli = {
         "gorev": "zararsiz asil gorev",
         "dogrulanan_yazmalar": [],
@@ -339,7 +341,7 @@ def bolum12_enjeksiyon() -> None:
 
 def bolum13_onay() -> None:
     print("\n1.3) Onay mekanizmasi")
-    from limina import vekil_v0 as v
+    from pevrai import vekil_v0 as v
     # --- "Tumu" hangi araclara SUNULABILIR ------------------------------
     dogrula(v._toplu_sunulabilir_mi("write_file", "WRITE", False) is True,
             "write_file toplu onaya acik (journal yedegi + geri alma var)")
@@ -405,7 +407,7 @@ def bolum13_onay() -> None:
             "Ctrl-C gelirse onay RED")
 
     # --- Onay kartinin ETKI metni GERCEGI soyluyor mu -------------------
-    d = Path(tempfile.mkdtemp(prefix="limina_dusman_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_dusman_"))
     try:
         var = d / "var.txt"
         var.write_text("A" * 1000, encoding="utf-8")
@@ -479,7 +481,7 @@ def _profil_politika(d: Path, govde: str) -> Politika:
 
 def bolum14_profil_kapsami() -> None:
     print("\n1.4) Profil kapsami — gevsetme denemeleri")
-    d = Path(tempfile.mkdtemp(prefix="limina_profil_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_profil_"))
     try:
         kok = d / "kok"
         alt = kok / "alt"
@@ -499,7 +501,7 @@ def bolum14_profil_kapsami() -> None:
                 dogrula(False, f"{mesaj} — HIC PATLAMADI (fail-open!)")
 
         # Kapsam disi kok: profil patlamaz, kok DUSURULUR (daraltma; kullanici
-        # bir yazma kokunu kaldirinca onu anan profil Limina'yi kilitlemesin).
+        # bir yazma kokunu kaldirinca onu anan profil Pevrai'yi kilitlemesin).
         # Olculen sey: dusen kok hicbir yolu onceden onaylamiyor.
         def dusmeli(govde: str, mesaj: str) -> None:
             pol_d = _profil_politika(d, govde)
@@ -695,7 +697,7 @@ def bolum15_sinirlar() -> None:
         dogrula(sayaclar == {}, "sayac okunamayinca bos donuyor, patlamiyor")
         dogrula(gate.tavan_karari("guclu", sayaclar, T) is None,
                 "sayac yazilamazsa duvar SESSIZCE devre disi — BILINCLI fail-open, "
-                "kayitli acik (disk hatasi yuzunden Limina'yi kilitlemek orantisiz)")
+                "kayitli acik (disk hatasi yuzunden Pevrai'yi kilitlemek orantisiz)")
     finally:
         journal.KOTA = eski_kota
 
@@ -706,7 +708,7 @@ def bolum15_sinirlar() -> None:
 
 def bolum16_kimlik() -> None:
     print("\n1.6) Kimlik bilgisi — reddetmek YETMEZ, tasimamak da gerek")
-    from limina import vekil_v0 as v
+    from pevrai import vekil_v0 as v
     KART = "4532 0151 1283 0366"
     BITISIK = "4532015112830366"
     TCKN = "12345678901"
@@ -750,7 +752,7 @@ def bolum16_kimlik() -> None:
             "ONAY_GEREKLI olayinda kart numarasi YOK")
 
     # --- journal dosyasi ------------------------------------------------
-    d = Path(tempfile.mkdtemp(prefix="limina_kimlik_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_kimlik_"))
     eski_kok, eski_kayit, eski_yedek = journal.KOK, journal.KAYIT, journal.YEDEK
     try:
         journal.KOK = d
@@ -789,7 +791,7 @@ def bolum16_kimlik() -> None:
     # search ile satir satir donuyordu; `.env`'in adi da "bulunamadi" mesajinda
     # komsu olarak listeleniyordu. Ikisi de kapiyi degil ARACIN KENDI okumasini
     # kullanan yollar — kara liste her okuyan yola ayri ayri uygulanmali.
-    d = Path(tempfile.mkdtemp(prefix="limina_karaliste_"))
+    d = Path(tempfile.mkdtemp(prefix="pevrai_karaliste_"))
     try:
         (d / "db_password.txt").write_text("PASS=hunter2\n", encoding="utf-8")
         (d / "aws_credentials.json").write_text('{"key":"AKIA123"}\n', encoding="utf-8")
@@ -816,7 +818,7 @@ def bolum16_kimlik() -> None:
     # --- Tarayici: 9222 portundaki Chrome KIMIN? ------------------------
     # Eski kod porta bakip acik olana baglaniyordu; kullanicinin kendi
     # Chrome'u debug portuyla acilmissa ajan onun oturumuna girerdi.
-    from limina import tarayici as t
+    from pevrai import tarayici as t
     dosya = "9222\n/devtools/browser/aaaa-1111\n"
     bizim = '{"webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/aaaa-1111"}'
     baska = '{"webSocketDebuggerUrl": "ws://localhost:9222/devtools/browser/zzzz-9999"}'
@@ -868,8 +870,8 @@ def bolum16_kimlik() -> None:
 
 def bolum17_geri_alma() -> None:
     print("\n1.7) Geri alinabilirlik")
-    from limina import vekil_v0 as v
-    d = Path(tempfile.mkdtemp(prefix="limina_geri_"))
+    from pevrai import vekil_v0 as v
+    d = Path(tempfile.mkdtemp(prefix="pevrai_geri_"))
     eski = (journal.KOK, journal.KAYIT, journal.YEDEK, journal.COP)
     try:
         journal.KOK = d
@@ -1031,16 +1033,102 @@ def bolum17_geri_alma() -> None:
 
 # ==========================================================================
 
+@contextmanager
+def test_tarayici_ortami():
+    """Testin Chrome'u ayri profil/portta; yalnizca sahip oldugumuz PID kapanir."""
+    from pevrai import tarayici as t
+    eski = t.PROFIL, t.CDP_PORT, t.CDP_ADRES, t.Tarayici._chrome_baslat, t.komut_bizim_profilde_mi
+    sahipleri = []
+    with tempfile.TemporaryDirectory(prefix="pevrai_test_chrome_") as tmp:
+        profil = Path(tmp) / "profil"
+        with socket.socket() as sock:
+            sock.bind(("127.0.0.1", 0))
+            port = sock.getsockname()[1]
+        def baslat(nesne):
+            try:
+                return eski[3](nesne)
+            finally:
+                surec = nesne._surec
+                if surec is not None and f"--user-data-dir={profil}" in surec.args:
+                    if not any(p is surec for _, p in sahipleri):
+                        sahipleri.append((nesne, surec))
+        t.PROFIL, t.CDP_PORT, t.CDP_ADRES = profil, port, f"http://localhost:{port}"
+        t.Tarayici._chrome_baslat = baslat
+        # Saf fonksiyonun varsayilan argumani importtaki profil yolunu tutar.
+        t.komut_bizim_profilde_mi = lambda komut, profil=None: eski[4](komut, profil or t.PROFIL)
+        try:
+            yield
+        finally:
+            try:
+                for nesne, surec in sahipleri:
+                    try:
+                        nesne.kapat()
+                    except Exception:
+                        pass
+                    if surec.poll() is None:
+                        # PID, bu testin Popen nesnesinden ve tam profil argumanindan gelir.
+                        try:
+                            if sys.platform == "win32":
+                                subprocess.run(["taskkill", "/PID", str(surec.pid), "/T", "/F"],
+                                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                                               timeout=10, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+                            else:
+                                surec.terminate()
+                        except (OSError, subprocess.TimeoutExpired):
+                            surec.terminate()
+                        try:
+                            surec.wait(timeout=5)
+                        except subprocess.TimeoutExpired:
+                            surec.kill()
+                            surec.wait(timeout=5)
+            finally:
+                t.PROFIL, t.CDP_PORT, t.CDP_ADRES, t.Tarayici._chrome_baslat, t.komut_bizim_profilde_mi = eski
+
+
+def tarayici_temizligini_sina() -> None:
+    """Istisnada bile sadece tam test profiline ait Popen kapanir."""
+    from types import SimpleNamespace
+    from unittest.mock import Mock, patch
+    from pevrai import tarayici as t
+    eski = t.PROFIL, t.CDP_PORT, t.CDP_ADRES, t.Tarayici._chrome_baslat, t.komut_bizim_profilde_mi
+    bizim = Mock(pid=12345, args=[], **{"poll.return_value": None})
+    yabanci = Mock(pid=54321, args=["chrome", "--user-data-dir=foreign"], **{"poll.return_value": None})
+    a = SimpleNamespace(_surec=bizim, kapat=Mock())
+    b = SimpleNamespace(_surec=yabanci, kapat=Mock())
+    def sahte_baslat(nesne):
+        if nesne is a:
+            bizim.args = ["chrome", f"--user-data-dir={t.PROFIL}"]
+    def sahte_kapat(*args, **kwargs):
+        bizim.poll.return_value = 0
+    with patch.object(t.Tarayici, "_chrome_baslat", sahte_baslat), patch.object(subprocess, "run", side_effect=sahte_kapat) as kapat:
+        try:
+            with test_tarayici_ortami():
+                t.Tarayici._chrome_baslat(a)
+                t.Tarayici._chrome_baslat(b)
+                t.Tarayici._chrome_baslat(a)  # Ayni Popen iki kez kapanmaz.
+                raise RuntimeError("synthetic test failure")
+        except RuntimeError:
+            pass
+        dogrula(a.kapat.call_count == 1 and not b.kapat.called, "hata halinde yalnizca test profiline ait tarayici kapanir")
+        if sys.platform == "win32":
+            dogrula(kapat.call_count == 1 and kapat.call_args.args[0] == ["taskkill", "/PID", "12345", "/T", "/F"],
+                    "Chrome temizligi yalnizca sahip olunan PID agacini hedefler")
+    dogrula((t.PROFIL, t.CDP_PORT, t.CDP_ADRES, t.Tarayici._chrome_baslat, t.komut_bizim_profilde_mi) == eski,
+            "testten sonra tarayici profili, portu ve fonksiyonlar geri gelir")
+
+
 def main() -> int:
-    pol = Politika(KOK / "policy.toml")
-    bolum11_yol_kacislari(pol)
-    bolum12_enjeksiyon()
-    bolum13_onay()
-    bolum14_profil_kapsami()
-    bolum15_sinirlar()
-    bolum16_kimlik()
-    bolum17_geri_alma()
-    bolum18_niyet_cumleleri()
+    tarayici_temizligini_sina()
+    with test_tarayici_ortami():
+        pol = Politika(KOK / "policy.toml")
+        bolum11_yol_kacislari(pol)
+        bolum12_enjeksiyon()
+        bolum13_onay()
+        bolum14_profil_kapsami()
+        bolum15_sinirlar()
+        bolum16_kimlik()
+        bolum17_geri_alma()
+        bolum18_niyet_cumleleri()
     print("\nSonuc: " + ("TUM DUSMANCA TESTLER GECTI" if HATA == 0 else f"{HATA} test kaldi"))
     return 1 if HATA else 0
 
@@ -1050,7 +1138,7 @@ def bolum18_niyet_cumleleri() -> None:
     """Gundelik istek -> dogru arac. Cumleler yalnizca ILGILI ARAC gosteriliyorsa
     kurulmali: yoksa model elinde olmayan bir seyi vaat eder."""
     print("\n18) Sistem talimati: niyet -> arac kisayollari")
-    from limina.talimat import _niyet_cumleleri
+    from pevrai.talimat import _niyet_cumleleri
     hepsi = frozenset({"open_file", "converter.convert", "read_document", "search",
                        "ag_kur", "ag_oku", "ag_dugum_ekle"})
     metin = " ".join(_niyet_cumleleri(hepsi))

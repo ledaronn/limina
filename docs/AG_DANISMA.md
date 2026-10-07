@@ -7,9 +7,9 @@
 
 ---
 
-## 1. Bağlam: Limina nedir?
+## 1. Bağlam: Pevrai nedir?
 
-Limina, Windows üzerinde çalışan, tek pencereli, **yerel** bir kişisel ajan
+Pevrai, Windows üzerinde çalışan, tek pencereli, **yerel** bir kişisel ajan
 uygulamasıdır (Python + pywebview; Gemini / OpenAI-uyumlu / Anthropic
 sağlayıcıları). Ayırt edici yanı mimarisindeki **izin kapısı**dır:
 
@@ -272,10 +272,10 @@ Bu notu okuyan bir uzmandan asıl merak ettiklerimiz:
 
 | Dosya | İçerik |
 |---|---|
-| `limina/ag.py` | şema doğrulama, depo, yayılım motoru, okuma metni |
-| `limina/araclar/ag_araclari.py` | dört araç |
-| `limina/arayuz/ag.js` | 3B tuval, denetçi, ateşleme animasyonu |
-| `limina/pencere.py` | köprü API'si (`ag_*`) |
+| `pevrai/ag.py` | şema doğrulama, depo, yayılım motoru, okuma metni |
+| `pevrai/araclar/ag_araclari.py` | dört araç |
+| `pevrai/arayuz/ag.js` | 3B tuval, denetçi, ateşleme animasyonu |
+| `pevrai/pencere.py` | köprü API'si (`ag_*`) |
 | `tests/ag_testi.py` | motor: kapılar, izin, tavanlar, araçlar |
 | `tests/ag_arayuz_testi.py` | arayüz: tuval, sürükleme, ateşleme, dar pencere |
 | `docs/AG.md` | teknik belge (Türkçe) |

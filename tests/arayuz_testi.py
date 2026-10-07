@@ -13,9 +13,9 @@ import re
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import PAKET, PROJE_KOKU
-from limina import kurulum
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import PAKET, PROJE_KOKU
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)   # temiz klonda policy.toml sablondan
 
 KOK = PROJE_KOKU                       # policy.toml burada
@@ -148,7 +148,7 @@ def tarayici_karti_testi() -> None:
         ozet = sayfa.evaluate("() => document.querySelector('.etkinlik .ozet .alt').textContent")
         dogrula(ozet.startswith("3 işlem") and "1.7 sn" in ozet, f"ozet satiri: {ozet!r}")
         bilgi = sayfa.evaluate("() => document.querySelector('.etkinlik .kare-gizlilik').title")
-        dogrula(bilgi == "Limina bu sayfayı kullanıyor. Görüntü kaydedilmez ve modele gönderilmez.",
+        dogrula(bilgi == "Pevrai bu sayfayı kullanıyor. Görüntü kaydedilmez ve modele gönderilmez.",
                 "gizlilik aciklamasi kisa bilgi etiketinin uzerinde korunuyor")
         dogrula(sayfa.locator(".kare-alan").inner_text() == "tr.wikipedia.org"
                 and sayfa.locator(".kare-sayfa").inner_text() == "Vikipedi",
@@ -506,8 +506,8 @@ def yol_tiklama_testi() -> None:
     # Python tarafi: ayni kural, Explorer cagrilmadan
     import subprocess
     from unittest.mock import patch
-    from limina.pencere import Api
-    from limina.gate import Politika
+    from pevrai.pencere import Api
+    from pevrai.gate import Politika
     api = Api(Politika(KOK / "policy.toml"))
     with patch.object(subprocess, "Popen") as popen:
         r = api.dosya_goster("\\\\sunucu\\pay\\b.txt")
@@ -636,7 +636,7 @@ def main() -> int:
     if not politika_yolu.exists():
         dogrula(False, f"policy.toml bulunamadi ({politika_yolu}) - kod kokunde calistir")
     else:
-        from limina.gate import Politika
+        from pevrai.gate import Politika
         politika = Politika(politika_yolu)
         hata = politika.kod_koku_yazilabilir_mi(KOK)
         dogrula(hata is None, hata or f"kaynak kod ({KOK}) yazma koklerinin disinda")
@@ -651,7 +651,7 @@ def main() -> int:
     # Panel silindi; olu kodu ve CSS'i de silinmis olmali.
     for iz in ('id="calisma"', "#calisma", "calismaGoster", "calismaGizle", "calismaKilitli"):
         dogrula(iz not in metin, f"'{iz}' izi kalmamis")
-    dogrula("Limina bu sayfayı kullanıyor" in metin and "modele gönderilmez" in metin,
+    dogrula("Pevrai bu sayfayı kullanıyor" in metin and "modele gönderilmez" in metin,
             "bilgi satiri korunmus")
 
     tarayici_karti_testi()
@@ -659,14 +659,14 @@ def main() -> int:
     yol_tiklama_testi()
     secim_testi()
 
-    print("\n9) Masaustu kisayolu (limina.kisayol) gecici klasore yazilabiliyor")
+    print("\n9) Masaustu kisayolu (pevrai.kisayol) gecici klasore yazilabiliyor")
     import tempfile
-    from limina import kisayol
+    from pevrai import kisayol
     dogrula(kisayol.IKON.exists(), f"ikon var ({kisayol.IKON.name})")
-    with tempfile.TemporaryDirectory(prefix="limina_lnk_") as d:
+    with tempfile.TemporaryDirectory(prefix="pevrai_lnk_") as d:
         try:
             lnk = kisayol.kur(Path(d))
-            dogrula(lnk.exists() and lnk.stat().st_size > 0, "Limina.lnk yazildi")
+            dogrula(lnk.exists() and lnk.stat().st_size > 0, "Pevrai.lnk yazildi")
         except SystemExit as e:
             dogrula(False, f"kisayol kurulamadi: {e}")
 

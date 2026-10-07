@@ -1,4 +1,4 @@
-# ceviri_testi.py — Python mesaj katalogu (limina/ceviri.py) tutarliligi.
+# ceviri_testi.py — Python mesaj katalogu (pevrai/ceviri.py) tutarliligi.
 #
 # Bu test kod tabanini AST ile tarar: her t("...") cagrisinin anahtarini
 # toplar ve EN sozlugu ile karsilastirir. Neden statik tarama: bir metni
@@ -15,8 +15,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku
 
-from limina import PAKET
-from limina import ceviri
+from pevrai import PAKET
+from pevrai import ceviri
 
 HATA = 0
 YER_TUTUCU = re.compile(r"\{([A-Za-z_][A-Za-z0-9_]*)(?::[^}]*)?\}")
@@ -114,11 +114,11 @@ def main() -> int:
         if p.name not in ("kayit.py", "registry.py"):
             degiskenler += [f"{p.name}:{ln}" for ln in degisken]
 
-    # Eklenti araclari (limina/eklentiler/*/tools.py): bildirimler calisma
+    # Eklenti araclari (pevrai/eklentiler/*/tools.py): bildirimler calisma
     # zamaninda kuruluyor (crud() metin birlestiriyor), AST ile okunamaz —
     # registry.TOOLS'tan alinir. registry._cevrilmis bunlari t()'den gecirir.
     try:
-        from limina.eklentiler.registry import TOOLS as _EKLENTI
+        from pevrai.eklentiler.registry import TOOLS as _EKLENTI
     except ImportError:
         _EKLENTI = {}
 
@@ -135,7 +135,7 @@ def main() -> int:
         eklenti_metinleri.add(spec["description"])
         _aciklamalar(spec["parameters"], eklenti_metinleri)
     for m in sorted(eklenti_metinleri):
-        tum.append((Path("limina/eklentiler/registry.py"), 0, m, set(YER_TUTUCU.findall(m))))
+        tum.append((Path("pevrai/eklentiler/registry.py"), 0, m, set(YER_TUTUCU.findall(m))))
 
     print(f"\n1) Kaynakta {len(tum)} t() cagrisi bulundu ({len(dosyalar)} dosya tarandi, "
           f"{len(eklenti_metinleri)} eklenti araci aciklamasi dahil)")
@@ -193,7 +193,7 @@ def main() -> int:
 
     print("\n7) Dil ayari config/arayuz.toml'dan okunuyor")
     from unittest.mock import patch
-    from limina import ayarlar
+    from pevrai import ayarlar
     for kod in ("en", "tr"):
         ceviri.dil_sifirla()
         sahte = {b: dict(a) for b, a in ayarlar.ARAYUZ_VARSAYILAN.items()}

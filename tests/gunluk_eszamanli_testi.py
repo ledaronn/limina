@@ -24,7 +24,7 @@ HATA = 0
 YAZICI = f"""
 import sys
 sys.path.insert(0, {str(KOK)!r})
-from limina import journal
+from pevrai import journal
 kimlik = sys.argv[1]
 for i in range({KAYIT}):
     journal.yaz({{"tip": "yazma", "yol": "C:/deneme/" + kimlik + "_" + str(i) + ".txt",
@@ -42,8 +42,8 @@ def dogrula(kosul: bool, mesaj: str) -> None:
 
 def main() -> int:
     print(f"\n1) {SUREC} surec ayni anda {KAYIT}'er kayit yaziyor")
-    with tempfile.TemporaryDirectory(prefix="limina_gunluk_") as d:
-        ortam = dict(os.environ, LIMINA_VEKIL_KOK=d)
+    with tempfile.TemporaryDirectory(prefix="pevrai_gunluk_") as d:
+        ortam = dict(os.environ, PEVRAI_VEKIL_KOK=d)
         surecler = [subprocess.Popen([sys.executable, "-c", YAZICI, f"s{n}"], env=ortam)
                     for n in range(SUREC)]
         kodlar = [s.wait(timeout=120) for s in surecler]
@@ -62,8 +62,8 @@ def main() -> int:
         dogrula(len(tekil) == SUREC * KAYIT, f"her kayit bir kez var ({len(tekil)})")
 
         sys.path.insert(0, str(KOK))
-        os.environ["LIMINA_VEKIL_KOK"] = d
-        from limina import journal
+        os.environ["PEVRAI_VEKIL_KOK"] = d
+        from pevrai import journal
         dogrula(len(journal._kayitlar()) == SUREC * KAYIT, "geri alma gecmisi hepsini goruyor")
         sayac = journal.kota_sayaclari().get("varsayilan", 0)
         dogrula(sayac == SUREC * KAYIT, f"istek sayaci eksik saymadi ({sayac} / {SUREC * KAYIT})")

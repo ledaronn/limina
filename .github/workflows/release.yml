@@ -57,24 +57,24 @@ jobs:
       - name: SHA256
         shell: pwsh
         run: |
-          Get-ChildItem dist\Limina-Setup-*.exe | ForEach-Object {
+          Get-ChildItem dist\Pevrai-Setup-*.exe | ForEach-Object {
             "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)"
           } | Out-File -Encoding ascii dist\SHA256SUMS.txt
           Get-Content dist\SHA256SUMS.txt
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Limina-Setup
+          name: Pevrai-Setup
           path: |
-            dist/Limina-Setup-*.exe
+            dist/Pevrai-Setup-*.exe
             dist/SHA256SUMS.txt
 
       - name: GitHub Releases
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          name: Limina ${{ github.ref_name }}
+          name: Pevrai ${{ github.ref_name }}
           body_path: packaging/SURUM_NOTU.md
           files: |
-            dist/Limina-Setup-*.exe
+            dist/Pevrai-Setup-*.exe
             dist/SHA256SUMS.txt

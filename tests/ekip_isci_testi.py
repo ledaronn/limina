@@ -1,6 +1,6 @@
 # ekip_isci_testi.py — ekip iscisi: plan dogrulama, dar politika, AYRI SURECTE kosum.
 #
-# Isci sureci gercek: python -m limina --isci <tarif.json>, LIMINA_POLICY ile
+# Isci sureci gercek: python -m pevrai --isci <tarif.json>, PEVRAI_POLICY ile
 # uretilmis politika. Model SAHTE: bu testin actigi yerel OpenAI-uyumlu HTTP
 # sunucusu (127.0.0.1) — once kendi yoluna write_file, sonra BASKA bir
 # iscinin yoluna write_file (kapi DENY vermeli), sonra bitis metni. Yani
@@ -24,10 +24,10 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import anahtar, ceviri, ekip, PROJE_KOKU
-from limina.gate import Politika
+from pevrai import anahtar, ceviri, ekip, PROJE_KOKU
+from pevrai.gate import Politika
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -73,7 +73,7 @@ def main() -> int:
     shutil.rmtree(alan, ignore_errors=True)
     (alan / "b1").mkdir(parents=True); (alan / "b2").mkdir()
     eski_ekip_kok = ekip.EKIP_KOK
-    ekip.EKIP_KOK = Path(tempfile.mkdtemp(prefix="limina_ekip_isci_"))
+    ekip.EKIP_KOK = Path(tempfile.mkdtemp(prefix="pevrai_ekip_isci_"))
     sunucu = HTTPServer(("127.0.0.1", 0), SahteModel)
     port = sunucu.server_address[1]
     threading.Thread(target=sunucu.serve_forever, daemon=True).start()
@@ -120,7 +120,7 @@ def main() -> int:
         except ValueError as e:
             dogrula("disinda" in str(e), "yazma koku disi yol: ValueError")
         # Kapi: isci politikasiyla yabanci yola yazma DENY, kendi yoluna ASK; profil ile ALLOW
-        from limina.gate import ALLOW, ASK, DENY
+        from pevrai.gate import ALLOW, ASK, DENY
         dogrula(ip.karar("write_file", {"path": str(alan / "b2" / "x.md"), "content": "x"}).sonuc == DENY, "kapi: yabanci yol DENY")
         dogrula(ip.karar("write_file", {"path": str(alan / "b1" / "x.md"), "content": "x"}).sonuc == ASK, "kapi: kendi yolu ASK")
         dogrula(ip.karar("write_file", {"path": str(alan / "b1" / "x.md"), "content": "x"}, profil="ekip_isci").sonuc == ALLOW,
@@ -143,14 +143,14 @@ def main() -> int:
         tarif = ekip.isci_hazirla(kopya, alan, alt, "test-kimlik")
         SahteModel.senaryo = [("write_file", {"path": str(alan / "b1" / "giris.md"), "content": "# Giriş\nMetin."}),
                               ("write_file", {"path": str(alan / "b2" / "sonuc.md"), "content": "yabanci"}),
-                              ("write_file", {"path": str(PROJE_KOKU / "limina" / "hack.py"), "content": "x"})]
-        ortam = dict(os.environ); ortam["LIMINA_POLICY"] = tarif["policy"]
+                              ("write_file", {"path": str(PROJE_KOKU / "pevrai" / "hack.py"), "content": "x"})]
+        ortam = dict(os.environ); ortam["PEVRAI_POLICY"] = tarif["policy"]
         # Isci anahtari kendi deposundan okur: test deposunu ona da gosterelim
-        ortam["LIMINA_VEKIL_KOK"] = str(vekil_kok)        # isci: anahtar deposu + gunluk bu kokte
+        ortam["PEVRAI_VEKIL_KOK"] = str(vekil_kok)        # isci: anahtar deposu + gunluk bu kokte
         for k in anahtar.ORTAM_DEGISKENI.values():
             ortam.pop(k, None)
         t0 = time.time()
-        r = subprocess.run([sys.executable, "-m", "limina", "--isci", str(Path(tarif["policy"]).parent / "tarif.json")],
+        r = subprocess.run([sys.executable, "-m", "pevrai", "--isci", str(Path(tarif["policy"]).parent / "tarif.json")],
                            env=ortam, cwd=str(PROJE_KOKU), capture_output=True, text=True, encoding="utf-8",
                            errors="replace", timeout=180)
         sure = time.time() - t0
@@ -161,7 +161,7 @@ def main() -> int:
         dogrula(r.returncode == 0 and sonuc, "isci sureci kostu, sonuc dosyasi yazildi")
         dogrula((alan / "b1" / "giris.md").exists(), "kendi yoluna yazdi (profil onceden onayli, onay istemedi)")
         dogrula(not (alan / "b2" / "sonuc.md").exists(), "YABANCI yola yazamadi (kapi DENY)")
-        dogrula(not (PROJE_KOKU / "limina" / "hack.py").exists(), "kod kokune yazamadi")
+        dogrula(not (PROJE_KOKU / "pevrai" / "hack.py").exists(), "kod kokune yazamadi")
         dogrula(len(SahteModel.istekler) >= 3, f"model {len(SahteModel.istekler)} kez cagrildi (sahte sunucu uzerinden, dogru saglayici/adres)")
         yetki = SahteModel.istekler[0] if SahteModel.istekler else {}
         dogrula(yetki.get("model") == "sahte-model", "ajanin modeli kullanildi")
@@ -178,11 +178,11 @@ def main() -> int:
         kayitlar = [k for k in kayitlar if k.get("ajan") == "giris" and str(alan) in str(k.get("yol", ""))]
         dogrula(kayitlar and kayitlar[-1].get("profil") == "ekip_isci", f"journal: ajan + profil etiketi ({kayitlar[-1] if kayitlar else '-'})")
         dogrula(sonuc.get("yazmalar") and str(alan / "b1" / "giris.md") in sonuc["yazmalar"], "sonuc.json yazmalari listeliyor")
-        # LIMINA_POLICY uyusmazligi: reddedilir
-        ortam2 = dict(ortam); ortam2["LIMINA_POLICY"] = str(kopya)
-        r2 = subprocess.run([sys.executable, "-m", "limina", "--isci", str(Path(tarif["policy"]).parent / "tarif.json")],
+        # PEVRAI_POLICY uyusmazligi: reddedilir
+        ortam2 = dict(ortam); ortam2["PEVRAI_POLICY"] = str(kopya)
+        r2 = subprocess.run([sys.executable, "-m", "pevrai", "--isci", str(Path(tarif["policy"]).parent / "tarif.json")],
                             env=ortam2, cwd=str(PROJE_KOKU), capture_output=True, text=True, timeout=120)
-        dogrula(r2.returncode == 2, "tarif ile LIMINA_POLICY uyusmazsa isci calismaz")
+        dogrula(r2.returncode == 2, "tarif ile PEVRAI_POLICY uyusmazsa isci calismaz")
     finally:
         sunucu.shutdown()
         anahtar.DOSYA, anahtar.YUVA_DIZINI, anahtar._keyring = eski_dosya, eski_dizin, eski_kr

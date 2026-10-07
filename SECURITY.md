@@ -1,6 +1,6 @@
 # Security policy
 
-Limina is an AI agent that can read and change files on your computer and act in a browser.
+Pevrai is an AI agent that can read and change files on your computer and act in a browser.
 Its permission gate is the most important part of the project, so security reports are very
 welcome.
 
@@ -8,10 +8,10 @@ welcome.
 
 **Please do not open a public issue for a security problem.** Report it privately:
 
-1. Go to the [Security tab](https://github.com/ledaronn/limina/security) of this repository.
+1. Go to the [Security tab](https://github.com/ledaronn/pevrai/security) of this repository.
 2. Click **Report a vulnerability** and describe the problem.
 
-Please include the Limina version, your Windows version, the steps to reproduce, and what an
+Please include the Pevrai version, your Windows version, the steps to reproduce, and what an
 attacker could achieve. A minimal `policy.toml` excerpt or a prompt that triggers the issue is
 very helpful. You will get an answer within 14 days. Once a fix is released, you will be credited
 in the release notes unless you prefer otherwise.

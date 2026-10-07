@@ -2,7 +2,7 @@
 # sureci (paralel) -> birlestirici. Model sahte (yerel OpenAI-uyumlu sunucu):
 # istegin icerigine gore planlayici/isci/birlestirici rolunu oynar.
 #
-# Surucu ayri surecte kosar (LIMINA_POLICY = gecici politika, LIMINA_VEKIL_KOK =
+# Surucu ayri surecte kosar (PEVRAI_POLICY = gecici politika, PEVRAI_VEKIL_KOK =
 # gecici kok) ki bu testin kendisi kullanicinin gercek policy.toml/gunlugune
 # dokunmasin; isciler de o kokten turer.
 #
@@ -22,10 +22,10 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from limina import kurulum
+from pevrai import kurulum
 kurulum.politikayi_hazirla(sessiz=True)
-from limina import ceviri, ekip, PROJE_KOKU
-from limina.gate import Politika
+from pevrai import ceviri, ekip, PROJE_KOKU
+from pevrai.gate import Politika
 
 ceviri.dil_ayarla("tr")
 HATA = 0
@@ -127,10 +127,10 @@ SURUCU = r'''
 import json, sys
 from pathlib import Path
 sys.path.insert(0, ".")
-from limina import ekip, ceviri
+from pevrai import ekip, ceviri
 ceviri.dil_ayarla("tr")
-import limina.vekil_v0 as v
-from limina.olaylar import Oturum, sabit_cevap
+import pevrai.vekil_v0 as v
+from pevrai.olaylar import Oturum, sabit_cevap
 olaylar = []
 def yayinla(o):
     # yapi korunur (ofis durum makinesi args/istek sozluklerini okur), uzun metin kisalir
@@ -150,7 +150,7 @@ def main() -> int:
     gercek = Politika(PROJE_KOKU / "policy.toml")
     ALAN = (Path(gercek.yazma[0]) / f"_ekip_orkestra_{os.getpid()}").resolve()   # kosu basina: paralel kosular birbirini silmesin
     shutil.rmtree(ALAN, ignore_errors=True); ALAN.mkdir(parents=True); (ALAN / "sonuc").mkdir()
-    kok = Path(tempfile.mkdtemp(prefix="limina_orkestra_"))
+    kok = Path(tempfile.mkdtemp(prefix="pevrai_orkestra_"))
     sunucu = HTTPServer(("127.0.0.1", 0), SahteModel)
     port = sunucu.server_address[1]
     threading.Thread(target=sunucu.serve_forever, daemon=True).start()
@@ -177,7 +177,7 @@ def main() -> int:
         vekil_kok = kok / "vekil"; vekil_kok.mkdir()
         (vekil_kok / "credentials.json").write_text(json.dumps({"openai": "sk-sahte-varsayilan-1"}), encoding="utf-8")
         ortam = dict(os.environ)
-        ortam.update({"LIMINA_POLICY": str(politika), "LIMINA_VEKIL_KOK": str(vekil_kok), "PYTHONIOENCODING": "utf-8"})
+        ortam.update({"PEVRAI_POLICY": str(politika), "PEVRAI_VEKIL_KOK": str(vekil_kok), "PYTHONIOENCODING": "utf-8"})
         for k in ("GOOGLE_API_KEY", "OPENAI_API_KEY", "ANTHROPIC_API_KEY"):
             ortam.pop(k, None)
         surucu = kok / "surucu.py"; surucu.write_text(SURUCU, encoding="utf-8")
@@ -208,9 +208,9 @@ def main() -> int:
         veri = json.loads(satir[len("SONUC_JSON "):]) if satir else {}
         if not veri:
             print("      stdout:", r.stdout[-1500:], "\n      stderr:", r.stderr[-1500:])
-        if os.environ.get("LIMINA_OFIS_DOKUM"):
+        if os.environ.get("PEVRAI_OFIS_DOKUM"):
             # tests/ofis_arayuz_testi.py bu gercek olay dizisini ofis durum makinesine verir
-            Path(os.environ["LIMINA_OFIS_DOKUM"]).write_text(json.dumps(veri.get("olaylar", []), ensure_ascii=False),
+            Path(os.environ["PEVRAI_OFIS_DOKUM"]).write_text(json.dumps(veri.get("olaylar", []), ensure_ascii=False),
                                                              encoding="utf-8")
         kayit = sorted((vekil_kok / "ekip").glob("*/" + ekip.OFIS_OLAYLARI))[-1:]     # son kosu (onaylanan)
         kayitli = [json.loads(s) for k in kayit for s in k.read_text(encoding="utf-8").splitlines() if s.strip()]

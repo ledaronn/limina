@@ -9,12 +9,12 @@ from pathlib import Path
 sahte = types.ModuleType("playwright"); sahte_api = types.ModuleType("playwright.sync_api")
 sahte_api.sync_playwright = lambda: None
 sys.modules["playwright"] = sahte; sys.modules["playwright.sync_api"] = sahte_api
-sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'limina' paketi
-from limina import tarayici as T
-from limina import kurulum
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))   # proje koku -> 'pevrai' paketi
+from pevrai import tarayici as T
+from pevrai import kurulum
 
 # Mesaj metinleri KAYNAK DILDE (Turkce) dogrulanir; kisisel arayuz.toml ayarina bagli olamaz.
-from limina import ceviri as _ceviri
+from pevrai import ceviri as _ceviri
 _ceviri.dil_ayarla("tr")
 kurulum.politikayi_hazirla(sessiz=True)   # temiz klonda policy.toml sablondan
 HATA = 0
@@ -208,13 +208,13 @@ dogrula("parola alanı" in sonuc.lower(), "type=text ama id 'parola' iceriyor ->
 
 normal = SahteOge(tip="text", ad="arama")
 t7._sayfa.get_by_role = lambda rol, name=None, exact=False: SahteKonum([normal])
-sonuc = t7.doldur("searchbox", "Ara", "limina")
-dogrula(normal.dolduruldu == "limina", "sifre iliskisi olmayan alan GERCEKTEN dolduruldu")
+sonuc = t7.doldur("searchbox", "Ara", "pevrai")
+dogrula(normal.dolduruldu == "pevrai", "sifre iliskisi olmayan alan GERCEKTEN dolduruldu")
 dogrula("alanına yazıldı" in sonuc, f"basari mesaji dondu: {sonuc[:60]}")
 
 print("\n10) Indirme uzanti beyaz listesi (indir)")
 import tempfile, shutil as _shutil
-hedef_dir = Path(tempfile.mkdtemp(prefix="limina_indir_"))
+hedef_dir = Path(tempfile.mkdtemp(prefix="pevrai_indir_"))
 IZINLI = {".pdf", ".txt"}
 try:
     t8 = kur(uret); t8.ac("https://ornek.com")

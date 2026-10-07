@@ -23,7 +23,7 @@ Eski ekip projeleri, erişilebilir klasörleri varsa ekip proje listesi ilk aç�
 
 Dağıtılan dönüştürücünün çıktıları önce geçici klasöre hazırlanır. Son hedeflerin izinleri denetlenir, mevcut dosyalar yedeklenir ve yazmalar geri alma günlüğüne kaydedilir. Yeni çıktılar da geri alınabilir. Çıktı klasörü mevcut olmalıdır. Çok sayfalı dönüşümde son dosyalardan birinin yazılması başarısız olursa daha önce yazılmış çıktılar günlükten ayrı ayrı geri alınabilir.
 
-Bu sözleşme yalnızca dağıtılan `Donusturucu/server.py` sunucusunun `convert` aracına uygulanır. Diğer dış MCP araçlarının onay kartında Limina geri alma kapsamına girmediği açıkça belirtilir.
+Bu sözleşme yalnızca dağıtılan `Donusturucu/server.py` sunucusunun `convert` aracına uygulanır. Diğer dış MCP araçlarının onay kartında Pevrai geri alma kapsamına girmediği açıkça belirtilir.
 
 ## Doğrulama
 
