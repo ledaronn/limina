@@ -3,6 +3,7 @@
 - Limina is now Pevrai. Existing installation identity, settings and chats remain compatible.
 - Optional daily update notification; downloads and installation stay manual.
 - Edit agents from the office card; browser tests close only their own processes.
+- The office keeps the seated pose on the final walking frame.
 - Bundled version metadata and isolated, time-limited package checks. Source tests must pass before a release is built.
 
 **Türkçe:** Limina'nın yeni adı Pevrai. Eski kurulum kimliği, ayarlar ve sohbetlerle

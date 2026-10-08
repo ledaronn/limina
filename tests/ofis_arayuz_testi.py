@@ -472,6 +472,16 @@ def canli_sahne(p) -> None:
       return [k.oturuyor, k.grup.position.y < 0, Math.abs(k.bacaklar[0].rotation.x + Math.PI / 2) < 0.01, b.oturuyor, b.grup.position.y < 0]; }""")
     dogrula(poz[:3] == [True, True, True], f"masada calisan oturur: kalca iner, bacaklar one ({poz[:3]})")
     dogrula(poz[3:] == [True, True], "bostaki ajan kanepede oturur")
+    son_kare = sayfa.evaluate("""() => {
+      const k = OfisSahne.D.ajanlar.yazar;
+      k.yol = {noktalar: [[k.grup.position.x, k.grup.position.z]], i: 0, hiz: 3.2};
+      k.oturuyor = false; k.grup.position.y = 0;
+      k.bacaklar.forEach(b => { b.rotation.x = 0; });
+      Array.from(OfisSahne.D.animasyonlar).forEach(f => f(0.016, performance.now()));
+      return [!k.yol, k.oturuyor, k.grup.position.y < 0,
+        k.bacaklar.every(b => Math.abs(b.rotation.x + Math.PI / 2) < 0.01)];
+    }""")
+    dogrula(son_kare == [True, True, True, True], f"son yuruyus karesinde oturma pozu korunur ({son_kare})")
     dogrula(sayfa.evaluate("() => OfisSahne.D.ajanlar.tablocu.halka.visible"), "dusunen karakterin basinda halka")
     k0 = kareler(sayfa); sayfa.wait_for_timeout(500)
     dogrula(kareler(sayfa) > k0, "calisan varken kareler akar (gercek is suruyor)")

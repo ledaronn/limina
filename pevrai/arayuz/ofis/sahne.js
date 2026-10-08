@@ -871,11 +871,13 @@ window.OfisSahne = (() => {
           let fark = Math.atan2(dx, dz) - k.grup.rotation.y; fark = Math.atan2(Math.sin(fark), Math.cos(fark));
           k.grup.rotation.y += fark * Math.min(1, dt * 12);
         }
-        const s = Math.sin(saat * 11) * 0.55;
-        k.bacaklar[0].rotation.x = s; k.bacaklar[1].rotation.x = -s;
-        k.kollar[0].rotation.x = -s * 0.8; k.kollar[1].rotation.x = s * 0.8;
-        k.govde.position.y = 0.92 + Math.abs(Math.cos(saat * 11)) * 0.04;
-        return;
+        if (k.yol) {
+          const s = Math.sin(saat * 11) * 0.55;
+          k.bacaklar[0].rotation.x = s; k.bacaklar[1].rotation.x = -s;
+          k.kollar[0].rotation.x = -s * 0.8; k.kollar[1].rotation.x = s * 0.8;
+          k.govde.position.y = 0.92 + Math.abs(Math.cos(saat * 11)) * 0.04;
+          return;
+        }
       }
       pozAyarla(k); k.govde.position.y = 0.92;
       const calisiyor = k.durum === "calisiyor" || k.durum === "dusunuyor";
