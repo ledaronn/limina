@@ -77,3 +77,46 @@ koşucu ortamının zorladığı veri yolu kaldırılınca geçti: toplam 77 ba�
 Yeni EXE, kurulum/yükseltme ve temiz GitHub Windows doğrulaması henüz yapılmadı;
 bunlar ikinci adıma aittir. Bu adımda commit/push/etiket üretilmedi. Değişen
 kaynakların sözdizimi, whitespace ve kişisel veri kontrolleri temiz.
+
+
+## İkinci adımın sonucu — 8 Ekim 2026
+
+İkinci adım tamamlandı. Her iki sürüm temiz GitHub kaynak geçmişinden
+GitHub Actions ile üretildi; kaynak test kapısı ve paket doğrulaması geçti.
+Kurulum dosyaları indirildi; yerel SHA256, SHA256SUMS.txt ve GitHub
+asset özeti birbiriyle eşleşti. Dosyalar yerelde çalıştırılmadı.
+
+- [Pevrai-Setup-0.1.1.exe](https://github.com/ledaronn/pevrai/releases/tag/v0.1.1), kaynak `2dbdf29c12cff8a2f8760480f58db70cffe3253e`.
+  [Yayın kontrolü](https://github.com/ledaronn/pevrai/actions/runs/37824627436) başarılı.
+  SHA256: `a024b4a96a66d52babb07838b06d90adec432155364e117766b20ddbed0cced8`.
+- [OkumaAtolyesi-Setup-1.1.1.exe](https://github.com/ledaronn/okuma-atolyesi/releases/tag/v1.1.1), kaynak `4dcb5483c9fdb341497e996ada725640e429565b`.
+  [Yayın kontrolü](https://github.com/ledaronn/okuma-atolyesi/actions/runs/37821473156) başarılı.
+  SHA256: `ca506ce54cca60de2298a6274b794bb5c268160e845fc7b84e04b2c579a7cc12`.
+
+Pevrai kaynak koşusunda 39 test paketi geçti. Okuyucuda 77 test geçti;
+Tesseract bulunmadığı için bir OCR testi atlandı. Paketlenmiş sürüm,
+MCP, Pevrai tanılama ve okuyucu sentetik PDF çizimi denetlendi.
+248 kaynak dosyasında kişisel veri/anahtar taraması temiz; örnek PDF
+metni ve metadatası taramaya dahildir. Eski özel master geçmişi gönderilmedi.
+
+Yayın sırasında bulunan ek hatalar da kapandı: Windows kısa/tam geçici
+yol karşılaştırması; ofiste son yürüyüş karesinde oturma pozunun ezilmesi
+ve değişmeyen ekip seçiminde gereksiz çizim; tekrarlanan saat altında
+geri alma kimliği, yedek ve çöp adı çakışması. Ofis testi hareketli mesaj
+balonunu sabit hedef gibi beklemiyor ve boşta ölçümünden önce geçici
+karakterin çıkışını bekliyor. Okuyucu çizim testi iş parçacığı bekletilirken
+GUI zamanlayıcısı/kaydırma ve güncel görüntü yanıtıyla doğrulanıyor.
+
+Dördüncü adımın bakım kapsamına okuyucunun focus-mode testi de eklendi:
+kalemlik kapanması sabit süre yerine gerçek animasyon/yerleşim bitişiyle
+beklenmeli. Etiketli koşunun ilk denemesi bu zamanlama kontrolünde kaldı;
+aynı kaynakla ikinci deneme tüm kaynak ve paket kontrollerinden geçti.
+
+Sıradaki çalışma üçüncü adımdır: kota sayacı hatasında ücretli model
+isteğini durdurma ve paylaşılabilir tanı çıktısında yol/sır maskeleme.
+Kota kararı ve artırma şu anda ayrı işlemler: son boş hakkı iki işçi
+aynı anda okuyabilir. Günlük kilidi de kilit hatasını yutup yazmaya
+devam ediyor. Kota ayırma işlemi karar/artırma/yazmayı tek zorunlu
+kilitte birleştirmeli; kilit hatası ve son hak yarışı hedefli sınanmalı.
+Beşinci adımdaki gerçek Windows kurulumu/yükseltmesi/kaldırması,
+harici yedek ve hesap 2FA doğrulaması hâlâ bekliyor.
