@@ -1,5 +1,5 @@
 ; pevrai.iss — Inno Setup 6 kurulum tarifi. Calistir: python packaging/build.py --kurulum
-; (ya da: ISCC /DSurum=0.1.0 /DKok=<proje koku> packaging\pevrai.iss)
+; (ya da: ISCC /DSurum=0.1.1 /DKok=<proje koku> packaging\pevrai.iss)
 ;
 ; Kullanici basina kurulum, YONETICI IZNI ISTEMEZ: %LOCALAPPDATA%\Programs\Pevrai.
 ; Kisisel veri (policy.toml, sohbetler, ayarlar) kurulum klasorunde DEGIL,
@@ -7,7 +7,7 @@
 ; (yeniden kurunca ayarlar geri gelir). Silmek isteyen o klasorleri siler.
 
 #ifndef Surum
-  #define Surum "0.1.0"
+  #define Surum "0.1.1"
 #endif
 #ifndef Kok
   #define Kok ".."

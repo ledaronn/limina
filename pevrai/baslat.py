@@ -72,18 +72,20 @@ def tanila() -> str:
 
 
 def surum() -> str:
+    from pevrai import DONMUS, KAYNAK_KOK
+    # Editable metadata can be stale after changing the source version.
+    if not DONMUS:
+        try:
+            import tomllib
+            with (KAYNAK_KOK / "pyproject.toml").open("rb") as f:
+                return str(tomllib.load(f)["project"]["version"])
+        except (OSError, KeyError, ValueError):
+            pass
     try:
         from importlib.metadata import version
         return version("pevrai")
     except Exception:
-        # Source checkouts can run before their editable package is installed.
-        try:
-            import tomllib
-            from pevrai import KAYNAK_KOK
-            with (KAYNAK_KOK / "pyproject.toml").open("rb") as f:
-                return str(tomllib.load(f)["project"]["version"])
-        except (OSError, KeyError, ValueError):
-            return "(surum bilgisi yok)"
+        return "(surum bilgisi yok)"
 
 
 def main(argv: list[str] | None = None) -> int:

@@ -16,7 +16,7 @@
 # Kisisel dosyalar dondurulmus surumde %LOCALAPPDATA%/Pevrai'da uretilir.
 from pathlib import Path
 
-from PyInstaller.utils.hooks import collect_data_files, collect_submodules
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules, copy_metadata
 
 KOK = Path(SPECPATH).resolve().parent          # proje koku (packaging/ ustu)
 
@@ -35,6 +35,7 @@ datas += collect_data_files("playwright", includes=["driver/**/*"])
 # Sertifika demeti (httpx/certifi), pymupdf verileri
 datas += collect_data_files("certifi")
 datas += collect_data_files("pymupdf")
+datas += copy_metadata("pevrai")  # Runtime version/update checks need distribution metadata.
 
 # --- gizli iceri aktarimlar --------------------------------------------------
 hiddenimports = [
@@ -48,6 +49,7 @@ hiddenimports = [
     # saglayicilar ve mcp
     *collect_submodules("google.genai"), *collect_submodules("mcp"),
     "anthropic", "keyring", "keyring.backends", "keyring.backends.Windows",
+    "keyring.backends.null",  # Package probes must not read the user's system vault.
     # belge okuyucular (Donusturucu runpy ile kosunca da bulunmali)
     "pymupdf", "docx", "pptx", "openpyxl", "PIL", "yaml",
 ]

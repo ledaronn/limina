@@ -43,6 +43,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -e .[tam] pyinstaller==6.22.3
+          python -m playwright install chromium
+
+      - name: Ilk acilis (policy.toml sablondan)
+        run: python -c "from pevrai import kurulum; print(kurulum.politikayi_hazirla())"
+
+      - name: Kaynak testleri (yayin kapisi)
+        run: python tests/hepsi.py
 
       - name: Inno Setup
         shell: pwsh
@@ -65,6 +72,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: Pevrai-Setup
+          if-no-files-found: error
           path: |
             dist/Pevrai-Setup-*.exe
             dist/SHA256SUMS.txt

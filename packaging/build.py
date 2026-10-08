@@ -9,12 +9,14 @@ paket "uretildi" sayilmaz.
 """
 from __future__ import annotations
 
-import os
 import shutil
 import subprocess
 import sys
-import time
+import tempfile
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from dogrulama import ortam as dogrulama_ortami, sorgula
 
 KOK = Path(__file__).resolve().parent.parent
 DIST = KOK / "dist" / "Pevrai"
@@ -51,12 +53,17 @@ def pyinstaller() -> None:
 
 def dogrula() -> None:
     print("\n[2/3] Dogrulama (dondurulmus exe ile)")
-    ortam = dict(os.environ)
-    # Kisisel veri koku: gercek %LOCALAPPDATA%/Pevrai'ya dokunmadan gecici bir kok
-    gecici = KOK / "build" / "dogrulama_localappdata"
-    shutil.rmtree(gecici, ignore_errors=True)
-    gecici.mkdir(parents=True)
-    ortam["LOCALAPPDATA"] = str(gecici)
+    with tempfile.TemporaryDirectory(prefix="pevrai-build-check-") as tmp:
+        _dogrula(dogrulama_ortami(Path(tmp)))
+
+
+def _dogrula(ortam: dict[str, str]) -> None:
+    # A frozen executable must report the exact source/installer version.
+    cli = str(DIST / "pevrai-cli.exe")
+    version = subprocess.run([cli, "--surum"], capture_output=True, text=True,
+                             encoding="utf-8", errors="replace", env=ortam, timeout=30)
+    if version.returncode != 0 or version.stdout.strip() != surum():
+        raise SystemExit("Paketlenmis EXE surumu kaynak/kurulum surumuyle eslesmiyor.")
     r = subprocess.run([str(DIST / "pevrai-cli.exe"), "--tani"], capture_output=True, text=True,
                        encoding="utf-8", errors="replace", env=ortam, timeout=120)
     print("\n".join("    " + s for s in r.stdout.splitlines()))
@@ -65,28 +72,21 @@ def dogrula() -> None:
     for zorunlu in ("MCP (zorunlu)      var", "HTTP (zorunlu)     var", "pencere (zorunlu)  var"):
         if zorunlu not in r.stdout:
             raise SystemExit(f"Zorunlu bilesen pakette yok: {zorunlu!r}")
-    if f"Veri    : {gecici}" not in r.stdout:
+    veri_koku = Path(ortam["LOCALAPPDATA"]) / "Pevrai"
+    if f"Veri    : {veri_koku}" not in r.stdout.splitlines():
         raise SystemExit("Dondurulmus surum kisisel dosyalari LOCALAPPDATA altina koymuyor!")
 
     # Converter MCP: Pevrai.exe --mcp-sunucu <betik> gercekten stdio sunucusu mu?
     print("  MCP sunucusu (Pevrai.exe --mcp-sunucu Donusturucu/server.py) ...")
     betik = DIST / "_internal" / "Donusturucu" / "server.py"
-    p = subprocess.Popen([str(DIST / "Pevrai.exe"), "--mcp-sunucu", str(betik)],
-                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, env=ortam)
-    istek = (b'{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05",'
-             b'"capabilities":{},"clientInfo":{"name":"build","version":"0"}}}\n')
-    try:
-        p.stdin.write(istek); p.stdin.flush()
-        bas = time.monotonic(); satir = b""
-        while time.monotonic() - bas < 60:
-            satir = p.stdout.readline()
-            if satir.strip():
-                break
-        if b'"result"' not in satir or b"serverInfo" not in satir:
-            raise SystemExit(f"MCP sunucusu initialize'a cevap vermedi: {satir[:300]!r}\n{p.stderr.read()[-1500:]!r}")
-        print("    initialize -> " + satir.decode("utf-8", "replace")[:120].strip() + " ...")
-    finally:
-        p.kill()
+    istek = {"jsonrpc": "2.0", "id": 1, "method": "initialize", "params": {
+        "protocolVersion": "2024-11-05", "capabilities": {},
+        "clientInfo": {"name": "build", "version": "0"}}}
+    yanit, _ = sorgula([str(DIST / "Pevrai.exe"), "--mcp-sunucu", str(betik)],
+                      istek, env=ortam)
+    if yanit.get("id") != 1 or not isinstance(yanit.get("result"), dict) or "serverInfo" not in yanit["result"]:
+        raise SystemExit("MCP sunucusu initialize'a gecerli cevap vermedi.")
+    print("    initialize -> serverInfo var")
     print("  DOGRULANDI")
 
 

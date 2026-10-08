@@ -1,3 +1,15 @@
+## Pevrai 0.1.1
+
+- Limina is now Pevrai. Existing installation identity, settings and chats remain compatible.
+- Optional daily update notification; downloads and installation stay manual.
+- Edit agents from the office card; browser tests close only their own processes.
+- Bundled version metadata and isolated, time-limited package checks. Source tests must pass before a release is built.
+
+**Türkçe:** Limina'nın yeni adı Pevrai. Eski kurulum kimliği, ayarlar ve sohbetlerle
+uyumluluk korunur. İsteğe bağlı günlük güncelleme bildirimi, ofis kartından ajan
+düzenleme ve test süreçlerinin temizlenmesi eklendi. Paket sürümü ve MCP yanıtı
+yalıtılmış ortamda, süre sınırıyla doğrulanır; yayın öncesinde kaynak testleri çalışır.
+
 ## Download
 
 **Pevrai-Setup.exe**: Windows 10/11, 64-bit. No Python needed, no admin rights needed.
@@ -13,6 +25,7 @@ Optional: [LibreOffice](https://www.libreoffice.org/) for converting Word/PowerP
 
 Your data (settings, chats, journal) is stored in `%LOCALAPPDATA%\Pevrai` and `~\.vekil`, not
 in the program folder. Uninstalling keeps it, so reinstalling brings your settings back.
+If an existing `%LOCALAPPDATA%\Limina` data folder is present, Pevrai continues to use it.
 
 ---
 
