@@ -490,7 +490,9 @@ def canli_sahne(p) -> None:
     balon = sayfa.evaluate("() => { const b = document.querySelector('.of-balon'); return b && [b.textContent, b.querySelectorAll('*').length]; }")
     dogrula(bool(balon) and balon[0].startswith("<img") and balon[1] == 0 and len(balon[0]) <= 61, f"balon duz metin, kisa ({balon})")
     dogrula(not sayfa.evaluate("() => window.XSS"), "balondaki HTML calismadi")
-    sayfa.click(".of-balon"); sayfa.wait_for_timeout(100)
+    # Gönderen mesajla birlikte yürür. Bu kontrol balonun güvenli metin/
+    # açılma davranışını sınar; hareketli etiketin sabitlenmesini beklemez.
+    sayfa.locator(".of-balon").dispatch_event("click"); sayfa.wait_for_timeout(100)
     dogrula(len(sayfa.evaluate("() => document.querySelector('.of-balon').textContent")) > 100, "tiklayinca tam metin")
     dogrula(sayfa.evaluate("() => !!document.querySelector('.of-zarf')"), "alicinin ustunde zarf")
     # animasyon azaltilmis: yeni hedefe isinlanir
@@ -503,8 +505,19 @@ def canli_sahne(p) -> None:
     olay("gorev_bitti", {"metin": "x", "durduruldu": True}); sayfa.wait_for_timeout(300)
     dogrula(sayfa.evaluate("() => OfisSahne.D.ajanlar.yazar.gri && OfisSahne.D.ajanlar.yazar.rozet.textContent === 'durum bilinmiyor'"),
             "durduruldu: bitis olayi gelmeyen karakter gri, 'durum bilinmiyor'")
-    sayfa.wait_for_function("() => Object.values(OfisSahne.D.ajanlar).every(k => !k.yol) && OfisSahne.D.animasyonlar.size === 0 && OfisSahne.D.kare === null && !OfisSahne.D.gecis",
+    # Geçici kopyanın kapıdan çıkıp sahneden kaldırılması da sahne değişimidir.
+    # Boşta ölçümü, bu gecikmeli çıkış tamamlandıktan sonra başlar.
+    sayfa.wait_for_function("""() => Object.values(Ofis.D.durum.karakterler)
+      .filter(k => k.gecici && k.ayrildi)
+      .every(k => Ofis.D.cikanlar.has(k.anahtar) && !OfisSahne.D.ajanlar[k.anahtar])
+      && Object.values(OfisSahne.D.ajanlar).every(k => !k.yol)
+      && OfisSahne.D.animasyonlar.size === 0 && OfisSahne.D.kare === null && !OfisSahne.D.gecis""",
                             timeout=10000)
+    gereksiz = sayfa.evaluate("""() => {
+      OfisSahne.ekipVurgula(new Set(Ekip.D.secili));
+      return OfisSahne.D.kare === null;
+    }""")
+    dogrula(gereksiz, "ekip secimi degismediyse yeni kare istenmez")
     k0 = kareler(sayfa); sayfa.wait_for_timeout(1500)
     dogrula(kareler(sayfa) - k0 == 0, f"kimse calismiyor/yurumuyorken kare yok ({kareler(sayfa) - k0})")
 

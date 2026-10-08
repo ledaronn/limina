@@ -906,8 +906,14 @@ window.OfisSahne = (() => {
   }
 
   function ekipVurgula(adlar) {
-    Object.keys(D.ajanlar).forEach((a) => { D.ajanlar[a].ekip.visible = adlar.has(a); });
-    iste();
+    let degisti = false;
+    Object.keys(D.ajanlar).forEach((a) => {
+      const gorunur = adlar.has(a);
+      if (D.ajanlar[a].ekip.visible !== gorunur) {
+        D.ajanlar[a].ekip.visible = gorunur; degisti = true;
+      }
+    });
+    if (degisti) iste();
   }
   /* Yeni ajan kapidan girer: once kapiya konur, sonra hedefine yurur. */
   function kapidanGir(ad) {
