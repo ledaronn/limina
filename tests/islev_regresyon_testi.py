@@ -4,6 +4,7 @@ import sys
 import tempfile
 import threading
 import unittest
+from datetime import datetime
 from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import patch
@@ -140,7 +141,8 @@ class Regression(unittest.TestCase):
             self.assertEqual(projeler.liste(self.policy),[])
 
     def test_converter_overwrite_and_new_output_undo(self):
-        with patch.object(journal,'KOK',self.root/'data'),patch.object(journal,'YEDEK',self.root/'data'/'backups'),patch.object(journal,'KAYIT',self.root/'data'/'journal.jsonl'):
+        clock=SimpleNamespace(now=lambda:datetime(2026,1,1,12,0,0))
+        with patch.object(journal,'KOK',self.root/'data'),patch.object(journal,'YEDEK',self.root/'data'/'backups'),patch.object(journal,'KAYIT',self.root/'data'/'journal.jsonl'),patch.object(journal,'datetime',clock):
             target=self.root/'out.pdf';target.write_bytes(b'original')
             def convert(args):
                 Path(args['dst_dir'],'out.pdf').write_bytes(b'converted')
@@ -155,6 +157,40 @@ class Regression(unittest.TestCase):
             with patch('pevrai.mcp_yazma.journal_yaz',side_effect=OSError('journal unavailable')):
                 result=donustur(convert,{'dst_dir':str(self.root)},self.policy)
                 self.assertFalse(result.basarili);self.assertEqual(target.read_bytes(),b'original')
+
+    def test_undo_same_file_twice_with_identical_clock_values(self):
+        clock=SimpleNamespace(now=lambda:datetime(2026,1,1,12,0,0))
+        with patch.object(journal,'KOK',self.root/'data'),patch.object(journal,'YEDEK',self.root/'data'/'backups'),patch.object(journal,'KAYIT',self.root/'data'/'journal.jsonl'),patch.object(journal,'datetime',clock):
+            target=self.root/'same.txt'; target.write_bytes(b'original')
+            for content in (b'first',b'second'):
+                backup=journal.yedekle(target)
+                target.write_bytes(content)
+                journal.yaz({'tip':'yazma','yol':str(target),'yedek':backup})
+            journal.geri_al(str(target)); self.assertEqual(target.read_bytes(),b'first')
+            journal.geri_al(str(target)); self.assertEqual(target.read_bytes(),b'original')
+            self.assertEqual(journal._geri_alinmamis(journal._kayitlar()),[])
+
+    def test_legacy_undo_with_same_timestamp_keeps_other_file_pending(self):
+        with patch.object(journal,'KOK',self.root/'data'),patch.object(journal,'YEDEK',self.root/'data'/'backups'),patch.object(journal,'KAYIT',self.root/'data'/'journal.jsonl'):
+            journal._hazirla()
+            first=self.root/'old-first.txt'; second=self.root/'old-second.txt'
+            first.write_bytes(b'one'); second.write_bytes(b'two')
+            rows=[{'tip':'yazma','zaman':'2026-01-01T12:00:00.000000','yol':str(path),'yedek':None}
+                  for path in (first,second)]
+            journal.KAYIT.write_text('\n'.join(json.dumps(row) for row in rows)+'\n',encoding='utf-8')
+            journal.geri_al(str(first)); self.assertFalse(first.exists())
+            self.assertEqual([row['yol'] for row in journal._geri_alinmamis(journal._kayitlar())],[str(second)])
+            journal.geri_al(str(second)); self.assertFalse(second.exists())
+
+    def test_trash_same_basename_with_identical_clock_keeps_both_files(self):
+        clock=SimpleNamespace(now=lambda:datetime(2026,1,1,12,0,0))
+        with patch.object(journal,'COP',self.root/'trash'),patch.object(journal,'datetime',clock):
+            originals=[]
+            for folder,content in (('first',b'one'),('second',b'two')):
+                path=self.root/folder/'same.txt'; path.parent.mkdir(); path.write_bytes(content)
+                originals.append(journal.cope_tasi(path))
+            self.assertNotEqual(*originals)
+            self.assertEqual([path.read_bytes() for path in originals],[b'one',b'two'])
 
 
 if __name__=='__main__':unittest.main()

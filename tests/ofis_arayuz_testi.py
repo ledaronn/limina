@@ -503,7 +503,7 @@ def canli_sahne(p) -> None:
     olay("gorev_bitti", {"metin": "x", "durduruldu": True}); sayfa.wait_for_timeout(300)
     dogrula(sayfa.evaluate("() => OfisSahne.D.ajanlar.yazar.gri && OfisSahne.D.ajanlar.yazar.rozet.textContent === 'durum bilinmiyor'"),
             "durduruldu: bitis olayi gelmeyen karakter gri, 'durum bilinmiyor'")
-    sayfa.wait_for_function("() => Object.values(OfisSahne.D.ajanlar).every(k => !k.yol) && OfisSahne.D.animasyonlar.size === 0",
+    sayfa.wait_for_function("() => Object.values(OfisSahne.D.ajanlar).every(k => !k.yol) && OfisSahne.D.animasyonlar.size === 0 && OfisSahne.D.kare === null && !OfisSahne.D.gecis",
                             timeout=10000)
     k0 = kareler(sayfa); sayfa.wait_for_timeout(1500)
     dogrula(kareler(sayfa) - k0 == 0, f"kimse calismiyor/yurumuyorken kare yok ({kareler(sayfa) - k0})")

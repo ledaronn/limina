@@ -9,6 +9,7 @@ import threading
 from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
+from uuid import uuid4
 
 from pevrai.ceviri import t
 from pevrai.uyumluluk import ortam
@@ -80,7 +81,7 @@ def cope_tasi(yol: Path) -> Path:
     """Kalıcı silme yok — dosya zaman damgalı adla çöp klasörüne taşınır."""
     COP.mkdir(parents=True, exist_ok=True)
     damga = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-    hedef = COP / f"{damga}__{yol.name}"
+    hedef = COP / f"{damga}_{uuid4().hex}__{yol.name}"
     shutil.move(str(yol), str(hedef))
     return hedef
 
@@ -92,7 +93,7 @@ def yedekle(yol: Path) -> str | None:
     if not yol.exists():
         return None
     damga = datetime.now().strftime("%Y%m%d-%H%M%S-%f")
-    hedef = YEDEK / f"{damga}__{yol.name}"
+    hedef = YEDEK / f"{damga}_{uuid4().hex}__{yol.name}"
     shutil.copy2(yol, hedef)
     return str(hedef)
 
@@ -146,11 +147,12 @@ def _gunluk_kilidi():
 
 
 def yaz(kayit: dict) -> None:
-    # Mikrosaniye hassasiyeti şart: aynı turda birden fazla dosyaya yazılırsa
-    # saniye çözünürlüğü tekillik garanti etmez, "zaman" kayıt kimliği olarak kullanılıyor.
+    # Saat çözünürlüğü ve saat düzeltmeleri tekillik garantilemez.
+    # Zaman gösterim/sıralama içindir; geri alma ayrı kayıt kimliğini kullanır.
     _hazirla()
     with _gunluk_kilidi():
         kayit["zaman"] = datetime.now().isoformat(timespec="microseconds")
+        kayit["kayit_kimligi"] = uuid4().hex
         # Dosya yarim bir satirla bitiyorsa (cokme sonrasi) yeni kayit onun DEVAMINA
         # yazilir, bozuk satir + gecerli kayit tek satir olur ve _kayitlar ikisini
         # birden atlar: cokmeden SONRAKI ilk kayit da kaybolurdu. Once satir sonu.
@@ -191,8 +193,15 @@ def _kayitlar() -> list[dict]:
 
 def _geri_alinmamis(kayitlar: list[dict]) -> list[dict]:
     """Henüz geri alınmamış yazma kayıtları, eskiden yeniye."""
-    alinan = {k["hedef"] for k in kayitlar if k.get("tip") == "geri_alma"}
-    return [k for k in kayitlar if k.get("tip") in ("yazma", "tasima", "klasor") and k["zaman"] not in alinan]
+    alinan = {k["hedef_kimligi"] for k in kayitlar
+              if k.get("tip") == "geri_alma" and k.get("hedef_kimligi")}
+    # Eski günlüklerde kimlik yok. Yol da eşleşsin: aynı zamanlı başka
+    # bir dosyanın geri alma kaydı görünmez hale gelmesin.
+    eski = {(k["hedef"], k.get("yol")) for k in kayitlar
+            if k.get("tip") == "geri_alma" and not k.get("hedef_kimligi")}
+    return [k for k in kayitlar if k.get("tip") in ("yazma", "tasima", "klasor")
+            and k.get("kayit_kimligi") not in alinan
+            and (k["zaman"], k.get("yol")) not in eski and (k["zaman"], None) not in eski]
 
 
 def gorev_kayitlari(baslangic_zamani: str) -> list[dict]:
@@ -265,6 +274,13 @@ def bekleyen_kayitlar(adet: int = 30) -> list[dict]:
     return cikti
 
 
+def _geri_alma_kaydi(k: dict, **ek) -> dict:
+    kayit = {"tip": "geri_alma", "hedef": k["zaman"], "yol": k["yol"], **ek}
+    if k.get("kayit_kimligi"):
+        kayit["hedef_kimligi"] = k["kayit_kimligi"]
+    return kayit
+
+
 def geri_al(hedef_yol: str | None = None) -> str:
     """Son yazmayı geri alır. hedef_yol verilirse SADECE o dosyanın son yazmasını.
     Eşleşme dosya adının sonundan yapılır: 'deneme.txt' yeterli, tam yol da olur."""
@@ -288,7 +304,7 @@ def geri_al(hedef_yol: str | None = None) -> str:
         # Icine dosya girdiyse dokunulmaz — kullanicinin verisi silinmez.
         kok = Path(k["yol"])
         if not kok.exists():
-            yaz({"tip": "geri_alma", "hedef": k["zaman"], "yol": k["yol"]})
+            yaz(_geri_alma_kaydi(k))
             return t("Geri alındı: {yol} zaten yok.", yol=kok)
         for p_ in kok.rglob("*"):
             if p_.is_file():
@@ -297,7 +313,7 @@ def geri_al(hedef_yol: str | None = None) -> str:
         for p_ in sorted(kok.rglob("*"), key=lambda x: len(str(x)), reverse=True):
             p_.rmdir()
         kok.rmdir()
-        yaz({"tip": "geri_alma", "hedef": k["zaman"], "yol": k["yol"]})
+        yaz(_geri_alma_kaydi(k))
         return t("Geri alındı: {yol} kaldırıldı (boştu).", yol=kok)
 
     if k.get("tip") == "tasima":
@@ -310,7 +326,7 @@ def geri_al(hedef_yol: str | None = None) -> str:
             return t("Geri alınamadı: {yol} yolunda şimdi başka bir dosya var.", yol=eski)
         eski.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(str(yeni), str(eski))
-        yaz({"tip": "geri_alma", "hedef": k["zaman"], "yol": k["yol"]})
+        yaz(_geri_alma_kaydi(k))
         return t("Geri alındı: {yeni} -> {eski} yoluna döndü.", yeni=yeni, eski=eski)
 
     # Geri alma da bir değişikliktir: mevcut hali önce yedeklenir.
@@ -327,7 +343,7 @@ def geri_al(hedef_yol: str | None = None) -> str:
                   yol=hedef, zaman=k["zaman"])
 
     # Kayıt, dosya işleminden SONRA ve print'ten ÖNCE yazılır.
-    yaz({"tip": "geri_alma", "hedef": k["zaman"], "yol": k["yol"], "geri_alma_yedegi": onceki})
+    yaz(_geri_alma_kaydi(k, geri_alma_yedegi=onceki))
     return sonuc
 
 

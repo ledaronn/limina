@@ -60,6 +60,9 @@ def main() -> int:
         dogrula(len(kayitlar) == SUREC * KAYIT, f"hicbir kayit kaybolmadi ({len(kayitlar)} / {SUREC * KAYIT})")
         tekil = {k.get("yol") for k in kayitlar}
         dogrula(len(tekil) == SUREC * KAYIT, f"her kayit bir kez var ({len(tekil)})")
+        kimlikler = {k.get("kayit_kimligi") for k in kayitlar}
+        dogrula(None not in kimlikler and len(kimlikler) == SUREC * KAYIT,
+                "farkli sureclerde kayit kimlikleri cakismiyor")
 
         sys.path.insert(0, str(KOK))
         os.environ["PEVRAI_VEKIL_KOK"] = d

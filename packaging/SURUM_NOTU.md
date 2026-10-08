@@ -4,6 +4,7 @@
 - Optional daily update notification; downloads and installation stay manual.
 - Edit agents from the office card; browser tests close only their own processes.
 - The office keeps the seated pose on the final walking frame.
+- Undo records and backup/trash filenames use unique IDs, even when the clock repeats. Existing journals remain readable.
 - Bundled version metadata and isolated, time-limited package checks. Source tests must pass before a release is built.
 
 **Türkçe:** Limina'nın yeni adı Pevrai. Eski kurulum kimliği, ayarlar ve sohbetlerle
